@@ -151,6 +151,14 @@ curl -s https://api.github.com/repos/ogham/exa/releases/latest \
 unzip "$TMPDIR/exa.zip" -d "$TMPDIR/exa"
 sudo mv "$TMPDIR/exa/"exa-* /usr/local/bin/exa
 
+_step "Installing Fd..."
+curl -s https://api.github.com/repos/sharkdp/fd/releases/latest \
+| grep "browser_download_url.*fd-musl_.*_amd64.deb" \
+| cut -d : -f 2,3 \
+| tr -d \" \
+| wget -qi - --show-progress -O "$TMPDIR/fd.deb"
+sudo dpkg -i "$TMPDIR/fd.deb"
+
 _step "Installing Fuzzy Finder..."
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 ~/.fzf/install --all
