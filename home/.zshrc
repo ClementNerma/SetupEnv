@@ -108,7 +108,7 @@ alias gotemp="cd $TEMPDIR"
 p() { cd "$PROJDIR/$1" }
 
 # Software: Exa
-alias ls="exa --long --header --git"
+alias ls="exa --all --long --group-directories-first --color-scale"
 alias tree="ls --tree"
 
 # Software: Micro
