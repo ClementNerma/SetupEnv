@@ -85,10 +85,18 @@ alias reload="source ~/.zshrc.lib.zsh"
 # Allow fast editing of this file, with automatic reloading
 alias zer="nano ~/.zshrc.lib.zsh && reload"
 
-# Determine path to main directories
+# Load platform-specific configuration
 if grep -q microsoft /proc/version; then
+	if [[ -f "$HOME/.zshrc.linux.zsh" ]]; then
+		mv ~/.zshrc.linux.zsh ~/.__zshrc.linux.zsh
+	fi
+
 	source ~/.zshrc.wsl.zsh
 else
+	if [[ -f "$HOME/.zshrc.wsl.zsh" ]]; then
+		mv ~/.zshrc.wsl.zsh ~/.__zshrc.wsl.zsh
+	fi
+
 	source ~/.zshrc.linux.zsh
 fi
 
