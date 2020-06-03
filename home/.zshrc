@@ -43,6 +43,22 @@ function rsync_dir() {
 	echo Done.
 }
 
+# Copy a project to another directory without its dependencies and temporary files
+function cp_proj_nodeps() {
+	if [[ -d "$2" ]]; then
+		if [[ $3 != "-f" && $3 != "--force" ]]; then
+			echo "Target directory exists. To overwrite it, provide '-f' or '--force' as a third argument."
+			return 1
+		fi
+	fi
+
+	rsync --exclude '*.tmp' --exclude '.rustc_info.json' --exclude '.git/' \
+		  --exclude 'node_modules/' --exclude 'pnpm-store/' --exclude 'common/temp/' --exclude '.rush/temp/' \
+		  --exclude 'build/' --exclude 'dist/' --exclude 'target/debug/' --exclude 'target/release/' \
+		  --archive --partial --progress \
+		  --delete --delete-excluded "$1/" "$2"
+}
+
 # Run a Cargo project located in the projects directory
 function cargext() {
 	PROJ_NAME=$1
