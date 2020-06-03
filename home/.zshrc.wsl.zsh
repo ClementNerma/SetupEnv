@@ -6,6 +6,14 @@ function win() {
   powershell.exe -command "$@"
 }
 
+# Run a Windows through PowerShell and use its content in WSL
+# This uses "dos2unix" because Window's newline symbols are different than Linux's ones, thus resulting in weird string behaviours
+# The downside is that some commands won't work correctly with dos2unix so this function should only be used when the output of a
+#  windows command is meant to be used later on.
+function win2text() {
+  win "$@" | dos2unix
+}
+
 # Make an alias to a Windows command
 # e.g. "winalias mycmd" will allow to use "mycmd" by running PowerShell transparently
 function winalias() {
@@ -44,7 +52,7 @@ function remount() {
 }
 
 # Get Windows username
-export WINUSER=$(win '$env:UserName')
+export WINUSER=$(win2text '$env:UserName')
 
 # Set up path to main directories
 export HOMEDIR="/mnt/c/Users/$WINUSER"
