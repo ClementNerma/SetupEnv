@@ -19,7 +19,7 @@ source $ZSH/oh-my-zsh.sh
 
 # Profiles performances of this .zshrc
 function profile_zshrc() {
-	ZSH_PROFILING=true zsh -c "exit"
+	ZSH_PROFILING=true zsh -c "source ~/.zshrc && exit"
 }
 
 # Synchronize a directory
