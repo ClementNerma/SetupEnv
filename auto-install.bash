@@ -100,12 +100,12 @@ export NVM_DIR="$HOME/.nvm"
 _step "Installing Node.js & NPM..."
 nvm install node --latest-npm
 
-_step "Fixing NPM permission issues..."
-if [ ! -d ~/.npm-global ]; then
-	mkdir ~/.npm-global
-fi
-npm config set prefix '~/.npm-global'
-export PATH=~/.npm-global/bin:$PATH # Just for this session
+#_step "Fixing NPM permission issues..."
+#if [ ! -d ~/.npm-global ]; then
+#	mkdir ~/.npm-global
+#fi
+#npm config set prefix '~/.npm-global'
+#export PATH=~/.npm-global/bin:$PATH # Just for this session
 
 _step "Installing Yarn..."
 npm i -g yarn
@@ -162,6 +162,10 @@ sudo dpkg -i "$TMPDIR/fd.deb"
 _step "Installing Fuzzy Finder..."
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 ~/.fzf/install --all
+
+_step "Installing Youtube-DL..."
+sudo curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl
+sudo chmod a+rx /usr/local/bin/youtube-dl
 
 _step "Installing utilities..."
 sudo apt install -y pv htop ncdu net-tools rsync
