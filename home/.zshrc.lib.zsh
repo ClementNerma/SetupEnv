@@ -176,7 +176,7 @@ function nvm_alias() {
 	done
 }
 
-nvm_alias nvm node npm yarn rush
+nvm_alias nvm node npm npx yarn rush
 
 # Integration for FZF
 source ~/.fzf.zsh
