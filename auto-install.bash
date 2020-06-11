@@ -53,6 +53,14 @@ echo -e "\e[92m=================================\e[0m"
 echo -e "\e[92m====== AUTOMATED INSTALLER ======\e[0m"
 echo -e "\e[92m=================================\e[0m"
 
+_step "Checking compatibility..."
+arch="$(uname -m)"
+if [[ $arch != "x86_64" ]] && [[ $arch != "i686" ]] && [[ $arch != "i386" ]]; then
+	echo "ERROR: Unknown CPU architecture detected: ${arch}"
+	echo "ERROR: Exiting now."
+	exit 1
+fi
+
 _step "Creating temporary directory..."
 rm -rf "$TMPDIR"
 mkdir -p "$TMPDIR"
