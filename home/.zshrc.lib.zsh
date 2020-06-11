@@ -172,7 +172,8 @@ function load_nvm() {
 # On future calls, the alias won't be there anymore and so there will be no performance overhead
 function nvm_alias() {
 	for name in "$@"; do
-		# The 'eval' is here to allow
+		# As ZSH only allows autocompletion for valid commands, and as it considers aliases as invalid commands as soon as any of the
+		#  alias' subcommands is not found, we use the "eval" command here to ensure autocompletion will work nonetheless.
 		alias ${name}="unalias $* && load_nvm && eval $name"
 	done
 }
