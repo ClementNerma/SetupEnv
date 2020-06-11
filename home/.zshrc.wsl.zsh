@@ -82,4 +82,4 @@ alias docker="win docker"
 alias docker-compose="win docker-compose"
 
 # Allow fast editing of this file
-alias zerw="nano ~/.zshrc.wsl.zsh && source ~/.zshrc.wsl.zsh"
+alias zert="nano ~/.zshrc.wsl.zsh && source ~/.zshrc.wsl.zsh"
