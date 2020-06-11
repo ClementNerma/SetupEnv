@@ -77,6 +77,11 @@ open() {
 
 alias here="open ."
 
+# Copy a file to clipboard
+clip() {
+  cat "$1" | clip.exe
+}
+
 # Software: Docker
 alias docker="win docker"
 alias docker-compose="win docker-compose"
