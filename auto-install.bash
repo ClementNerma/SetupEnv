@@ -108,13 +108,6 @@ export NVM_DIR="$HOME/.nvm"
 _step "Installing Node.js & NPM..."
 nvm install node --latest-npm
 
-#_step "Fixing NPM permission issues..."
-#if [ ! -d ~/.npm-global ]; then
-#	mkdir ~/.npm-global
-#fi
-#npm config set prefix '~/.npm-global'
-#export PATH=~/.npm-global/bin:$PATH # Just for this session
-
 _step "Installing Yarn..."
 npm i -g yarn
 yarn -v # Just to be sure Yarn was installed correctly
