@@ -115,6 +115,9 @@ alias goproj="cd $PROJDIR"
 alias godw="cd $DWDIR"
 alias gotemp="cd $TEMPDIR"
 
+# Run Bash
+alias bash="BASH_NO_ZSH=true bash"
+
 # Go to a directory located in the projects directory
 p() { cd "$PROJDIR/$1" }
 
