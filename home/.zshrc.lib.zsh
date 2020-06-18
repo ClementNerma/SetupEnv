@@ -119,7 +119,13 @@ alias gotemp="cd $TEMPDIR"
 alias bash="BASH_NO_ZSH=true bash"
 
 # Go to a directory located in the projects directory
-p() { cd "$PROJDIR/$1" }
+p() {
+	if [[ -z "$1" ]]; then
+		echo Please provide a project to go to.
+	else
+		cd "$PROJDIR/$1"
+	fi
+}
 
 # Software: Exa
 alias ls="exa --all --long --group-directories-first --color-scale"
