@@ -161,6 +161,9 @@ if [[ -d ~/go ]]; then
     export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
 fi
 
+# Integration for Python
+export PATH="/home/clement/.local/bin:$PATH"
+
 # Integration for Node.js
 # NVM is used here to be able to easily switch between multiple Node.js versions
 # But as it's awfully slow to load, it is lazy-loaded: when a Node.js-related command is called, NVM is loaded if it's not already
