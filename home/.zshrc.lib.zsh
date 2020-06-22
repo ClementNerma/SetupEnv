@@ -153,6 +153,9 @@ alias gop="git reflog expire --expire=now --all && git gc --prune=now && git gc 
 # Software: Youtube-DL
 alias ytdl="youtube-dl -f bestvideo+bestaudio/best"
 
+# Set the default editor
+export EDITOR="micro"
+
 # Allow to sign Git commits with GPG
 export GPG_TTY=$(tty)
 
