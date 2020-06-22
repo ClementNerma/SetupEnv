@@ -5,6 +5,11 @@ if (( ${+ZSH_PROFILING} )); then
 	zmodload zsh/zprof
 fi
 
+# Profiles performances of the .zshrc configuration
+function profile_zshrc() {
+	ZSH_PROFILING=true zsh -c "source ~/.zshrc && exit"
+}
+
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 

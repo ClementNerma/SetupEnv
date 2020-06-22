@@ -5,11 +5,6 @@
 #  reloading the whole configuration each time ; as well as to keep the ~/.zshrc file as clean and simple as possible.
 #
 
-# Profiles performances of the .zshrc configuration
-function profile_zshrc() {
-	ZSH_PROFILING=true zsh -c "source ~/.zshrc && exit"
-}
-
 # Synchronize a directory
 function rsync_dir() {
 	STARTED=0
