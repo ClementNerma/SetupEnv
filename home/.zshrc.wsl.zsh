@@ -92,9 +92,10 @@ function _android() {
 
   if [[ ! -f "$tool_path/$1" ]]; then
     echo -e "\e[91mERROR: Could not find Platform Tools binary \e[93m$1\e[91m at path \e[93m$tool_path\e[0m"
-  else
-    "$tool_path/$1" ${@:2}
+    return
   fi
+
+  "$tool_path/$1" ${@:2}
 }
 
 alias adb="_android adb.exe"
