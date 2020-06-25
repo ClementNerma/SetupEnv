@@ -69,13 +69,35 @@ alias gowin="cd $HOMEDIR"
 # Integration of some Windows tools
 winalias code
 
-# Open a file using the Windows association system
+# Open a file or directory in Windows
 open() {
-	explorer.exe "$1"
-	echo # Fix error status code from "explorer.exe"
-}
+  # By default, open the current directory
+  if [[ -z "$1" ]]; then
+    explorer.exe .
 
-alias here="open ."
+  # Directories are opened through Windows' Explorer
+  elif [[ -d "$1" ]]; then
+    local current_dir=$(pwd)
+
+    cd "$1"
+    explorer.exe .
+    cd "$current_dir"
+
+  # Files are handled by the Windows File Association system
+  elif [[ -f "$1" ]]; then
+    local current_dir=$(pwd)
+    local file_dir_path=$(dirname "$1")
+    local file_name=$(basename "$1")
+
+    cd "$file_dir_path"
+    explorer.exe "$file_name"
+    cd "$current_dir"
+
+  # Handle non-existant paths
+  else
+    echo -e "\e[91mERROR: target path \e[93m$1\e[0m was not found!\e[0m"
+  fi
+}
 
 # Copy a file to clipboard
 clip() {
