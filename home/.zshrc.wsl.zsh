@@ -86,5 +86,19 @@ clip() {
 alias docker="win docker"
 alias docker-compose="win docker-compose"
 
+# Software: Android's Platform Tools
+function _android() {
+  local tool_path="$SFWDIR/PlatformTools"
+
+  if [[ ! -f "$tool_path/$1" ]]; then
+    echo -e "\e[91mERROR: Could not find Platform Tools binary \e[93m$1\e[91m at path \e[93m$tool_path\e[0m"
+  else
+    "$tool_path/$1" ${@:2}
+  fi
+}
+
+alias adb="_android adb.exe"
+alias fastboot="_android fastboot.exe"
+
 # Allow fast editing of this file
 alias zert="nano ~/.zshrc.wsl.zsh && source ~/.zshrc.wsl.zsh"
