@@ -7,20 +7,20 @@
 
 # Synchronize a directory
 function rsync_dir() {
-	STARTED=0
-	FAILED=0
+	local started=0
+	local failed=0
 	echo Starting transfer...
-	while [[ $STARTED -eq 0 || $FAILED -eq 1 ]]
+	while [[ $started -eq 0 || $failed -eq 1 ]]
 	do
-	    STARTED=1
-	    FAILED=0
+	    started=1
+	    failed=0
 		rsync --archive --verbose --partial --progress "$1" "$2" ${@:3}
 	
 		if [[ $? -ne 0 ]]
 		then
 			echo Transfer failed. Retrying in 5 seconds...
 			sleep 5s
-			FAILED=1
+			failed=1
 		fi
 	done
 	echo Done.
@@ -44,25 +44,21 @@ function cp_proj_nodeps() {
 
 # Run a Cargo project located in the projects directory
 function cargext() {
-	PROJ_NAME=$1
-	shift
-	cargo run "--manifest-path=$PROJDIR/$PROJ_NAME/Cargo.toml" -- $@
+	cargo run "--manifest-path=$PROJDIR/$1/Cargo.toml" -- ${@:2}
 }
 
 # Run a Cargo project located in the projects directory in release mode
 function cargextr() {
-	PROJ_NAME=$1
-	shift
-	cargo run "--manifest-path=$PROJDIR/$PROJ_NAME/Cargo.toml" --release -- $@
+	cargo run "--manifest-path=$PROJDIR/$1/Cargo.toml" --release -- ${@:2}
 }
 
 # Rename a Git branch
 function gitrename() {
-    OLD_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-	echo Renaming branch "$OLD_BRANCH" to "$1"...
+    local old_branch=$(git rev-parse --abbrev-ref HEAD)
+	echo Renaming branch "$old_branch" to "$1"...
 	git branch -m "$1"
 	git push origin -u "$1"
-	git push origin --delete "$OLD_BRANCH"
+	git push origin --delete "$old_branch"
 }
 
 # A simple 'rm' with progress
