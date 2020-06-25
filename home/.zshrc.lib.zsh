@@ -46,14 +46,14 @@ function cp_proj_nodeps() {
 function cargext() {
 	PROJ_NAME=$1
 	shift
-	cargo run "--manifest-path=$PROJDIR/$PROJ_NAME/Cargo.toml" -- $*
+	cargo run "--manifest-path=$PROJDIR/$PROJ_NAME/Cargo.toml" -- $@
 }
 
 # Run a Cargo project located in the projects directory in release mode
 function cargextr() {
 	PROJ_NAME=$1
 	shift
-	cargo run "--manifest-path=$PROJDIR/$PROJ_NAME/Cargo.toml" --release -- $*
+	cargo run "--manifest-path=$PROJDIR/$PROJ_NAME/Cargo.toml" --release -- $@
 }
 
 # Rename a Git branch

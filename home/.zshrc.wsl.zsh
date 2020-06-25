@@ -34,14 +34,14 @@ function create-project () {
 function cargextw() {
     PROJ_NAME=$1
     shift
-	win cargo run "--manifest-path=C:\\Users\\cleme\\Projets\\$PROJ_NAME\\Cargo.toml" -- $*
+	win cargo run "--manifest-path=C:\\Users\\cleme\\Projets\\$PROJ_NAME\\Cargo.toml" -- $@
 }
 
 # Run a Cargo project located in the projects directory in release mode, on Windows
 function cargextwr() {
     PROJ_NAME=$1
     shift
-	win cargo run "--manifest-path=C:\\Users\\cleme\\Projets\\$PROJ_NAME\\Cargo.toml" --release -- $*
+	win cargo run "--manifest-path=C:\\Users\\cleme\\Projets\\$PROJ_NAME\\Cargo.toml" --release -- $@
 }
 
 # Remount a drive in WSL

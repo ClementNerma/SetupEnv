@@ -27,13 +27,13 @@ function print_seconds {
 function _step() {
 	CURRENT_STEP=$((CURRENT_STEP + 1))
 	echo
-	echo -e "\e[92m>>> Step ${CURRENT_STEP}/${TOTAL_STEPS}: $*\e[0m"
+	echo -e "\e[92m>>> Step ${CURRENT_STEP}/${TOTAL_STEPS}: $@\e[0m"
 	echo
 }
 
 # Indicate the current step is skipped for whatever reason
 function _skip() {
-	echo -e "\e[95m>>> Skipping this step: $*"
+	echo -e "\e[95m>>> Skipping this step: $@"
 }
 
 # Get the total number of steps

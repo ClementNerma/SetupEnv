@@ -11,7 +11,7 @@ trap "printf '\nerror: Script failed: see failed command above.\n'" ERR
 # Show current step
 _step() {
 	echo
-	echo -e "\e[34m>>> $*\e[39m"
+	echo -e "\e[34m>>> $@\e[39m"
 	echo
 }
 
