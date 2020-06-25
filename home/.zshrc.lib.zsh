@@ -74,6 +74,21 @@ function rmprogress() {
 	rm -rv "$1" | pv -l -s $( du -a "$1" | wc -l ) > /dev/null
 }
 
+# Update to latest version
+function zerupdate() {
+	local update_path="$PROJDIR/_Done/Setup Environment"
+
+	if [[ ! -d "$update_path" ]] || [[ ! -f "$update_path/auto-install.bash" ]] || [[ ! -f "$update_path/home/.zshrc.lib.zsh" ]]; then
+		echo -e "\e[91mERROR: Could not find \e[92mSetup Environment\e[91m files at path \e[93m$update_path\e[0m"
+		return
+	fi
+
+	echo -e "\e[92mUpdating environment...\e[0m"
+	cp -R "$update_path/home/." ~/
+	reload
+	echo -e "\e[92mDone!\e[0m"
+}
+
 # Allow fast reloading of this file after changes
 alias reload="source ~/.zshrc.lib.zsh"
 
