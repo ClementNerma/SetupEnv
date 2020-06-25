@@ -54,11 +54,15 @@ echo -e "\e[92m====== AUTOMATED INSTALLER ======\e[0m"
 echo -e "\e[92m=================================\e[0m"
 
 _step "Checking compatibility..."
-arch="$(uname -m)"
-if [[ $arch != "x86_64" ]] && [[ $arch != "i686" ]] && [[ $arch != "i386" ]]; then
-	echo "ERROR: Unknown CPU architecture detected: ${arch}"
+arch="$(dpkg --print-architecture)"
+if [[ $arch != "amd64" ]] && [[ $arch != "armhf" ]]; then
+	echo "ERROR: Unsupported CPU architecture detected: ${arch}"
 	echo "ERROR: Exiting now."
 	exit 1
+fi
+
+if [[ $arch = "armhf" ]]; then
+	echo -e "\e[33m\!/ WARNING: ARM v7 architecture detected, installation process may be slower as it is optimized for x86 platforms.\e[0m"
 fi
 
 _step "Creating temporary directory..."
@@ -122,43 +126,75 @@ sudo apt install -y build-essential gcc g++ make perl
 _step "Installing required tools for some Rust libraries..."
 sudo apt install -y pkg-config libssl-dev
 
-_step "Installing Tokei..."
-curl -s https://api.github.com/repos/XAMPPRocky/tokei/releases/latest \
-| grep "browser_download_url.*tokei-x86_64-unknown-linux-gnu.tar.gz" \
-| cut -d : -f 2,3 \
-| tr -d \" \
-| wget -qi - --show-progress -O "$TMPDIR/tokei.tar.gz"
-tar zxf "$TMPDIR/tokei.tar.gz"
-sudo mv tokei /usr/local/bin
-
 _step "Installing Micro..."
 curl https://getmic.ro | bash
 sudo mv ./micro /usr/bin/micro
 
+_step "Installing Tokei..."
+if [[ $arch != "armhf" ]]; then
+	curl -s https://api.github.com/repos/XAMPPRocky/tokei/releases/latest \
+	| grep "browser_download_url.*tokei-x86_64-unknown-linux-gnu.tar.gz" \
+	| cut -d : -f 2,3 \
+	| tr -d \" \
+	| wget -qi - --show-progress -O "$TMPDIR/tokei.tar.gz"
+	tar zxf "$TMPDIR/tokei.tar.gz"
+	sudo mv tokei /usr/local/bin
+else
+	curl -s https://api.github.com/repos/XAMPPRocky/tokei/releases/latest \
+	| grep "browser_download_url.*tokei-armv7-unknown-linux-gnueabihf.tar.gz" \
+	| cut -d : -f 2,3 \
+	| tr -d \" \
+	| wget -qi - --show-progress -O "$TMPDIR/tokei.tar.gz"
+	tar zxf "$TMPDIR/tokei.tar.gz"
+	sudo mv tokei /usr/local/bin
+fi
+
 _step "Installing Bat..."
-curl -s https://api.github.com/repos/sharkdp/bat/releases/latest \
-| grep "browser_download_url.*bat_.*_amd64.deb" \
-| cut -d : -f 2,3 \
-| tr -d \" \
-| wget -qi - --show-progress -O "$TMPDIR/bat.deb"
-sudo dpkg -i "$TMPDIR/bat.deb"
+if [[ $arch != "armhf" ]]; then
+	curl -s https://api.github.com/repos/sharkdp/bat/releases/latest \
+	| grep "browser_download_url.*bat_.*_amd64.deb" \
+	| cut -d : -f 2,3 \
+	| tr -d \" \
+	| wget -qi - --show-progress -O "$TMPDIR/bat.deb"
+	sudo dpkg -i "$TMPDIR/bat.deb"
+else
+	curl -s https://api.github.com/repos/sharkdp/bat/releases/latest \
+	| grep "browser_download_url.*bat_.*_armhf.deb" \
+	| cut -d : -f 2,3 \
+	| tr -d \" \
+	| wget -qi - --show-progress -O "$TMPDIR/bat.deb"
+	sudo dpkg -i "$TMPDIR/bat.deb"
+fi
 
 _step "Installing Exa..."
-curl -s https://api.github.com/repos/ogham/exa/releases/latest \
-| grep "browser_download_url.*exa-linux-x86_64-.*.zip" \
-| cut -d : -f 2,3 \
-| tr -d \" \
-| wget -qi - --show-progress -O "$TMPDIR/exa.zip"
-unzip "$TMPDIR/exa.zip" -d "$TMPDIR/exa"
-sudo mv "$TMPDIR/exa/"exa-* /usr/local/bin/exa
+if [[ $arch != "armhf" ]]; then
+	curl -s https://api.github.com/repos/ogham/exa/releases/latest \
+	| grep "browser_download_url.*exa-linux-x86_64-.*.zip" \
+	| cut -d : -f 2,3 \
+	| tr -d \" \
+	| wget -qi - --show-progress -O "$TMPDIR/exa.zip"
+	unzip "$TMPDIR/exa.zip" -d "$TMPDIR/exa"
+	sudo mv "$TMPDIR/exa/"exa-* /usr/local/bin/exa
+else
+	cargo install exa
+fi
 
 _step "Installing Fd..."
-curl -s https://api.github.com/repos/sharkdp/fd/releases/latest \
-| grep "browser_download_url.*fd-musl_.*_amd64.deb" \
-| cut -d : -f 2,3 \
-| tr -d \" \
-| wget -qi - --show-progress -O "$TMPDIR/fd.deb"
-sudo dpkg -i "$TMPDIR/fd.deb"
+if [[ $arch != "armhf" ]]; then
+	curl -s https://api.github.com/repos/sharkdp/fd/releases/latest \
+	| grep "browser_download_url.*fd-musl_.*_amd64.deb" \
+	| cut -d : -f 2,3 \
+	| tr -d \" \
+	| wget -qi - --show-progress -O "$TMPDIR/fd.deb"
+	sudo dpkg -i "$TMPDIR/fd.deb"
+else
+	curl -s https://api.github.com/repos/sharkdp/fd/releases/latest \
+	| grep "browser_download_url.*fd-musl_.*_armhf.deb" \
+	| cut -d : -f 2,3 \
+	| tr -d \" \
+	| wget -qi - --show-progress -O "$TMPDIR/fd.deb"
+	sudo dpkg -i "$TMPDIR/fd.deb"
+fi
 
 _step "Installing Fuzzy Finder..."
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
