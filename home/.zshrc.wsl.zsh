@@ -47,6 +47,18 @@ function remount() {
 	sudo mount -t drvfs "${1:u}:" /mnt/${1:l}
 }
 
+# Backup
+function backupy() {
+  local backupy_path="$PROJDIR/_Done/Backupy/backupy.bash"
+
+	if [[ ! -f "$backupy_path" ]]; then
+		echo -e "\e[91mERROR: Could not find \e[92mBackupy\e[91m files at path \e[93m$backupy_path\e[0m"
+		return
+	fi
+
+	bash "$backupy_path" $@
+}
+
 # Get Windows username
 export WINUSER=$(win2text '$env:UserName')
 
