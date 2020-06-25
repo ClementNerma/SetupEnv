@@ -85,7 +85,7 @@ function zerupdate() {
 
 	echo -e "\e[92mUpdating environment...\e[0m"
 	cp -R "$update_path/home/." ~/
-	reload
+	source ~/.zshrc.lib.zsh
 	echo -e "\e[92mDone!\e[0m"
 }
 
