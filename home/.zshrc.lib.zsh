@@ -14,7 +14,7 @@ function rsync_dir() {
 	do
 	    STARTED=1
 	    FAILED=0
-		rsync --archive --verbose --partial --progress "$1" "$2"
+		rsync --archive --verbose --partial --progress "$1" "$2" ${@:3}
 	
 		if [[ $? -ne 0 ]]
 		then
