@@ -1,12 +1,12 @@
 #!/usr/bin/zsh
 
-# Run a Windows through PowerShell
+# Run a Windows command through PowerShell
 # e.g. "win echo Hello!" will display "Hello!" by running PowerShell transparently
 function win() {
   powershell.exe -command "$@"
 }
 
-# Run a Windows through PowerShell and use its content in WSL
+# Run a Windows command through PowerShell and use its content in WSL
 # This uses "tr" because Window's newline symbols are different than Linux's ones, thus resulting in weird string behaviours
 function win2text() {
   win "$@" | tr -d "\r"
