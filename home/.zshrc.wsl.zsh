@@ -99,12 +99,15 @@ mount_wsl_drives() {
 
       if [[ $letter == "c" ]]; then
         found_c=1
+      elif mountpoint -q "/mnt/$letter"; then
+        if [[ $1 == "--debug" ]]; then
+          echo Already mounted: $letter
+        fi
       elif [[ $drive_status == "OK" ]]; then
         if [[ $1 == "--debug" ]]; then
           echo Mounting: $letter
         fi
 
-        # Even already-mounted devices are re-mounted as fix for a writing bug in WSL 1
         remount "$letter"
       elif [[ $drive_status != "NOPE" ]]; then
         echo -e "\e[91mAssertion error: drive status command for \e[95m${letter:u}: \e[91mdrive returned an invalid content: \e[95m$drive_status\e[91m (${#drive_status} characters)\e[0m"
