@@ -32,5 +32,6 @@ source $HOME/.zshrc.lib.zsh
 if (( ${+ZSH_PROFILING} )); then
 	PROFILING_PATH="$TEMPDIR/zshrc-profiling.txt"
 	zprof > "$PROFILING_PATH"
+	cat "$PROFILING_PATH"
 	echo Profiling informations written to: "$PROFILING_PATH"
 fi
