@@ -12,6 +12,12 @@ function win2text() {
   win "$@" | tr -d "\r"
 }
 
+# Run a Windows command through CMD.EXE and use its content in WSL
+# This uses "tr" because Window's newline symbols are different than Linux's ones, thus resulting in weird string behaviours
+function wincmd2text() {
+  cmd.exe /C "$@" | tr -d "\r"
+}
+
 # Make an alias to a Windows command
 # e.g. "winalias mycmd" will allow to use "mycmd" by running PowerShell transparently
 function winalias() {
