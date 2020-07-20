@@ -175,5 +175,8 @@ function _android() {
 alias adb="_android adb.exe"
 alias fastboot="_android fastboot.exe"
 
+# Mount storage devices on startup (this typically takes 50~100 ms)
+mount_wsl_drives
+
 # Allow fast editing of this file
 alias zert="nano ~/.zshrc.wsl.zsh && source ~/.zshrc.wsl.zsh"
