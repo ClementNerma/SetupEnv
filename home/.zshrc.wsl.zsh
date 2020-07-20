@@ -81,6 +81,46 @@ alias gowin="cd $HOMEDIR"
 # Integration of some Windows tools
 winalias code
 
+# Mount drives in WSL, including removable ones
+mount_wsl_drives() {
+  local found_c=0
+  local init_cwd="$(pwd)"
+
+  # Go to a path CMD.EXE can access to avoid errors
+  cd /mnt/c
+
+  for drive in /mnt/*
+  do
+    local letter=${drive:s/\/mnt\//}
+    local chrlen=${#letter}
+
+    if [[ $chrlen == 1 ]]; then
+      local drive_status="$(wincmd2text "vol ${letter}: >nul 2>nul & if errorlevel 1 (echo|set /p=NOPE) else (echo|set /p=OK)")"
+
+      if [[ $letter == "c" ]]; then
+        found_c=1
+      elif [[ $drive_status == "OK" ]]; then
+        if [[ $1 == "--debug" ]]; then
+          echo Mounting: $letter
+        fi
+
+        # Even already-mounted devices are re-mounted as fix for a writing bug in WSL 1
+        remount "$letter"
+      elif [[ $drive_status != "NOPE" ]]; then
+        echo -e "\e[91mAssertion error: drive status command for \e[95m${letter:u}: \e[91mdrive returned an invalid content: \e[95m$drive_status\e[91m (${#drive_status} characters)\e[0m"
+      elif [[ $1 == "--debug" ]]; then
+        echo Ignoring: $letter
+      fi
+    fi
+  done
+
+  if [[ $c == 0 ]]; then
+    echo -e "\e[91mAssertion error: \e[95mC:\e[91m drive was not found while mounting WSL drives!\e[0m"
+  fi
+
+  cd "$init_cwd"
+}
+
 # Open a file or directory in Windows
 open() {
   # By default, open the current directory
