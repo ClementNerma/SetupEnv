@@ -162,10 +162,6 @@ clip() {
   cat "$1" | clip.exe
 }
 
-# Software: Docker
-alias docker="win docker"
-alias docker-compose="win docker-compose"
-
 # Software: Android's Platform Tools
 function _android() {
   local tool_path="$SFWDIR/PlatformTools"
