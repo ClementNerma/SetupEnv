@@ -35,7 +35,7 @@ function cp_proj_nodeps() {
 		fi
 	fi
 
-	rsync --exclude '*.tmp' --exclude '.rustc_info.json' --exclude '.git/' \
+	rsync --exclude '*.tmp' --exclude '.rustc_info.json' \
 		  --exclude 'node_modules/' --exclude 'pnpm-store/' --exclude 'common/temp/' --exclude '.rush/temp/' \
 		  --exclude 'build/' --exclude 'dist/' --exclude 'target/debug/' --exclude 'target/release/' \
 		  --archive --partial --progress \
