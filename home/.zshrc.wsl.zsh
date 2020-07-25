@@ -30,8 +30,8 @@ function winalias() {
 function create-project () {
   cp -R "$PROJDIR/_Done/Templates/$1" "$2"
   cd "$2"
-  bash TEMPLATE_INIT.sh
-  rm TEMPLATE_INIT.sh
+  zsh TEMPLATE_INIT.zsh
+  rm TEMPLATE_INIT.zsh
 }
 
 # Run a Cargo project located in the projects directory, on Windows
