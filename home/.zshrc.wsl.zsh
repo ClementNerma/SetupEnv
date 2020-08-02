@@ -34,6 +34,21 @@ function create-project () {
   rm TEMPLATE_INIT.zsh
 }
 
+# Update to latest version
+function zerupdate() {
+	local update_path="$PROJDIR/_Done/Setup Environment"
+
+	if [[ ! -d "$update_path" ]] || [[ ! -f "$update_path/auto-install.bash" ]] || [[ ! -f "$update_path/home/.zshrc.lib.zsh" ]]; then
+		echo -e "\e[91mERROR: Could not find \e[92mSetup Environment\e[91m files at path \e[93m$update_path\e[0m"
+		return
+	fi
+
+	echo -e "\e[92mUpdating environment...\e[0m"
+	cp -R "$update_path/home/." ~/
+	source ~/.zshrc.lib.zsh
+	echo -e "\e[92mDone!\e[0m"
+}
+
 # Run a Cargo project located in the projects directory, on Windows
 function cargextw() {
 	win cargo run "--manifest-path=C:\\Users\\cleme\\Projets\\$1\\Cargo.toml" -- ${@:2}
