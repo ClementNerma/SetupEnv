@@ -44,7 +44,7 @@ function cp_proj_nodeps() {
 		  --exclude 'build/' --exclude 'dist/' \
 		  --exclude 'target/debug/' --exclude 'target/release/' --exclude 'target/wasm32-unknown-unknown/' \
 		  --archive --partial --progress \
-		  --delete --delete-excluded "$1/" "$2"
+		  --delete --delete-excluded "$1/" "$2" "${@:3}"
 }
 
 # Run a Cargo project located in the projects directory
