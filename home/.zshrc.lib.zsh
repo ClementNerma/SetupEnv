@@ -80,8 +80,11 @@ howlong() {
 	"$@"
 	local finished=$(($(date +%s%N)))
 	local elapsed=$(((finished - started) / 1000000))
-	
-	printf 'Command completed in '
+
+	printf 'Command "'
+	printf '%s' "${@[1]}"
+	if [[ ! -z $2 ]]; then printf ' %s' "${@:2}"; fi
+	printf '" completed in ' "$@"
 
 	local elapsed_s=$((elapsed / 1000))
 	local D=$((elapsed_s/60/60/24))
