@@ -77,7 +77,7 @@ function rmprogress() {
 # Measure time a command takes to complete
 howlong() {
 	local started=$(($(date +%s%N)))
-	$@
+	"$@"
 	local finished=$(($(date +%s%N)))
 	local elapsed=$(((finished - started) / 1000000))
 	
