@@ -1,5 +1,9 @@
 #!/usr/bin/zsh
 
+#
+# This file is a script run during shell startup only on WSL
+#
+
 # Run a Windows command through PowerShell
 # e.g. "win echo Hello!" will display "Hello!" by running PowerShell transparently
 function win() {
