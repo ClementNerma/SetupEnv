@@ -155,6 +155,9 @@ p() {
 	fi
 }
 
+# Load the local script file
+source ~/.zshrc.this.zsh
+
 # Software: Trasher
 local origin_rm_exec_file=$(which rm)
 alias oldrm="$origin_rm_exec_file"

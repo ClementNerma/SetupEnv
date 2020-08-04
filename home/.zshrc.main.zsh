@@ -22,7 +22,15 @@ function zerupdate() {
 	fi
 
 	echo -e "\e[92mUpdating environment...\e[0m"
+
+	# Backup local file
+	mv ~/.zshrc.this.zsh ~/.zshrc.this.zsh.staging
+
+	# Copy updated files
 	cp -R "$update_path/home/." ~/
+
+	# Restore it so it hasn't been overriden by the previous command
+	mv ~/.zshrc.this.zsh.staging ~/.zshrc.this.zsh
 	source ~/.zshrc.lib.zsh
 	echo -e "\e[92mDone!\e[0m"
 }
