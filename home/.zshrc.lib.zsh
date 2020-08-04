@@ -129,6 +129,7 @@ fi
 export PROJDIR="$HOMEDIR/Projets"
 export DWDIR="$HOMEDIR/Downloads"
 export SFWDIR="$HOMEDIR/Logiciels"
+export TRASHDIR="$HOMEDIR/.trasher"
 
 # Ensure these directories exist
 if [[ ! -d $DWDIR ]]; then mkdir "$DWDIR"; fi
@@ -152,6 +153,14 @@ p() {
 		cd "$PROJDIR/$1"
 	fi
 }
+
+# Software: Trasher
+local origin_rm_exec_file=$(which rm)
+alias oldrm="$origin_rm_exec_file"
+
+trasher() { command trasher --create-trash-dir --trash-dir "$TRASHDIR" "$@" }
+rm() { trasher rm "$@" }
+unrm() { trasher unrm "$@" }
 
 # Software: Exa
 alias ls="exa --all --long --group-directories-first --color-scale"

@@ -200,6 +200,9 @@ _step "Installing Fuzzy Finder..."
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 ~/.fzf/install --all
 
+_step "Installing Tasher..."
+cargo install trasher
+
 _step "Installing Youtube-DL..."
 sudo curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl
 sudo chmod a+rx /usr/local/bin/youtube-dl
