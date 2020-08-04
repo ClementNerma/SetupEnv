@@ -37,7 +37,7 @@ function zerupdate() {
 
 # Backup
 function backupy() {
-  local backupy_path="$PROJDIR/_Done/Backupy/backupy.bash"
+  	local backupy_path="$PROJDIR/_Done/Backupy/backupy.bash"
 
 	if [[ ! -f "$backupy_path" ]]; then
 		echo -e "\e[91mERROR: Could not find \e[92mBackupy\e[91m files at path \e[93m$backupy_path\e[0m"
