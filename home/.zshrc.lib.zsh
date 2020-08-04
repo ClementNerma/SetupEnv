@@ -5,6 +5,10 @@
 #  reloading the whole configuration each time ; as well as to keep the ~/.zshrc file as clean and simple as possible.
 #
 
+# Is this my main computer?
+# Set to '1' if it is
+export ZSH_MAIN_PERSONAL_COMPUTER=0
+
 # Synchronize a directory
 function rsync_dir() {
 	local started=0
@@ -89,6 +93,10 @@ else
 	fi
 
 	source ~/.zshrc.linux.zsh
+fi
+
+if [ $ZSH_MAIN_PERSONAL_COMPUTER = 1 ]; then
+	source ~/.zshrc.main.zsh
 fi
 
 export PROJDIR="$HOMEDIR/Projets"
