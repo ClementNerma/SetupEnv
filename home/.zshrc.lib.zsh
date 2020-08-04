@@ -245,7 +245,11 @@ hash -d Downloads=$DWDIR
 hash -d Temp=$TEMPDIR
 hash -d Software=$SFWDIR
 
-# Go to the most used folder on startup, except if the shell has been started in a custom directory
+# Go to the a specific folder on startup, except if the shell has been started in a custom directory
 if [ "$(pwd)" = "$HOME" ]; then
-  godw
+	if [ $ZSH_MAIN_PERSONAL_COMPUTER = 1 ]; then
+		goproj
+	else
+		godw
+	fi
 fi
