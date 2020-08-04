@@ -123,6 +123,10 @@ else
 	source ~/.zshrc.linux.zsh
 fi
 
+# Load the local script file
+source ~/.zshrc.this.zsh
+
+# Load the scrip for the main computer (if applies)
 if [ $ZSH_MAIN_PERSONAL_COMPUTER = 1 ]; then
 	source ~/.zshrc.main.zsh
 fi
@@ -154,9 +158,6 @@ p() {
 		cd "$PROJDIR/$1"
 	fi
 }
-
-# Load the local script file
-source ~/.zshrc.this.zsh
 
 # Software: Trasher
 local origin_rm_exec_file=$(which rm)
