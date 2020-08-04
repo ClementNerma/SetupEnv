@@ -74,6 +74,30 @@ function rmprogress() {
 	rm -rv "$1" | pv -l -s $( du -a "$1" | wc -l ) > /dev/null
 }
 
+# Measure time a command takes to complete
+howlong() {
+	local started=$(($(date +%s%N)))
+	$@
+	local finished=$(($(date +%s%N)))
+	local elapsed=$(((finished - started) / 1000000))
+	
+	printf 'Command completed in '
+
+	local elapsed_s=$((elapsed / 1000))
+	local D=$((elapsed_s/60/60/24))
+	local H=$((elapsed_s/60/60%24))
+	local M=$((elapsed_s/60%60))
+	local S=$((elapsed_s%60))
+	if [ $D != 0 ]; then printf "${D}d "; fi
+	if [ $H != 0 ]; then printf "${H}h "; fi
+	if [ $M != 0 ]; then printf "${M}m "; fi
+	
+	local elapsed_ms=$((elapsed % 1000))
+	printf "${S}.%03ds" $elapsed_ms
+
+	printf "\n"
+}
+
 # Allow fast reloading of this file after changes
 alias reload="source ~/.zshrc.lib.zsh"
 
