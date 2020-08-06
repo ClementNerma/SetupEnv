@@ -11,14 +11,24 @@ export ZSH_MAIN_PERSONAL_COMPUTER=0
 
 # Synchronize a directory
 function rsync_dir() {
+	if [[ $SUDO_RSYNC = "true" ]]; then
+		echo WARNING: Using rsync in SUDO mode.
+	fi
+
 	local started=0
 	local failed=0
+
 	echo Starting transfer...
 	while [[ $started -eq 0 || $failed -eq 1 ]]
 	do
 	    started=1
 	    failed=0
-		rsync --archive --verbose --partial --progress "$1" "$2" ${@:3}
+
+		if [[ $SUDO_RSYNC = "true" ]]; then
+			sudo rsync --archive --verbose --partial --progress "$1" "$2" ${@:3}
+		else
+			rsync --archive --verbose --partial --progress "$1" "$2" ${@:3}
+		fi
 	
 		if [[ $? -ne 0 ]]
 		then
