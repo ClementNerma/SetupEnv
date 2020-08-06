@@ -28,11 +28,11 @@ echo
 echo First, please indicate the remote computer\'s IP address:
 echo
 
-if [ -z "$1" ]; then
+if [ -z "$2" ]; then
 	read -p "Computer IP: " computer_ip
 else
-	echo "Computer IP: $1 (from command line argument)"
-	computer_ip="$1"
+	echo "Computer IP: $2 (from command line argument)"
+	computer_ip="$2"
 fi
 
 echo
@@ -41,11 +41,11 @@ echo Note that many packages will be installed for all users, but most of the cu
 echo  be applied to the user you choose.
 echo
 
-if [ -z "$2" ]; then
+if [ -z "$1" ]; then
 	read -p "User name: " user_name
 else
-	echo "User name: $2 (from command line argument)"
-	user_name="$2"
+	echo "User name: $1 (from command line argument)"
+	user_name="$1"
 fi
 
 echo
