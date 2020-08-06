@@ -164,8 +164,9 @@ local origin_rm_exec_file=$(which rm)
 alias oldrm="$origin_rm_exec_file"
 
 trasher() { command trasher --create-trash-dir --trash-dir "$TRASHDIR" "$@" }
-rm() { trasher rm "$@" }
-unrm() { trasher unrm "$@" }
+rm() { trasher rm --move-ext-filesystems --size-limit-move-ext-filesystems 10M "$@" }
+rma() { trasher rm --move-ext-filesystems "$@" }
+unrm() { trasher unrm --move-ext-filesystems "$@" }
 
 # Software: Exa
 alias ls="exa --all --long --group-directories-first --color-scale"
