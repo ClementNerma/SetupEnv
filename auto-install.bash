@@ -96,7 +96,7 @@ if [ -d ~/.cargo ]; then
 	mv ~/.cargo ~/.cargo.bak
 fi
 
-curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y
+curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y
 source $HOME/.cargo/env # Just for this session
 
 _step "Installing tools for Rust..."
