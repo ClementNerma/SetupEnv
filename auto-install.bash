@@ -200,8 +200,19 @@ _step "Installing Fuzzy Finder..."
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 ~/.fzf/install --all
 
-_step "Installing Tasher..."
-cargo install trasher
+_step "Installing Trasher..."
+if [[ $arch != "armhf" ]]; then
+	curl -s https://api.github.com/repos/ClementNerma/Trasher/releases/latest \
+	| grep "browser_download_url.*trasher-linux-x86_64" \
+	| cut -d : -f 2,3 \
+	| tr -d \" \
+	| wget -qi - --show-progress -O "$TMPDIR/trasher.zip"
+	unzip "$TMPDIR/trasher.zip" -d "$TMPDIR/trasher"
+	sudo mv "$TMPDIR/trasher/"trasher-* /usr/local/bin/trasher
+	sudo chmod +x /usr/local/bin/trasher
+else
+	cargo install trasher
+fi
 
 _step "Installing Youtube-DL..."
 sudo curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl
