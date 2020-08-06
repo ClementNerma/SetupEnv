@@ -72,7 +72,7 @@ function rmprogress() {
 		return
 	fi
 	
-	rm -rv "$1" | pv -l -s $( du -a "$1" | wc -l ) > /dev/null
+	command rm -rv "$1" | pv -l -s $( du -a "$1" | wc -l ) > /dev/null
 }
 
 # Measure time a command takes to complete
