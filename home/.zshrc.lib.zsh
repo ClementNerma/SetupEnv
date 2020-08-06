@@ -75,6 +75,16 @@ function rmprogress() {
 	command rm -rv "$1" | pv -l -s $( du -a "$1" | wc -l ) > /dev/null
 }
 
+# Archive a directory into a .tar file
+function tarprogress() {
+	tar cf - "$1" -P | pv -s $(du -sb "$1" | awk '{print $1}') > "$1.tar"
+}
+
+# Archive a directory into a .tar.gz file
+function targzprogress() {
+	tar czf - "$1" -P | pv -s $(du -sb "$1" | awk '{print $1}') > "$1.tar"
+}
+
 # Measure time a command takes to complete
 howlong() {
 	local started=$(($(date +%s%N)))
