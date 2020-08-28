@@ -9,4 +9,4 @@ export HOMEDIR="$HOME"
 export TEMPDIR="/tmp"
 
 # Allow fast editing of this file
-alias zert="nano ~/.zshrc.wsl.zsh && source ~/.zshrc.wsl.zsh"
+alias zert="nano ~/.zshrc.linux.zsh && source ~/.zshrc.linux.zsh"
