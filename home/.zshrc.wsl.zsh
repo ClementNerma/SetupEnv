@@ -137,7 +137,7 @@ open() {
 
   # Handle non-existant paths
   else
-    echo -e "\e[91mERROR: target path \e[93m$1\e[0m was not found!\e[0m"
+    echo -e "\e[91mERROR: target path \e[93m$1\e[91m was not found!\e[0m"
   fi
 }
 
