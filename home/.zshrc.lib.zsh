@@ -185,6 +185,7 @@ alias oldrm="$origin_rm_exec_file"
 
 trasher() { command trasher --create-trash-dir --trash-dir "$TRASHDIR" "$@" }
 rm() { trasher rm --move-ext-filesystems "$@" }
+rmperma() { trasher rm --permanently "$@" }
 unrm() { trasher unrm --move-ext-filesystems "$@" }
 
 # Software: Exa
