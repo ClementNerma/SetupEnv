@@ -255,7 +255,7 @@ function nvmalias() {
 	done
 }
 
-nvmalias nvm node npm npx yarn rush
+nvmalias nvm node npm npx yarn rush ncu ts-node
 
 # Integration for FZF
 source ~/.fzf.zsh
