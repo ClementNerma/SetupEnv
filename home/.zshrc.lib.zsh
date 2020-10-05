@@ -247,7 +247,7 @@ function load_nvm() {
 # Mark a command as requiring Node.js to be loaded first
 # This will create an alias that removes itself, loads NVM, then runs the requested command
 # On future calls, the alias won't be there anymore and so there will be no performance overhead
-function nvm_alias() {
+function nvmalias() {
 	for name in "$@"; do
 		# As ZSH only allows autocompletion for valid commands, and as it considers aliases as invalid commands as soon as any of the
 		#  alias' subcommands is not found, we use the "eval" command here to ensure autocompletion will work nonetheless.
@@ -255,7 +255,7 @@ function nvm_alias() {
 	done
 }
 
-nvm_alias nvm node npm npx yarn rush
+nvmalias nvm node npm npx yarn rush
 
 # Integration for FZF
 source ~/.fzf.zsh
