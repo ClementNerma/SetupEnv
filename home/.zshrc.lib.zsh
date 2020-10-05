@@ -183,7 +183,7 @@ p() {
 local origin_rm_exec_file=$(which rm)
 alias oldrm="$origin_rm_exec_file"
 
-trasher() { command trasher --create-trash-dir --trash-dir "$TRASHDIR" "$@" }
+trasher() { sudo trasher --create-trash-dir --trash-dir "$TRASHDIR" "$@" }
 rm() { trasher rm --move-ext-filesystems "$@" }
 rmperma() { trasher rm --permanently "$@" }
 unrm() { trasher unrm --move-ext-filesystems "$@" }

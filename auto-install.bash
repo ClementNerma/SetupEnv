@@ -217,6 +217,14 @@ if [[ $arch != "armhf" ]]; then
 	sudo chmod +x /usr/local/bin/trasher
 else
 	cargo install trasher
+
+	TRASHER_SUPPOSED_PATH="/home/$USER/.cargo/bin/trasher"
+
+	if [[ ! -f "$TRASHER_SUPPOSED_PATH" ]]; then
+		echo -e "\e[33m\!/ WARNING: Symbolic link for \e[32mTrasher \e[33mpoints to invalid location\e[32m$TRASHER_SUPPOSED_PATH\e[33m! \e[0m"
+	fi
+
+	sudo ln -s "$TRASHER_SUPPOSED_PATH" /usr/local/bin/trasher
 fi
 
 _step "Installing Youtube-DL..."
