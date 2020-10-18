@@ -141,6 +141,22 @@ open() {
   fi
 }
 
+# Link a WSL port with a Windows port
+wslport() {
+  if [[ -z "$1" ]]; then
+    echo -e "\e[91mERROR: please specify a port (syntax: wslport <wsl port> [<windows port>]\e[0m"
+    return
+  fi
+
+  if [[ ! -z "$2" ]]; then
+    local linked="$2"
+  else
+    local linked="$1"
+  fi
+
+  win netsh interface portproxy add v4tov4 listenport=$linked listenaddress=0.0.0.0 connectport=$1 connectaddress=172.18.28.x
+}
+
 # Copy a file to clipboard
 clip() {
   cat "$1" | clip.exe
