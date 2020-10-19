@@ -5,9 +5,8 @@
 #  reloading the whole configuration each time ; as well as to keep the ~/.zshrc file as clean and simple as possible.
 #
 
-# Is this my main computer?
-# Set to '1' if it is
-export ZSH_MAIN_PERSONAL_COMPUTER=0
+# Load the configuration file
+source ~/.zshrc.config.zsh
 
 # Update to latest version
 function zerupdate() {
@@ -15,7 +14,7 @@ function zerupdate() {
 		local update_path="$1"
 	else
 		if [[ $ZSH_MAIN_PERSONAL_COMPUTER = 1 ]]; then
-			local update_path="$HOMEPROJDIR/_Done/Setup Environment"
+			local update_path="$PROJDIR/_Done/Setup Environment"
 		else
 			echo -e "\e[91mERROR: Please provide a path to update ZSH (default path is only available for main computer)\e[0m"
 			return
@@ -91,12 +90,12 @@ function cp_proj_nodeps() {
 
 # Run a Cargo project located in the projects directory
 function cargext() {
-	cargo run "--manifest-path=$HOMEPROJDIR/$1/Cargo.toml" -- ${@:2}
+	cargo run "--manifest-path=$PROJDIR/$1/Cargo.toml" -- ${@:2}
 }
 
 # Run a Cargo project located in the projects directory in release mode
 function cargextr() {
-	cargo run "--manifest-path=$HOMEPROJDIR/$1/Cargo.toml" --release -- ${@:2}
+	cargo run "--manifest-path=$PROJDIR/$1/Cargo.toml" --release -- ${@:2}
 }
 
 # Rename a Git branch
@@ -191,10 +190,10 @@ if [[ -z $TEMPDIR ]]; then echo -e "\e[91mERROR: Directory variable \e[92m\$TEMP
 if [[ -z $TRASHDIR ]]; then echo -e "\e[91mERROR: Directory variable \e[92m\$TRASHDIR\e[91m is not defined!\e[0m"; fi
 if [[ -z $DLDIR ]]; then echo -e "\e[91mERROR: Directory variable \e[92m\$DLDIR\e[91m is not defined!\e[0m"; fi
 if [[ -z $SOFTWAREDIR ]]; then echo -e "\e[91mERROR: Directory variable \e[92m\$SOFTWAREDIR\e[91m is not defined!\e[0m"; fi
-if [[ -z $HOMEPROJDIR ]]; then echo -e "\e[91mERROR: Directory variable \e[92m\$HOMEPROJDIR\e[91m is not defined!\e[0m"; fi
-if [[ -z $WORKPROJDIR ]]; then echo -e "\e[91mERROR: Directory variable \e[92m\$WORKPROJDIR\e[91m is not defined!\e[0m"; fi
+if [[ -z $PROJDIR ]]; then echo -e "\e[91mERROR: Directory variable \e[92m\$PROJDIR\e[91m is not defined!\e[0m"; fi
+if [[ -z $WORKDIR ]]; then echo -e "\e[91mERROR: Directory variable \e[92m\$WORKDIR\e[91m is not defined!\e[0m"; fi
 
-if [[ -z $HOMEDIR || ! -d $HOMEDIR || -z $DLDIR || -z $HOMEPROJDIR || -z $WORKPROJDIR || -z $TEMPDIR || -z $SOFTWAREDIR || -z $TRASHDIR ]]; then
+if [[ -z $HOMEDIR || ! -d $HOMEDIR || -z $DLDIR || -z $PROJDIR || -z $WORKDIR || -z $TEMPDIR || -z $SOFTWAREDIR || -z $TRASHDIR ]]; then
 	read "?Press <Enter> to exit, or <Ctrl+C> to get a without-setupenv ZSH prompt ('zerupdate' command will be available) "
 	exit
 fi
@@ -203,8 +202,8 @@ fi
 if [[ ! -d $TEMPDIR ]]; then mkdir -p "$TEMPDIR"; fi
 if [[ ! -d $DLDIR ]]; then mkdir -p "$DLDIR"; fi
 if [[ ! -d $TRASHDIR ]]; then mkdir -p "$TRASHDIR"; fi
-if [[ ! -d $HOMEPROJDIR ]]; then mkdir -p "$HOMEPROJDIR"; fi
-if [[ ! -d $WORKPROJDIR ]]; then mkdir -p "$HOMEPROJDIR"; fi
+if [[ ! -d $PROJDIR ]]; then mkdir -p "$PROJDIR"; fi
+if [[ ! -d $WORKDIR ]]; then mkdir -p "$PROJDIR"; fi
 if [[ ! -d $SOFTWAREDIR ]]; then mkdir -p "$SOFTWAREDIR"; fi
 
 # Shortcuts for main directories in paths
@@ -212,8 +211,8 @@ alias gohome="cd $HOMEDIR"
 alias gotemp="cd $TEMPDIR"
 alias godl="cd $DLDIR"
 alias gotrash="cd $TRASHDIR"
-alias goproj="cd $HOMEPROJDIR"
-alias gowork="cd $WORKPROJDIR"
+alias goproj="cd $PROJDIR"
+alias gowork="cd $WORKDIR"
 alias gosoft="cd $SOFTWAREDIR"
 
 # Run Bash
@@ -224,7 +223,7 @@ p() {
 	if [[ -z "$1" ]]; then
 		echo Please provide a project to go to.
 	else
-		cd "$HOMEPROJDIR/$1"
+		cd "$PROJDIR/$1"
 	fi
 }
 
@@ -312,8 +311,8 @@ export PATH="$DENO_INSTALL/bin:$PATH"
 
 # Dir hashes
 hash -d Home=$HOMEDIR
-hash -d Projects=$HOMEPROJDIR
-hash -d Work=$WORKPROJDIR
+hash -d Projects=$PROJDIR
+hash -d Work=$WORKDIR
 hash -d Downloads=$DLDIR
 hash -d Temp=$TEMPDIR
 hash -d Software=$SOFTWAREDIR

@@ -6,7 +6,7 @@
 
 # Create project using hand-made template
 function create-project () {
-  cp -R "$HOMEPROJDIR/_Done/Templates/$1" "$2"
+  cp -R "$PROJDIR/_Done/Templates/$1" "$2"
   cd "$2"
   zsh TEMPLATE_INIT.zsh
   rm TEMPLATE_INIT.zsh
@@ -14,7 +14,7 @@ function create-project () {
 
 # Backup
 function backupy() {
-  	local backupy_path="$HOMEPROJDIR/_Done/Backupy/backupy.bash"
+  	local backupy_path="$PROJDIR/_Done/Backupy/backupy.bash"
 
 	if [[ ! -f "$backupy_path" ]]; then
 		echo -e "\e[91mERROR: Could not find \e[92mBackupy\e[91m files at path \e[93m$backupy_path\e[0m"

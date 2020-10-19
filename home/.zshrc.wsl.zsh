@@ -58,11 +58,49 @@ export WINUSER=$(win2text '$env:UserName')
 # Set up path to main directories
 export HOMEDIR="/mnt/c/Users/$WINUSER"
 export TEMPDIR="/mnt/c/Temp/__wsltemp"
-export TRASHDIR="/home/$USER/.trasher"
 export DLDIR="$HOMEDIR/Downloads"
-export SOFTWAREDIR="/home/$USER/Logiciels"
-export HOMEPROJDIR="/home/$USER/Projets/Home"
-export WORKPROJDIR="/home/$USER/Projets/Work"
+export SOFTWAREDIR="$HOMEDIR/$USER/Logiciels"
+
+if [[ $PROJECT_DIRS_IN_WSL_FS != 1 ]]; then
+  export PROJDIR="$HOMEDIR/Projets"
+  export WORKDIR="$HOMEDIR/Work"
+  export TRASHDIR="$HOMEDIR/.trasher"
+
+else
+  export PROJDIR="/home/$USER/Projets"
+  export WORKDIR="/home/$USER/Work"
+  export TRASHDIR="/home/$USER/.trasher"
+
+  # Check if projects directory are available from Windows
+  # Arguments: _checkdir <variable name> <display name> <wsl directory name> <symlink name>
+  _checkdir() {
+    export $1="$HOMEDIR/$4"
+
+    if [[ ! -L "$HOMEDIR/$4" ]]; then
+      echo -e "\e[93mNOTICE: Windows $2 Projects directory was not found in user directory under name \e[95m$4\e[93m."
+      _twsccl+=("\e[94mmklink /D \"C:\\\\Users\\\\$WINUSER\\\\_$4WSLSymlink\" \"\\\\\\\\wsl$\\Debian\\\\home\\\\$USER\\\\$3\"\e[0m")
+      _twsccl+=("\e[94mmklink /J /D \"C:\\\\Users\\\\$WINUSER\\\\$4\" \"C:\\\\Users\\\\$WINUSER\\\\_$4WSLSymlink\"\e[0m")
+    fi
+  }
+
+  # Temporary Windows Symlinks Creation Commands List
+  _twsccl=()
+
+  _checkdir WIN_PROJDIR Home Projets Projets
+  _checkdir WIN_PROJDIR Work Work Work
+
+  if [ ${#_twsccl[@]} -ne 0 ]; then
+    echo ""
+    echo -e "\e[93mTo create missing directories, run the following commands in \e[95mCMD.EXE\e[93m:"
+    echo ""
+
+    for value in ${_twsccl[@]}; do
+      echo $value
+    done
+
+    echo ""
+  fi
+fi
 
 # Ensure temporary directory exists
 if [ ! -d "$TEMPDIR" ]; then
@@ -127,14 +165,15 @@ function open() {
 
   if [[ -z "$topath" ]]; then
     local topath=$(pwd)
+  fi
 
-  elif [[ ! -f "$topath" && ! -d "$topath" && ! -L "$topath" ]]; then
+  if [[ ! -f "$topath" && ! -d "$topath" && ! -L "$topath" ]]; then
     echo -e "\e[91mERROR: target path \e[93m$topath\e[91m was not found!\e[0m"
     return
   fi
 
   # Convert path to display symlink path in Windows Explorer, unless disabled explicitly
-  if [[ -z "$2" ]]; then
+  if [[ $PROJECT_DIRS_IN_WSL_FS = 1 && -z "$2" ]]; then
     local topath=$(realpath "$topath")
     local origtopath="$topath"
 
@@ -186,36 +225,6 @@ function wslport() {
 function clip() {
   cat "$1" | clip.exe
 }
-
-# Check if projects directory are available from Windows
-# Arguments: _checkdir <variable name> <output array for commands> <wsl directory name> <display name> <symlink name>
-_checkdir() {
-  export $1="$HOMEDIR/$4"
-
-  if [[ ! -L "$HOMEDIR/$4" ]]; then
-    echo -e "\e[93mNOTICE: Windows $3 Projects directory was not found in user directory under name \e[95m$4\e[93m."
-    _twsccl+=("\e[94mmklink /D \"C:\\\\Users\\\\$WINUSER\\\\_$2ProjectsSymlink\" \"\\\\\\\\wsl$\\Debian\\\\home\\\\$USER\\\\Projets\\\\$2\"\e[0m")
-    _twsccl+=("\e[94mmklink /J /D \"C:\\\\Users\\\\$WINUSER\\\\$4\" \"C:\\\\Users\\\\$WINUSER\\\\_$2ProjectsSymlink\"\e[0m")
-  fi
-}
-
-# Temporary Windows Symlinks Creation Commands List
-_twsccl=()
-
-_checkdir WIN_HOMEPROJDIR Home Home Projets
-_checkdir WIN_HOMEPROJDIR Work Work Work
-
-if [ ${#_twsccl[@]} -ne 0 ]; then
-  echo ""
-  echo -e "\e[93mTo create missing directories, run the following commands in \e[95mCMD.EXE\e[93m:"
-  echo ""
-
-  for value in ${_twsccl[@]}; do
-    echo $value
-  done
-
-  echo ""
-fi
 
 # Mount storage devices on startup (this typically takes 50~100 ms)
 mount_wsl_drives
