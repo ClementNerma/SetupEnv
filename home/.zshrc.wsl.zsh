@@ -10,6 +10,11 @@ function win() {
   powershell.exe -command "$@"
 }
 
+# Run a Windows command through CMD.EXE
+function wincmd() {
+  cmd.exe /C "$@"
+}
+
 # Run a Windows command through PowerShell and use its content in WSL
 # This uses "tr" because Window's newline symbols are different than Linux's ones, thus resulting in weird string behaviours
 function win2text() {
@@ -53,6 +58,11 @@ export WINUSER=$(win2text '$env:UserName')
 # Set up path to main directories
 export HOMEDIR="/mnt/c/Users/$WINUSER"
 export TEMPDIR="/mnt/c/Temp/__wsltemp"
+export TRASHDIR="/home/$USER/.trasher"
+export DLDIR="$HOMEDIR/Downloads"
+export SOFTWAREDIR="/home/$USER/Logiciels"
+export HOMEPROJDIR="/home/$USER/Projets/Home"
+export WORKPROJDIR="/home/$USER/Projets/Work"
 
 # Ensure temporary directory exists
 if [ ! -d "$TEMPDIR" ]; then
@@ -69,7 +79,7 @@ alias gowin="cd $HOMEDIR"
 winalias code
 
 # Mount drives in WSL, including removable ones
-mount_wsl_drives() {
+function mount_wsl_drives() {
   local found_c=0
   local init_cwd="$(pwd)"
 
@@ -112,37 +122,52 @@ mount_wsl_drives() {
 }
 
 # Open a file or directory in Windows
-open() {
-  # By default, open the current directory
-  if [[ -z "$1" ]]; then
-    explorer.exe .
+function open() {
+  local topath="$1"
 
-  # Directories are opened through Windows' Explorer
-  elif [[ -d "$1" ]]; then
-    local current_dir=$(pwd)
+  if [[ -z "$topath" ]]; then
+    local topath=$(pwd)
 
-    cd "$1"
-    explorer.exe .
-    cd "$current_dir"
-
-  # Files are handled by the Windows File Association system
-  elif [[ -f "$1" ]]; then
-    local current_dir=$(pwd)
-    local file_dir_path=$(dirname "$1")
-    local file_name=$(basename "$1")
-
-    cd "$file_dir_path"
-    explorer.exe "$file_name"
-    cd "$current_dir"
-
-  # Handle non-existant paths
-  else
-    echo -e "\e[91mERROR: target path \e[93m$1\e[91m was not found!\e[0m"
+  elif [[ ! -f "$topath" && ! -d "$topath" && ! -L "$topath" ]]; then
+    echo -e "\e[91mERROR: target path \e[93m$topath\e[91m was not found!\e[0m"
+    return
   fi
+
+  # Convert path to display symlink path in Windows Explorer, unless disabled explicitly
+  if [[ -z "$2" ]]; then
+    local topath=$(realpath "$topath")
+    local origtopath="$topath"
+
+    if [[ $topath = "/home/$USER/Projets/Home" ]]; then
+      explorer.exe "C:\\Users\\${WINUSER}\\Projets"
+      return
+    fi
+
+    if [[ $topath = "/home/$USER/Projets/Work" ]]; then
+      explorer.exe "C:\\Users\\${WINUSER}\\Work"
+      return
+    fi
+
+    local topath="${topath/\/home\/$USER\/Projets\/Home\//C:\\Users\\${WINUSER}\\Projets\\}"
+    local topath="${topath/\/home\/$USER\/Projets\/Work\//C:\\Users\\${WINUSER}\\Work\\}"
+
+    if [[ "$topath" != "$origtopath" ]]; then
+      explorer.exe "${topath/\//\\}"
+      return
+    fi
+  fi
+
+  local current_dir=$(pwd)
+  local file_dir_path=$(dirname "$topath")
+  local file_name=$(basename "$topath")
+
+  cd "$file_dir_path"
+  explorer.exe "$file_name"
+  cd "$current_dir"
 }
 
 # Link a WSL port with a Windows port
-wslport() {
+function wslport() {
   if [[ -z "$1" ]]; then
     echo -e "\e[91mERROR: please specify a port (syntax: wslport <wsl port> [<windows port>]\e[0m"
     return
@@ -154,13 +179,43 @@ wslport() {
     local linked="$1"
   fi
 
-  win netsh interface portproxy add v4tov4 listenport=$linked listenaddress=0.0.0.0 connectport=$1 connectaddress=172.18.28.x
+  win "Start-Process powershell -ArgumentList '-Command netsh interface portproxy add v4tov4 listenport=$linked listenaddress=0.0.0.0 connectport=$1 connectaddress=172.18.28.x ; pause' -Verb RunAs"
 }
 
 # Copy a file to clipboard
-clip() {
+function clip() {
   cat "$1" | clip.exe
 }
+
+# Check if projects directory are available from Windows
+# Arguments: _checkdir <variable name> <output array for commands> <wsl directory name> <display name> <symlink name>
+_checkdir() {
+  export $1="$HOMEDIR/$4"
+
+  if [[ ! -L "$HOMEDIR/$4" ]]; then
+    echo -e "\e[93mNOTICE: Windows $3 Projects directory was not found in user directory under name \e[95m$4\e[93m."
+    _twsccl+=("\e[94mmklink /D \"C:\\\\Users\\\\$WINUSER\\\\_$2ProjectsSymlink\" \"\\\\\\\\wsl$\\Debian\\\\home\\\\$USER\\\\Projets\\\\$2\"\e[0m")
+    _twsccl+=("\e[94mmklink /J /D \"C:\\\\Users\\\\$WINUSER\\\\$4\" \"C:\\\\Users\\\\$WINUSER\\\\_$2ProjectsSymlink\"\e[0m")
+  fi
+}
+
+# Temporary Windows Symlinks Creation Commands List
+_twsccl=()
+
+_checkdir WIN_HOMEPROJDIR Home Home Projets
+_checkdir WIN_HOMEPROJDIR Work Work Work
+
+if [ ${#_twsccl[@]} -ne 0 ]; then
+  echo ""
+  echo -e "\e[93mTo create missing directories, run the following commands in \e[95mCMD.EXE\e[93m:"
+  echo ""
+
+  for value in ${_twsccl[@]}; do
+    echo $value
+  done
+
+  echo ""
+fi
 
 # Mount storage devices on startup (this typically takes 50~100 ms)
 mount_wsl_drives

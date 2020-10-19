@@ -9,6 +9,38 @@
 # Set to '1' if it is
 export ZSH_MAIN_PERSONAL_COMPUTER=0
 
+# Update to latest version
+function zerupdate() {
+	if [[ ! -z "$1" ]]; then
+		local update_path="$1"
+	else
+		if [[ $ZSH_MAIN_PERSONAL_COMPUTER = 1 ]]; then
+			local update_path="$HOMEPROJDIR/_Done/Setup Environment"
+		else
+			echo -e "\e[91mERROR: Please provide a path to update ZSH (default path is only available for main computer)\e[0m"
+			return
+		fi
+	fi
+
+	if [[ ! -d "$update_path" ]] || [[ ! -f "$update_path/auto-install.bash" ]] || [[ ! -f "$update_path/home/.zshrc.lib.zsh" ]]; then
+		echo -e "\e[91mERROR: Could not find \e[92mSetup Environment\e[91m files at path \e[93m$update_path\e[0m"
+		return
+	fi
+
+	echo -e "\e[92mUpdating environment...\e[0m"
+
+	# Backup local file
+	mv ~/.zshrc.this.zsh ~/.zshrc.this.zsh.staging
+
+	# Copy updated files
+	cp -R "$update_path/home/." ~/
+
+	# Restore it so it hasn't been overriden by the previous command
+	mv ~/.zshrc.this.zsh.staging ~/.zshrc.this.zsh
+	source ~/.zshrc.lib.zsh
+	echo -e "\e[92mDone!\e[0m"
+}
+
 # Synchronize a directory
 function rsync_dir() {
 	if [[ $SUDO_RSYNC = "true" ]]; then
@@ -59,12 +91,12 @@ function cp_proj_nodeps() {
 
 # Run a Cargo project located in the projects directory
 function cargext() {
-	cargo run "--manifest-path=$PROJDIR/$1/Cargo.toml" -- ${@:2}
+	cargo run "--manifest-path=$HOMEPROJDIR/$1/Cargo.toml" -- ${@:2}
 }
 
 # Run a Cargo project located in the projects directory in release mode
 function cargextr() {
-	cargo run "--manifest-path=$PROJDIR/$1/Cargo.toml" --release -- ${@:2}
+	cargo run "--manifest-path=$HOMEPROJDIR/$1/Cargo.toml" --release -- ${@:2}
 }
 
 # Rename a Git branch
@@ -96,7 +128,7 @@ function targzprogress() {
 }
 
 # Measure time a command takes to complete
-howlong() {
+function howlong() {
 	local started=$(($(date +%s%N)))
 	"$@"
 	local finished=$(($(date +%s%N)))
@@ -146,26 +178,43 @@ fi
 # Load the local script file
 source ~/.zshrc.this.zsh
 
-# Load the scrip for the main computer (if applies)
+# Load the script for the main computer (if applies)
 if [ $ZSH_MAIN_PERSONAL_COMPUTER = 1 ]; then
 	source ~/.zshrc.main.zsh
 fi
 
-export PROJDIR="$HOMEDIR/Projets"
-export DWDIR="$HOMEDIR/Downloads"
-export SFWDIR="$HOMEDIR/Logiciels"
-export TRASHDIR="$HOMEDIR/.trasher"
+# Ensure main directories are defined
+if [[ -z $HOMEDIR ]]; then echo -e "\e[91mERROR: Directory variable \e[92m\$HOMEDIR\e[91m is not defined!\e[0m"; fi
+if [[ ! -d "$HOMEDIR" ]]; then echo -e "\e[91mERROR: Home directory at location \e[93m$HOMEDIR\e[91m does not exist!\e[0m"; fi
+
+if [[ -z $TEMPDIR ]]; then echo -e "\e[91mERROR: Directory variable \e[92m\$TEMPDIR\e[91m is not defined!\e[0m"; fi
+if [[ -z $TRASHDIR ]]; then echo -e "\e[91mERROR: Directory variable \e[92m\$TRASHDIR\e[91m is not defined!\e[0m"; fi
+if [[ -z $DLDIR ]]; then echo -e "\e[91mERROR: Directory variable \e[92m\$DLDIR\e[91m is not defined!\e[0m"; fi
+if [[ -z $SOFTWAREDIR ]]; then echo -e "\e[91mERROR: Directory variable \e[92m\$SOFTWAREDIR\e[91m is not defined!\e[0m"; fi
+if [[ -z $HOMEPROJDIR ]]; then echo -e "\e[91mERROR: Directory variable \e[92m\$HOMEPROJDIR\e[91m is not defined!\e[0m"; fi
+if [[ -z $WORKPROJDIR ]]; then echo -e "\e[91mERROR: Directory variable \e[92m\$WORKPROJDIR\e[91m is not defined!\e[0m"; fi
+
+if [[ -z $HOMEDIR || ! -d $HOMEDIR || -z $DLDIR || -z $HOMEPROJDIR || -z $WORKPROJDIR || -z $TEMPDIR || -z $SOFTWAREDIR || -z $TRASHDIR ]]; then
+	read "?Press <Enter> to exit, or <Ctrl+C> to get a without-setupenv ZSH prompt ('zerupdate' command will be available) "
+	exit
+fi
 
 # Ensure these directories exist
-if [[ ! -d $DWDIR ]]; then mkdir "$DWDIR"; fi
-if [[ ! -d $PROJDIR ]]; then mkdir "$PROJDIR"; fi
-if [[ ! -d $TEMPDIR ]]; then mkdir "$TEMPDIR"; fi
-if [[ ! -d $SFWDIR ]]; then mkdir "$SFWDIR"; fi
+if [[ ! -d $TEMPDIR ]]; then mkdir -p "$TEMPDIR"; fi
+if [[ ! -d $DLDIR ]]; then mkdir -p "$DLDIR"; fi
+if [[ ! -d $TRASHDIR ]]; then mkdir -p "$TRASHDIR"; fi
+if [[ ! -d $HOMEPROJDIR ]]; then mkdir -p "$HOMEPROJDIR"; fi
+if [[ ! -d $WORKPROJDIR ]]; then mkdir -p "$HOMEPROJDIR"; fi
+if [[ ! -d $SOFTWAREDIR ]]; then mkdir -p "$SOFTWAREDIR"; fi
 
 # Shortcuts for main directories in paths
-alias goproj="cd $PROJDIR"
-alias godw="cd $DWDIR"
+alias gohome="cd $HOMEDIR"
 alias gotemp="cd $TEMPDIR"
+alias godl="cd $DLDIR"
+alias gotrash="cd $TRASHDIR"
+alias goproj="cd $HOMEPROJDIR"
+alias gowork="cd $WORKPROJDIR"
+alias gosoft="cd $SOFTWAREDIR"
 
 # Run Bash
 alias bash="BASH_NO_ZSH=true bash"
@@ -175,14 +224,11 @@ p() {
 	if [[ -z "$1" ]]; then
 		echo Please provide a project to go to.
 	else
-		cd "$PROJDIR/$1"
+		cd "$HOMEPROJDIR/$1"
 	fi
 }
 
 # Software: Trasher
-local origin_rm_exec_file=$(which rm)
-alias oldrm="$origin_rm_exec_file"
-
 trasher() { sudo trasher --create-trash-dir --trash-dir "$TRASHDIR" "$@" }
 rm() { trasher rm --move-ext-filesystems "$@" }
 rmperma() { trasher rm --permanently "$@" }
@@ -266,16 +312,17 @@ export PATH="$DENO_INSTALL/bin:$PATH"
 
 # Dir hashes
 hash -d Home=$HOMEDIR
-hash -d Projects=$PROJDIR
-hash -d Downloads=$DWDIR
+hash -d Projects=$HOMEPROJDIR
+hash -d Work=$WORKPROJDIR
+hash -d Downloads=$DLDIR
 hash -d Temp=$TEMPDIR
-hash -d Software=$SFWDIR
+hash -d Software=$SOFTWAREDIR
 
 # Go to the a specific folder on startup, except if the shell has been started in a custom directory
 if [ "$(pwd)" = "$HOME" ]; then
 	if [ $ZSH_MAIN_PERSONAL_COMPUTER = 1 ]; then
 		goproj
 	else
-		godw
+		godl
 	fi
 fi

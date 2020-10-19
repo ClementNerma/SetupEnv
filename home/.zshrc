@@ -13,20 +13,20 @@ function profile_zshrc() {
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
+# Which plugins would you like to load?
+plugins=(git zsh-syntax-highlighting zsh-autosuggestions)
+
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
-# Which plugins would you like to load?
-plugins=(git zsh-syntax-highlighting zsh-autosuggestions)
+# Load Powerlevel10k
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # Load Oh My ZSH!
 source $ZSH/oh-my-zsh.sh
 
 # ZSH custom library
 source $HOME/.zshrc.lib.zsh
-
-# Integration for Powerlevel10k
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # .zshrc profiling
 if (( ${+ZSH_PROFILING} )); then
