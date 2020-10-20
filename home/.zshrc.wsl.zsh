@@ -244,6 +244,9 @@ alias gp="command git push"
 # ...as well as Git Diff, to avoid problems with the terminal itself
 alias gd="command git diff"
 
+# Run Node.js tools from Windows
+winalias node npm yarn pnpm ts-node
+
 # Mount storage devices on startup (this typically takes 50~100 ms)
 mount_wsl_drives
 
