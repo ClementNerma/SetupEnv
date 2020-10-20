@@ -241,6 +241,9 @@ alias git="git.exe"
 # ...except Git Push, to avoid problems with Git Credentials Manager
 alias gp="command git push"
 
+# ...as well as Git Diff, to avoid problems with the terminal itself
+alias gd="command git diff"
+
 # Mount storage devices on startup (this typically takes 50~100 ms)
 mount_wsl_drives
 
