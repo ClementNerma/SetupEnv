@@ -102,22 +102,18 @@ source $HOME/.cargo/env # Just for this session
 _step "Installing tools for Rust..."
 sudo apt install -y llvm libclang-dev
 
-_step "Installing NVM..."
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
-
-# Load NVM for the current session
-export NVM_DIR="$HOME/.nvm"
-\. "$NVM_DIR/nvm.sh"
+_step "Installing Volta..."
+curl https://get.volta.sh | bash
 
 _step "Installing Node.js & NPM..."
-nvm install node --latest-npm
+volta install node@latest
 
 _step "Installing Yarn..."
-npm i -g yarn
+volta install yarn
 yarn -v # Just to be sure Yarn was installed correctly
 
 _step "Installing pnpm..."
-npm i -g pnpm
+volta install pnpm
 pnpm -v # Just to be sure pnpm was installed correctly
 
 _step "Installing compilation tools..."

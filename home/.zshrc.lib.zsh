@@ -280,27 +280,9 @@ fi
 # Integration for Python
 export PATH="/home/clement/.local/bin:$PATH"
 
-# Integration for Node.js
-# NVM is used here to be able to easily switch between multiple Node.js versions
-# But as it's awfully slow to load, it is lazy-loaded: when a Node.js-related command is called, NVM is loaded if it's not already
-function load_nvm() {
-	export NVM_DIR="$HOME/.nvm"
-	[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-	[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-}
-
-# Mark a command as requiring Node.js to be loaded first
-# This will create an alias that removes itself, loads NVM, then runs the requested command
-# On future calls, the alias won't be there anymore and so there will be no performance overhead
-function nvmalias() {
-	for name in "$@"; do
-		# As ZSH only allows autocompletion for valid commands, and as it considers aliases as invalid commands as soon as any of the
-		#  alias' subcommands is not found, we use the "eval" command here to ensure autocompletion will work nonetheless.
-		alias ${name}="unalias $* && load_nvm && eval $name"
-	done
-}
-
-nvmalias nvm node npm npx yarn rush ncu ts-node
+# Integration for Volta
+export VOLTA_HOME="$HOME/.volta"
+export PATH="$VOLTA_HOME/bin:$PATH"
 
 # Integration for FZF
 source ~/.fzf.zsh
