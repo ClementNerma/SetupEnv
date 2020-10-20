@@ -114,7 +114,16 @@ export WSL_HOST_IP=$(awk '/nameserver/ { print $2 }' /etc/resolv.conf)
 alias gowin="cd $HOMEDIR"
 
 # Integration of some Windows tools
-winalias code
+function code() {
+  if [[ -z "$1" ]]; then
+    code
+  else
+    local from=$(pwd)
+    cd "$1"
+    code .
+    cd "$from"
+  fi
+}
 
 # Mount drives in WSL, including removable ones
 function mount_wsl_drives() {
