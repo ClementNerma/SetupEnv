@@ -226,6 +226,12 @@ function clip() {
   cat "$1" | clip.exe
 }
 
+# Run Git from Windows...
+alias git="git.exe"
+
+# ...except Git Push, to avoid problems with Git Credentials Manager
+alias gp="command git push"
+
 # Mount storage devices on startup (this typically takes 50~100 ms)
 mount_wsl_drives
 
