@@ -240,6 +240,7 @@ alias git="git.exe"
 
 # ...except Git Push, to avoid problems with Git Credentials Manager
 alias gp="command git push"
+alias gpf="command git push --force-with-lease"
 
 # ...as well as Git Diff, to avoid problems with the terminal itself
 alias gd="command git diff"
