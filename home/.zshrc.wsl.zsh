@@ -246,7 +246,7 @@ alias gpf="command git push --force-with-lease"
 alias gd="command git diff"
 
 # Run Node.js tools from Windows
-winalias node npm yarn pnpm ts-node
+winalias volta node npm yarn pnpm ts-node
 
 # Run Rust tools from Windows
 winalias rustup rustc cargo
