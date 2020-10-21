@@ -7,4 +7,4 @@
 # export ZSH_MAIN_PERSONAL_COMPUTER=1
 
 # Edit this file and reload it
-alias zerc="nano ~/.zshrc.this.zsh && reload"
+alias zerthis="nano ~/.zshrc.this.zsh && reload"

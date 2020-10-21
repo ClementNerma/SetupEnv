@@ -40,4 +40,4 @@ alias adb="adbtool adb.exe"
 alias fastboot="adbtool fastboot.exe"
 
 # Allow fast editing of this file
-alias zerty="nano ~/.zshrc.main.zsh && source ~/.zshrc.main.zsh"
+alias zermain="nano ~/.zshrc.main.zsh && source ~/.zshrc.main.zsh"
