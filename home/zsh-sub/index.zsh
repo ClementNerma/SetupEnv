@@ -5,8 +5,11 @@
 #  reloading the whole configuration each time ; as well as to keep the ~/.zshrc file as clean and simple as possible.
 #
 
+# Set path to ZSH sub-files
+export ZSH_SUB_DIR=$(dirname "${(%):-%x}")
+
 # Load the configuration file
-source ~/.zshrc.config.zsh
+source "$ZSH_SUB_DIR/config.zsh"
 
 # Update to latest version
 function zerupdate() {
@@ -21,7 +24,7 @@ function zerupdate() {
 		fi
 	fi
 
-	if [[ ! -d "$update_path" ]] || [[ ! -f "$update_path/auto-install.bash" ]] || [[ ! -f "$update_path/home/.zshrc.lib.zsh" ]]; then
+	if [[ ! -d "$update_path" ]] || [[ ! -f "$update_path/auto-install.bash" ]] || [[ ! -f "$update_path/home/.zshrc" ]]; then
 		echo -e "\e[91mERROR: Could not find \e[92mSetup Environment\e[91m files at path \e[93m$update_path\e[0m"
 		return
 	fi
@@ -29,14 +32,14 @@ function zerupdate() {
 	echo -e "\e[92mUpdating environment...\e[0m"
 
 	# Backup local file
-	mv ~/.zshrc.this.zsh ~/.zshrc.this.zsh.staging
+	mv "$ZSH_SUB_DIR/local.zsh" "$ZSH_SUB_DIR/local.zsh.staging"
 
 	# Copy updated files
 	cp -R "$update_path/home/." ~/
 
 	# Restore it so it hasn't been overriden by the previous command
-	mv ~/.zshrc.this.zsh.staging ~/.zshrc.this.zsh
-	source ~/.zshrc.lib.zsh
+	mv "$ZSH_SUB_DIR/local.zsh.staging" "$ZSH_SUB_DIR/local.zsh"
+	source "$ZSH_SUB_DIR/index.zsh"
 	echo -e "\e[92mDone!\e[0m"
 }
 
@@ -161,25 +164,25 @@ alias zer="nano ${(%):-%x} && reload"
 
 # Load platform-specific configuration
 if grep -q microsoft /proc/version; then
-	if [[ -f "$HOME/.zshrc.linux.zsh" ]]; then
-		mv ~/.zshrc.linux.zsh ~/.__zshrc.linux.zsh
+	if [[ -f "$ZSH_SUB_DIR/for-linux.zsh" ]]; then
+		mv "$ZSH_SUB_DIR/for-linux.zsh" "$ZSH_SUB_DIR/dropped/for-linux.zsh"
 	fi
 
-	source ~/.zshrc.wsl.zsh
+	source "$ZSH_SUB_DIR/for-wsl.zsh"
 else
-	if [[ -f "$HOME/.zshrc.wsl.zsh" ]]; then
-		mv ~/.zshrc.wsl.zsh ~/.__zshrc.wsl.zsh
+	if [[ -f "$ZSH_SUB_DIR/for-wsl.zsh" ]]; then
+		mv "$ZSH_SUB_DIR/for-wsl.zsh" "$ZSH_SUB_DIR/dropped/for-wsl.zsh"
 	fi
 
-	source ~/.zshrc.linux.zsh
+	source "$ZSH_SUB_DIR/for-linux.zsh"
 fi
 
 # Load the local script file
-source ~/.zshrc.this.zsh
+source "$ZSH_SUB_DIR/local.zsh"
 
 # Load the script for the main computer (if applies)
 if [ $ZSH_MAIN_PERSONAL_COMPUTER = 1 ]; then
-	source ~/.zshrc.main.zsh
+	source "$ZSH_SUB_DIR/for-main-computer.zsh"
 fi
 
 # Ensure main directories are defined
