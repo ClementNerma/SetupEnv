@@ -31,14 +31,35 @@ function zerupdate() {
 
 	echo -e "\e[92mUpdating environment...\e[0m"
 
+	# Backup current environment
+	setopt GLOB_DOTS
+
+	local old_env_loc=$(dirname "$ZSH_SUB_DIR")
+	local old_env_backup_dir="$old_env_loc/_setupenv-update-backup/Backup $(date '+%Y.%m.%d - %Hh %Mm %Ss')"
+
+	mkdir -p "$old_env_backup_dir"
+
+	for item_abs in "$update_path/home/"*
+	do
+		local item="$(basename "$item_abs")"
+
+		if [[ $item = ".config" ]]; then continue; fi
+
+		if [[ -f "$old_env_loc/$item" || -d "$old_env_loc/$item" ]]; then
+			cp -R "$old_env_loc/$item" "$old_env_backup_dir/$item"
+		fi
+	done
+
+	unsetopt GLOB_DOTS
+
 	# Backup local file
-	mv "$ZSH_SUB_DIR/local.zsh" "$ZSH_SUB_DIR/local.zsh.staging"
+	mv "$ZSH_SUB_DIR/local.zsh" "$old_env_loc/tmp-local.zsh.staging"
 
 	# Copy updated files
 	cp -R "$update_path/home/." ~/
 
 	# Restore it so it hasn't been overriden by the previous command
-	mv "$ZSH_SUB_DIR/local.zsh.staging" "$ZSH_SUB_DIR/local.zsh"
+	mv "$old_env_loc/tmp-local.zsh.staging" "$ZSH_SUB_DIR/local.zsh"
 	source "$ZSH_SUB_DIR/index.zsh"
 	echo -e "\e[92mDone!\e[0m"
 }
