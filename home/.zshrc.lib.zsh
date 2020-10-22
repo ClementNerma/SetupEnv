@@ -258,8 +258,16 @@ alias gpb="git push --set-upstream origin \$(git rev-parse --abbrev-ref HEAD)"
 alias gop="git reflog expire --expire=now --all && git gc --prune=now && git gc --aggressive --prune=now"
 
 # Software: Youtube-DL
-alias ytdl="youtube-dl -f bestvideo+bestaudio/best --embed-thumbnail"
-alias ytdlwe="youtube-dl -f bestvideo+bestaudio/best"
+alias ytdlt="youtube-dl -f bestvideo+bestaudio/best --embed-thumbnail"
+alias ytdlnt="youtube-dl -f bestvideo+bestaudio/best"
+
+function ytdl() {
+	if [[ $1 == "https://youtube.com/"* ]]; then
+		ytdlnt "$1" "$@"
+	else
+		ytdlt "$1" "$@"
+	fi
+}
 
 # Set the default editor
 export EDITOR="micro"
