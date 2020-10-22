@@ -105,9 +105,6 @@ fi
 # Get IP of host Windows system (can be used to access its ports)
 export WSL_HOST_IP=$(awk '/nameserver/ { print $2 }' /etc/resolv.conf)
 
-# Go to windows' home directory
-alias gowin="cd $HOMEDIR"
-
 # Integration of some Windows tools
 function code() {
   if [[ -z "$1" ]]; then
