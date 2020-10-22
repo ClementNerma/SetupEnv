@@ -83,25 +83,31 @@ function zerupdateremote() {
 	command rm -rf "$tmpdir"
 	mkdir -p "$tmpdir"
 
-	# Get latest version
+	# Determine URL for latest version
 	if [[ ! -z "$1" ]]; then
 		echo -e "\e[93mUpdating from provided URL: \e[95m$1\e[0m"
 		local setupenv_url="$1"
 	else
-		echo -e "\e[93mDownloading latest environment...\e[0m"
 		local setupenv_url="https://codeload.github.com/ClementNerma/SetupEnv-Private/zip/master"
 	fi
 
+	# Download latest version
+	echo -e "\e[93mDownloading latest environment...\e[0m"
+
 	local setupenv_zip_path="$tmpdir/setupenv.zip"
 
-	if ! wget --show-progress "$url" -O "$setupenv_zip_path"; then
+	if ! wget --show-progress "$setupenv_url" -O "$setupenv_zip_path"; then
 		echo -e "\e[91mERROR: Download failed.\e[0m"
 		return
 	fi
 
 	# Extract the downloaded archive
 	echo -e "\e[93mExtracting...\e[0m"
-	unzip -q "$setupenv_zip_path" -d "$tmpdir/setupenv"
+
+	if ! unzip -q "$setupenv_zip_path" -d "$tmpdir/setupenv"; then
+		echo -e "\e[91mERROR: Archive extraction failed!\e[0m"
+		return
+	fi
 
 	# Update the environment
 	zerupdate "$tmpdir/setupenv/setupenv-master"
