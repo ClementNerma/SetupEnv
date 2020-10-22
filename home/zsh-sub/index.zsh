@@ -11,115 +11,6 @@ export ZSH_SUB_DIR=$(dirname "${(%):-%x}")
 # Load the configuration file
 source "$ZSH_SUB_DIR/config.zsh"
 
-# Backup current environment
-function zerbackup() {
-	echo -e "\e[94mBackuping environment...\e[0m"
-
-	local old_env_loc=$(dirname "$ZSH_SUB_DIR")
-	local old_env_backup_dir="$old_env_loc/_setupenv-update-backup/Backup $(date '+%Y.%m.%d - %Hh %Mm %Ss')"
-	mkdir -p "$old_env_backup_dir"
-
-	setopt GLOB_DOTS
-
-	for item_abs in "$update_path/home/"*
-	do
-		local item="$(basename "$item_abs")"
-
-		if [[ $item = ".config" ]]; then continue; fi
-
-		if [[ -f "$old_env_loc/$item" || -d "$old_env_loc/$item" ]]; then
-			cp -R "$old_env_loc/$item" "$old_env_backup_dir/$item"
-		fi
-	done
-
-	unsetopt GLOB_DOTS
-
-	# Done!
-	export LAST_SETUPENV_BACKUP_DIR="$old_env_backup_dir"
-	echo -e "\e[94mBackup completed at \e[95m$old_env_backup_dir\e[94m!\e[0m"
-}
-
-# Update to latest version
-function zerupdate() {
-	if [[ ! -z "$1" ]]; then
-		echo -e "\e[92mUpdating from provided path: \e[95m$1\e[0m"
-		local update_path="$1"
-	else
-		if [[ $ZSH_MAIN_PERSONAL_COMPUTER = 1 ]]; then
-			local update_path="$PROJDIR/_Done/Setup Environment"
-		else
-			echo -e "\e[91mERROR: Please provide a path to update ZSH (default path is only available for main computer)\e[0m"
-			return
-		fi
-	fi
-
-	if [[ ! -d "$update_path" ]] || [[ ! -f "$update_path/auto-install.bash" ]] || [[ ! -f "$update_path/home/.zshrc" ]]; then
-		echo -e "\e[91mERROR: Could not find \e[92mSetup Environment\e[91m files at path \e[95m$update_path\e[0m"
-		return
-	fi
-
-	# Backup current environment
-	zerbackup
-
-	# Copy updated files
-	echo -e "\e[92mUpdating environment...\e[0m"
-	cp -R "$update_path/home/." ~/
-
-	# Restore it so it hasn't been overriden by the previous command
-	cp "$LAST_SETUPENV_BACKUP_DIR/zsh-sub/local.zsh" "$ZSH_SUB_DIR/local.zsh"
-
-	# Load new environment
-	echo -e "\e[92mLoading environment...\e[0m"
-	source "$ZSH_SUB_DIR/index.zsh"
-
-	# Done!
-	echo -e "\e[92mEnvironment successfully updated!\e[0m"
-}
-
-# Download latest version and update
-function zeronline() {
-	# Create a temporary directory
-	local tmpdir="/tmp/_setupenv_updater_$(date +%s)"
-	command rm -rf "$tmpdir"
-	mkdir -p "$tmpdir"
-
-	# Determine URL for latest version
-	if [[ ! -z "$1" ]]; then
-		echo -e "\e[93mUpdating from provided URL: \e[95m$1\e[0m"
-		local setupenv_url="$1"
-	else
-		local setupenv_url="https://codeload.github.com/ClementNerma/SetupEnv-Private/zip/master"
-	fi
-
-	# Download latest version
-	echo -e "\e[93mDownloading latest environment...\e[0m"
-
-	local setupenv_zip_path="$tmpdir/setupenv.zip"
-
-	if ! wget --show-progress "$setupenv_url" -O "$setupenv_zip_path"; then
-		echo -e "\e[91mERROR: Download failed.\e[0m"
-		return
-	fi
-
-	# Extract the downloaded archive
-	echo -e "\e[93mExtracting...\e[0m"
-
-	if ! unzip -q "$setupenv_zip_path" -d "$tmpdir/setupenv"; then
-		echo -e "\e[91mERROR: Archive extraction failed!\e[0m"
-		return
-	fi
-
-	# Update the environment
-	zerupdate "$tmpdir/setupenv/setupenv-master"
-
-	# Clean up
-	echo -e "\e[93mCleaning up temporary directory...\e[0m"
-	command rm -rf "$tmpdir"
-
-	# Done!
-	echo -e "\e[92mDone!\e[0m"	
-}
-
 # Synchronize a directory
 function rsync_dir() {
 	if [[ $SUDO_RSYNC = "true" ]]; then
@@ -241,21 +132,26 @@ alias zer="nano ${(%):-%x} && reload"
 
 # Load platform-specific configuration
 if grep -q microsoft /proc/version; then
-	if [[ -f "$ZSH_SUB_DIR/for-linux.zsh" ]]; then
-		mv "$ZSH_SUB_DIR/for-linux.zsh" "$ZSH_SUB_DIR/dropped/for-linux.zsh"
+	if [[ -d "$ZSH_SUB_DIR/linux" ]]; then
+		command rm -rf "$ZSH_SUB_DIR/__linux"
+		mv "$ZSH_SUB_DIR/linux" "$ZSH_SUB_DIR/__linux"
 	fi
 
-	source "$ZSH_SUB_DIR/for-wsl.zsh"
+	source "$ZSH_SUB_DIR/wsl/conf.zsh"
 else
-	if [[ -f "$ZSH_SUB_DIR/for-wsl.zsh" ]]; then
-		mv "$ZSH_SUB_DIR/for-wsl.zsh" "$ZSH_SUB_DIR/dropped/for-wsl.zsh"
+	if [[ -d "$ZSH_SUB_DIR/wsl" ]]; then
+		command rm -rf "$ZSH_SUB_DIR/__wsl"
+		mv "$ZSH_SUB_DIR/wsl" "$ZSH_SUB_DIR/__wsl"
 	fi
 
-	source "$ZSH_SUB_DIR/for-linux.zsh"
+	source "$ZSH_SUB_DIR/linux/conf.zsh"
 fi
 
 # Load the local script file
 source "$ZSH_SUB_DIR/local.zsh"
+
+# Load the updater
+source "$ZSH_SUB_DIR/updater.zsh"
 
 # Load the script for the main computer (if applies)
 if [ $ZSH_MAIN_PERSONAL_COMPUTER = 1 ]; then
@@ -395,4 +291,11 @@ if [ "$(pwd)" = "$HOME" ]; then
 	else
 		godl
 	fi
+fi
+
+# Load platform-specific scripts
+if grep -q microsoft /proc/version; then
+	source "$ZSH_SUB_DIR/wsl/core.zsh"
+else
+	source "$ZSH_SUB_DIR/linux/core.zsh"
 fi

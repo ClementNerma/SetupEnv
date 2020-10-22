@@ -1,7 +1,6 @@
-#!/usr/bin/zsh
-
 #
-# This file is a script run during shell startup only on Linux platforms
+# This file is run during startup on Linux platforms only
+# Its role is to configure all required environment variables and options
 #
 
 # Set up path to main directories
