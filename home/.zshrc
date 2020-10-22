@@ -6,7 +6,7 @@ if (( ${+ZSH_PROFILING} )); then
 fi
 
 # Profiles performances of the .zshrc configuration
-function profile_zshrc() {
+function zerperf() {
 	ZSH_PROFILING=true zsh -c "source ~/.zshrc && exit"
 }
 
