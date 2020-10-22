@@ -42,6 +42,7 @@ function zerbackup() {
 # Update to latest version
 function zerupdate() {
 	if [[ ! -z "$1" ]]; then
+		echo -e "\e[92mUpdating from provided path: \e[95m$1\e[0m"
 		local update_path="$1"
 	else
 		if [[ $ZSH_MAIN_PERSONAL_COMPUTER = 1 ]]; then
@@ -53,7 +54,7 @@ function zerupdate() {
 	fi
 
 	if [[ ! -d "$update_path" ]] || [[ ! -f "$update_path/auto-install.bash" ]] || [[ ! -f "$update_path/home/.zshrc" ]]; then
-		echo -e "\e[91mERROR: Could not find \e[92mSetup Environment\e[91m files at path \e[93m$update_path\e[0m"
+		echo -e "\e[91mERROR: Could not find \e[92mSetup Environment\e[91m files at path \e[95m$update_path\e[0m"
 		return
 	fi
 
@@ -72,7 +73,45 @@ function zerupdate() {
 	source "$ZSH_SUB_DIR/index.zsh"
 
 	# Done!
-	echo -e "\e[92mDone!\e[0m"
+	echo -e "\e[92mEnvironment successfully updated!\e[0m"
+}
+
+# Download latest version and update
+function zerupdateremote() {
+	# Create a temporary directory
+	local tmpdir="/tmp/_setupenv_updater_$(date +%s)"
+	command rm -rf "$tmpdir"
+	mkdir -p "$tmpdir"
+
+	# Get latest version
+	if [[ ! -z "$1" ]]; then
+		echo -e "\e[93mUpdating from provided URL: \e[95m$1\e[0m"
+		local setupenv_url="$1"
+	else
+		echo -e "\e[93mDownloading latest environment...\e[0m"
+		local setupenv_url="https://codeload.github.com/ClementNerma/SetupEnv-Private/zip/master"
+	fi
+
+	local setupenv_zip_path="$tmpdir/setupenv.zip"
+
+	if ! wget --show-progress "$url" -O "$setupenv_zip_path"; then
+		echo -e "\e[91mERROR: Download failed.\e[0m"
+		return
+	fi
+
+	# Extract the downloaded archive
+	echo -e "\e[93mExtracting...\e[0m"
+	unzip -q "$setupenv_zip_path" -d "$tmpdir/setupenv"
+
+	# Update the environment
+	zerupdate "$tmpdir/setupenv/setupenv-master"
+
+	# Clean up
+	echo -e "\e[93mCleaning up temporary directory...\e[0m"
+	command rm -rf "$tmpdir"
+
+	# Done!
+	echo -e "\e[92mDone!\e[0m"	
 }
 
 # Synchronize a directory
