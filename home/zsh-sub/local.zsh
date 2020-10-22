@@ -7,4 +7,4 @@
 # export ZSH_MAIN_PERSONAL_COMPUTER=1
 
 # Edit this file and reload it
-alias zerthis="nano ${(%):-%x} && source ${(%):-%x}"
+alias zerl="nano ${(%):-%x} && source ${(%):-%x}"
