@@ -27,7 +27,7 @@ function zerbackup() {
 
 	# Done!
 	export LAST_SETUPENV_BACKUP_DIR="$old_env_backup_dir"
-	echo -e "\e[94mBackup completed at \e[95m$old_env_backup_dir\e[94m!\e[0m"
+	echo -e "\e[94mBackup completed at \e[95m$old_env_backup_dir\e[0m"
 }
 
 # Update to latest version
