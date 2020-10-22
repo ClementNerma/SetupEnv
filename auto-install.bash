@@ -45,7 +45,7 @@ CURRENT_STEP=0
 AUTO_INSTALLER_STARTED_AT=$(date +%s)
 
 # Choose a temporary directory
-export TMPDIR="/tmp/_setupenv_autoinstaller_$AUTO_INSTALLER_STARTED_AT"
+TMPDIR="/tmp/_setupenv_autoinstaller_$AUTO_INSTALLER_STARTED_AT"
 
 # Beginning of the installer!
 echo
