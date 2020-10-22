@@ -255,4 +255,4 @@ winalias rustup rustc cargo
 mount_wsl_drives
 
 # Allow fast editing of this file
-alias zert="nano ~/.zshrc.wsl.zsh && source ~/.zshrc.wsl.zsh"
+alias zert="nano ${(%):-%x} && source ${(%):-%x}"

@@ -14,4 +14,4 @@ export PROJDIR="$HOMEDIR/Projets"
 export WORKDIR="$HOMEDIR/Work"
 
 # Allow fast editing of this file
-alias zert="nano ~/.zshrc.linux.zsh && source ~/.zshrc.linux.zsh"
+alias zert="nano ${(%):-%x} && source ${(%):-%x}"

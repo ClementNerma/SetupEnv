@@ -154,10 +154,10 @@ function howlong() {
 }
 
 # Allow fast reloading of this file after changes
-alias reload="source ~/.zshrc.lib.zsh"
+alias reload="source ${(%):-%x}"
 
 # Allow fast editing of this file, with automatic reloading
-alias zer="nano ~/.zshrc.lib.zsh && reload"
+alias zer="nano ${(%):-%x} && reload"
 
 # Load platform-specific configuration
 if grep -q microsoft /proc/version; then

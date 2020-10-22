@@ -12,4 +12,4 @@ export ZSH_MAIN_PERSONAL_COMPUTER=0
 export PROJECT_DIRS_IN_WSL_FS=0
 
 # Allow fast editing of this file
-alias zerc="nano ~/.zshrc.config.zsh && source ~/.zshrc.config.zsh"
+alias zerc="nano ${(%):-%x} && source ${(%):-%x}"

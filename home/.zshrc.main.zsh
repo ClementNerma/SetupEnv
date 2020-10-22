@@ -44,4 +44,4 @@ alias borg="BORG_PASSPHRASE=\"\$(command cat \$PROJDIR/_Done/Backupy/BORG_PASSPH
 alias borgmatic="BORG_PASSPHRASE=\"\$(command cat \$PROJDIR/_Done/Backupy/BORG_PASSPHRASE.txt)\" borgmatic"
 
 # Allow fast editing of this file
-alias zermain="nano ~/.zshrc.main.zsh && source ~/.zshrc.main.zsh"
+alias zermain="nano ${(%):-%x} && source ${(%):-%x}"
