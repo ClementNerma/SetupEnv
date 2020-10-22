@@ -11,6 +11,34 @@ export ZSH_SUB_DIR=$(dirname "${(%):-%x}")
 # Load the configuration file
 source "$ZSH_SUB_DIR/config.zsh"
 
+# Backup current environment
+function zerbackup() {
+	echo -e "\e[94mBackuping environment...\e[0m"
+
+	local old_env_loc=$(dirname "$ZSH_SUB_DIR")
+	local old_env_backup_dir="$old_env_loc/_setupenv-update-backup/Backup $(date '+%Y.%m.%d - %Hh %Mm %Ss')"
+	mkdir -p "$old_env_backup_dir"
+
+	setopt GLOB_DOTS
+
+	for item_abs in "$update_path/home/"*
+	do
+		local item="$(basename "$item_abs")"
+
+		if [[ $item = ".config" ]]; then continue; fi
+
+		if [[ -f "$old_env_loc/$item" || -d "$old_env_loc/$item" ]]; then
+			cp -R "$old_env_loc/$item" "$old_env_backup_dir/$item"
+		fi
+	done
+
+	unsetopt GLOB_DOTS
+
+	# Done!
+	export LAST_SETUPENV_BACKUP_DIR="$old_env_backup_dir"
+	echo -e "\e[94mBackup completed at \e[95m$old_env_backup_dir\e[94m!\e[0m"
+}
+
 # Update to latest version
 function zerupdate() {
 	if [[ ! -z "$1" ]]; then
@@ -29,38 +57,21 @@ function zerupdate() {
 		return
 	fi
 
-	echo -e "\e[92mUpdating environment...\e[0m"
-
 	# Backup current environment
-	setopt GLOB_DOTS
-
-	local old_env_loc=$(dirname "$ZSH_SUB_DIR")
-	local old_env_backup_dir="$old_env_loc/_setupenv-update-backup/Backup $(date '+%Y.%m.%d - %Hh %Mm %Ss')"
-
-	mkdir -p "$old_env_backup_dir"
-
-	for item_abs in "$update_path/home/"*
-	do
-		local item="$(basename "$item_abs")"
-
-		if [[ $item = ".config" ]]; then continue; fi
-
-		if [[ -f "$old_env_loc/$item" || -d "$old_env_loc/$item" ]]; then
-			cp -R "$old_env_loc/$item" "$old_env_backup_dir/$item"
-		fi
-	done
-
-	unsetopt GLOB_DOTS
-
-	# Backup local file
-	mv "$ZSH_SUB_DIR/local.zsh" "$old_env_loc/tmp-local.zsh.staging"
+	zerbackup
 
 	# Copy updated files
+	echo -e "\e[92mUpdating environment...\e[0m"
 	cp -R "$update_path/home/." ~/
 
 	# Restore it so it hasn't been overriden by the previous command
-	mv "$old_env_loc/tmp-local.zsh.staging" "$ZSH_SUB_DIR/local.zsh"
+	cp "$LAST_SETUPENV_BACKUP_DIR/zsh-sub/local.zsh" "$ZSH_SUB_DIR/local.zsh"
+
+	# Load new environment
+	echo -e "\e[92mLoading environment...\e[0m"
 	source "$ZSH_SUB_DIR/index.zsh"
+
+	# Done!
 	echo -e "\e[92mDone!\e[0m"
 }
 
