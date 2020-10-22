@@ -12,6 +12,3 @@ export DLDIR="$HOMEDIR/Downloads"
 export SOFTWAREDIR="$HOMEDIR/Logiciels"
 export PROJDIR="$HOMEDIR/Projets"
 export WORKDIR="$HOMEDIR/Work"
-
-# Allow fast editing of this file
-alias zert="nano ${(%):-%x} && source ${(%):-%x}"

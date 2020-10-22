@@ -42,6 +42,3 @@ alias fastboot="adbtool fastboot.exe"
 # Provide Borg aliases with built-in passphrase
 alias borg="BORG_PASSPHRASE=\"\$(command cat \$PROJDIR/_Done/Backupy/BORG_PASSPHRASE.txt)\" borg"
 alias borgmatic="BORG_PASSPHRASE=\"\$(command cat \$PROJDIR/_Done/Backupy/BORG_PASSPHRASE.txt)\" borgmatic"
-
-# Allow fast editing of this file
-alias zermain="nano ${(%):-%x} && source ${(%):-%x}"
