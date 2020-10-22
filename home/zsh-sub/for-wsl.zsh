@@ -102,11 +102,6 @@ else
   fi
 fi
 
-# Ensure temporary directory exists
-if [ ! -d "$TEMPDIR" ]; then
-  mkdir -p "$TEMPDIR"
-fi
-
 # Get IP of host Windows system (can be used to access its ports)
 export WSL_HOST_IP=$(awk '/nameserver/ { print $2 }' /etc/resolv.conf)
 
