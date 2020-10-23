@@ -179,7 +179,7 @@ if [[ ! -d $TEMPDIR ]]; then mkdir -p "$TEMPDIR"; fi
 if [[ ! -d $DLDIR ]]; then mkdir -p "$DLDIR"; fi
 if [[ ! -d $TRASHDIR ]]; then mkdir -p "$TRASHDIR"; fi
 if [[ ! -d $PROJDIR ]]; then mkdir -p "$PROJDIR"; fi
-if [[ ! -d $WORKDIR ]]; then mkdir -p "$PROJDIR"; fi
+if [[ ! -d $WORKDIR ]]; then mkdir -p "$WORKDIR"; fi
 if [[ ! -d $SOFTWAREDIR ]]; then mkdir -p "$SOFTWAREDIR"; fi
 
 # Shortcuts for main directories in paths
