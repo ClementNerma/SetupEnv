@@ -5,3 +5,5 @@
 
 # Edit this file and reload it
 alias zerscript="nano ${(%):-%x} && source ${(%):-%x}"
+
+# Put your own commands here
