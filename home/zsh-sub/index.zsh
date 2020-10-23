@@ -155,7 +155,7 @@ source "$ZSH_SUB_DIR/updater.zsh"
 
 # Load the script for the main computer (if applies)
 if [ $ZSH_MAIN_PERSONAL_COMPUTER = 1 ]; then
-	source "$ZSH_SUB_DIR/for-main-computer.zsh"
+	source "$ZSH_SUB_DIR/main-pc.zsh"
 fi
 
 # Ensure main directories are defined
