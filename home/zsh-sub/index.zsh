@@ -130,6 +130,9 @@ alias reload="source ${(%):-%x}"
 # Allow fast editing of this file, with automatic reloading
 alias zer="nano ${(%):-%x} && reload"
 
+# Load the local configuration
+source "$ZSH_SUB_DIR/local/conf.zsh"
+
 # Load platform-specific configuration
 if grep -q microsoft /proc/version; then
 	if [[ -d "$ZSH_SUB_DIR/linux" ]]; then
@@ -146,9 +149,6 @@ else
 
 	source "$ZSH_SUB_DIR/linux/conf.zsh"
 fi
-
-# Load the local script file
-source "$ZSH_SUB_DIR/local.zsh"
 
 # Load the updater
 source "$ZSH_SUB_DIR/updater.zsh"
@@ -299,3 +299,6 @@ if grep -q microsoft /proc/version; then
 else
 	source "$ZSH_SUB_DIR/linux/core.zsh"
 fi
+
+# Load the local script
+source "$ZSH_SUB_DIR/local/core.zsh"
