@@ -238,7 +238,7 @@ alias ytdlt="youtube-dl -f bestvideo+bestaudio/best --embed-thumbnail"
 alias ytdlnt="youtube-dl -f bestvideo+bestaudio/best"
 
 function ytdl() {
-	if [[ $1 == "https://youtube.com/"* ]]; then
+	if [[ $1 == "https://www.youtube.com/"* ]]; then
 		ytdlnt "$1" "$@"
 	else
 		ytdlt "$1" "$@"
