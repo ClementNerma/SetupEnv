@@ -7,4 +7,4 @@
 # export ZSH_MAIN_PERSONAL_COMPUTER=1
 
 # Edit this file and reload it
-alias zerconf="nano ${(%):-%x} && source ${(%):-%x}"
+alias zerenv="nano ${(%):-%x} && source ${(%):-%x}"

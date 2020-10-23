@@ -131,7 +131,7 @@ alias reload="source ${(%):-%x}"
 alias zer="nano ${(%):-%x} && reload"
 
 # Load the local configuration
-source "$ZSH_SUB_DIR/local/conf.zsh"
+source "$ZSH_SUB_DIR/local/env.zsh"
 
 # Load platform-specific configuration
 if grep -q microsoft /proc/version; then
@@ -140,14 +140,14 @@ if grep -q microsoft /proc/version; then
 		mv "$ZSH_SUB_DIR/linux" "$ZSH_SUB_DIR/__linux"
 	fi
 
-	source "$ZSH_SUB_DIR/wsl/conf.zsh"
+	source "$ZSH_SUB_DIR/wsl/env.zsh"
 else
 	if [[ -d "$ZSH_SUB_DIR/wsl" ]]; then
 		command rm -rf "$ZSH_SUB_DIR/__wsl"
 		mv "$ZSH_SUB_DIR/wsl" "$ZSH_SUB_DIR/__wsl"
 	fi
 
-	source "$ZSH_SUB_DIR/linux/conf.zsh"
+	source "$ZSH_SUB_DIR/linux/env.zsh"
 fi
 
 # Load the updater
@@ -295,10 +295,10 @@ fi
 
 # Load platform-specific scripts
 if grep -q microsoft /proc/version; then
-	source "$ZSH_SUB_DIR/wsl/core.zsh"
+	source "$ZSH_SUB_DIR/wsl/script.zsh"
 else
-	source "$ZSH_SUB_DIR/linux/core.zsh"
+	source "$ZSH_SUB_DIR/linux/script.zsh"
 fi
 
 # Load the local script
-source "$ZSH_SUB_DIR/local/core.zsh"
+source "$ZSH_SUB_DIR/local/script.zsh"

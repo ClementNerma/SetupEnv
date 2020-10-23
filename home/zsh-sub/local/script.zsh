@@ -4,4 +4,4 @@
 #
 
 # Edit this file and reload it
-alias zercore="nano ${(%):-%x} && source ${(%):-%x}"
+alias zerscript="nano ${(%):-%x} && source ${(%):-%x}"
