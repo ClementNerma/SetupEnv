@@ -49,13 +49,20 @@ function zerupdate() {
 		return
 	fi
 
+	# Ensure line endings are Unix-compliant
+	if ! dos2unix < "$update_path/home/.zshrc" | cmp -s "$update_path/home/.zshrc"; then
+		echo -e "\e[91mERROR: Line endings of the update directory are CRLF instead of LF\e[0m"
+		echo -e "\e[91m       Update is aborted as wrong line endings would cause runtime errors.\e[0m"
+		return
+	fi
+
 	# Backup current environment
 	zerbackup
 
 	# Copy updated files
 	echo -e "\e[92mUpdating environment...\e[0m"
 	cp -R "$update_path/home/." ~/
-
+	
 	# Restore it so it hasn't been overriden by the previous command
 	cp "$LAST_SETUPENV_BACKUP_DIR/zsh-sub/local.zsh" "$ZSH_SUB_DIR/local.zsh"
 
