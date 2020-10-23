@@ -64,7 +64,9 @@ function zerupdate() {
 	cp -R "$update_path/home/." ~/
 	
 	# Restore it so it hasn't been overriden by the previous command
-	cp -R "$LAST_SETUPENV_BACKUP_DIR/zsh-sub/local" "$ZSH_SUB_DIR/"
+	if [[ $OVERWRITE_LOCAL_SCRIPTS != 1 ]]; then
+		cp -R "$LAST_SETUPENV_BACKUP_DIR/zsh-sub/local" "$ZSH_SUB_DIR/"
+	fi
 
 	# Load new environment
 	echo -e "\e[92mLoading environment...\e[0m"
