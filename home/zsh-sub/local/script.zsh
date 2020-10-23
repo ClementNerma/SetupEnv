@@ -7,3 +7,4 @@
 alias zerl="nano ${(%):-%x} && source ${(%):-%x}"
 
 # Put your own commands here
+

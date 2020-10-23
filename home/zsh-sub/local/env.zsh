@@ -10,3 +10,4 @@ alias zerenv="nano ${(%):-%x} && source ${(%):-%x}"
 # export ZSH_MAIN_PERSONAL_COMPUTER=1
 
 # Put your own configuration here
+
