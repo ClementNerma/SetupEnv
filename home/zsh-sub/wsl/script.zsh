@@ -186,7 +186,8 @@ alias gc="git.exe checkout"
 winalias volta node npm yarn pnpm ts-node
 
 # Run Rust tools from Windows
-winalias rustup rustc cargo
+alias cargo="cargo.exe" # Faster
+winalias rustup rustc
 
 # Mount storage devices on startup (this typically takes 50~100 ms)
 mount_wsl_drives
