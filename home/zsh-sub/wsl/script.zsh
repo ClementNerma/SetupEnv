@@ -181,6 +181,7 @@ alias ga="git.exe add"
 alias gb="git.exe checkout -b"
 alias gs="git.exe status"
 alias gc="git.exe checkout"
+alias gm="git.exe commit -m"
 
 # Run Node.js tools from Windows
 winalias volta node npm yarn pnpm ts-node
