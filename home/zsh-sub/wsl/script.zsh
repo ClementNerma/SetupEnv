@@ -61,7 +61,7 @@ function code() {
   else
     local from=$(pwd)
     cd "$1"
-    code .
+    win code .
     cd "$from"
   fi
 }
