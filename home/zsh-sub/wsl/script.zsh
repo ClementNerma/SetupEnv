@@ -179,6 +179,7 @@ function clip() {
 # Run *some* Git commands from Windows
 alias ga="git.exe add"
 alias gb="git.exe checkout -b"
+alias gms="git commit -m" # For signing commits, from WSL
 alias gs="git.exe status"
 alias gc="git.exe checkout"
 alias gm="git.exe commit -m"
