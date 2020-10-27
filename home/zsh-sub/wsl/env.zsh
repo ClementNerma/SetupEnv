@@ -10,7 +10,7 @@ export WINUSER=$(powershell.exe -command '$env:UserName' | tr -d "\r")
 export HOMEDIR="/mnt/c/Users/$WINUSER"
 export TEMPDIR="/mnt/c/Temp/__wsltemp"
 export DLDIR="$HOMEDIR/Downloads"
-export SOFTWAREDIR="$HOMEDIR/$USER/Logiciels"
+export SOFTWAREDIR="$HOMEDIR/Logiciels"
 
 if [[ $PROJECT_DIRS_IN_WSL_FS != 1 ]]; then
   export PROJDIR="$HOMEDIR/Projets"
