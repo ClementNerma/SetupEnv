@@ -272,6 +272,18 @@ export PATH="$VOLTA_HOME/bin:$PATH"
 # Integration for FZF
 source ~/.fzf.zsh
 
+# Integration for Zoxide
+ZOXIDE_LOAD_FILE="$(dirname "$ZSH_SUB_DIR")/zoxide.zsh"
+
+if [[ ! -f "$ZOXIDE_LOAD_FILE" ]]; then
+	zoxide init zsh > "$ZOXIDE_LOAD_FILE"
+fi
+
+# NOTE: Forced to "source" as a simple "eval" isn't enough to declare aliases
+source "$ZOXIDE_LOAD_FILE"
+
+alias cd="z"
+
 # Integration for Deno
 export DENO_INSTALL="$HOME/.deno"
 export PATH="$DENO_INSTALL/bin:$PATH"

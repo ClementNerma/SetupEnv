@@ -201,6 +201,25 @@ else
 	~/.fzf/install --all
 fi
 
+_step "Installing Zoxide..."
+if [[ $arch != "armhf" ]]; then
+	curl -s https://api.github.com/repos/ajeetdsouza/zoxide/releases/latest \
+	| grep "browser_download_url.*zoxide-x86_64-unknown-linux-gnu" \
+	| cut -d : -f 2,3 \
+	| tr -d \" \
+	| wget -qi - --show-progress -O "$TMPDIR/zoxide"
+	sudo mv "$TMPDIR/zoxide" /usr/local/bin/zoxide
+	sudo chmod +x /usr/local/bin/zoxide
+else
+	curl -s https://api.github.com/repos/ajeetdsouza/zoxide/releases/latest \
+	| grep "browser_download_url.*zoxide-armv7-unknown-linux-musleabihf" \
+	| cut -d : -f 2,3 \
+	| tr -d \" \
+	| wget -qi - --show-progress -O "$TMPDIR/zoxide"
+	sudo mv "$TMPDIR/zoxide" /usr/local/bin/zoxide
+	sudo chmod +x /usr/local/bin/zoxide
+fi
+
 _step "Installing Trasher..."
 if [[ $arch != "armhf" ]]; then
 	curl -s https://api.github.com/repos/ClementNerma/Trasher/releases/latest \
