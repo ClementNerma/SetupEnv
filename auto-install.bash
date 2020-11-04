@@ -55,14 +55,10 @@ echo -e "\e[92m=================================\e[0m"
 
 _step "Checking compatibility..."
 arch="$(dpkg --print-architecture)"
-if [[ $arch != "amd64" ]] && [[ $arch != "armhf" ]]; then
+if [[ $arch != "amd64" ]]; then
 	echo "ERROR: Unsupported CPU architecture detected: ${arch}"
 	echo "ERROR: Exiting now."
 	exit 1
-fi
-
-if [[ $arch = "armhf" ]]; then
-	echo -e "\e[33m\!/ WARNING: ARM v7 architecture detected, installation process may be slower as it is optimized for x86 platforms.\e[0m"
 fi
 
 _step "Creating temporary directory..."
@@ -76,190 +72,29 @@ if [ ! -x /usr/bin/sudo ]; then
 	su -s /bin/bash -c "apt install sudo" root
 fi
 
-_step "Updating repositories..."
-sudo apt update
-
-_step "Installing required packages..."
-sudo apt install -y zsh git wget curl sed grep unzip apt-transport-https dos2unix
-
-_step "Installing Rust & Cargo..."
-
-if [ -d ~/.rustup ]; then
-	echo -e "\e[33m\!/ A previous version of \e[32mRust \e[33mwas detected ==> backing it up to \e[32m~/.rustup.bak\e[33m...\e[0m"
-	rm -rf ~/.rustup.bak
-	mv ~/.rustup ~/.rustup.bak
-fi
-
-if [ -d ~/.cargo ]; then
-	echo -e "\e[33m\!/ A previous version of \e[32mCargo \e[33mwas detected ==> backing it up to \e[32m~/.cargo.bak\e[33m...\e[0m"
-	rm -rf ~/.cargo.bak
-	mv ~/.cargo ~/.cargo.bak
-fi
-
-curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y
-source $HOME/.cargo/env # Just for this session
-
-_step "Installing tools for Rust..."
-sudo apt install -y llvm libclang-dev
-
-_step "Installing Volta..."
-curl https://get.volta.sh | bash
-
-_step "Installing Node.js & NPM..."
-volta install node@latest
-
-_step "Installing Yarn..."
-volta install yarn
-yarn -v # Just to be sure Yarn was installed correctly
-
-_step "Installing pnpm..."
-volta install pnpm
-pnpm -v # Just to be sure pnpm was installed correctly
-
-_step "Installing compilation tools..."
-sudo apt install -y build-essential gcc g++ make perl
-
-_step "Installing required tools for some Rust libraries..."
-sudo apt install -y pkg-config libssl-dev
-
-_step "Installing Micro..."
-curl https://getmic.ro | bash
-sudo mv ./micro /usr/bin/micro
-
-_step "Installing Tokei..."
-if [[ $arch != "armhf" ]]; then
-	curl -s https://api.github.com/repos/XAMPPRocky/tokei/releases/latest \
-	| grep "browser_download_url.*tokei-x86_64-unknown-linux-gnu.tar.gz" \
-	| cut -d : -f 2,3 \
-	| tr -d \" \
-	| wget -qi - --show-progress -O "$TMPDIR/tokei.tar.gz"
-	tar zxf "$TMPDIR/tokei.tar.gz"
-	sudo mv tokei /usr/local/bin
-else
-	curl -s https://api.github.com/repos/XAMPPRocky/tokei/releases/latest \
-	| grep "browser_download_url.*tokei-armv7-unknown-linux-gnueabihf.tar.gz" \
-	| cut -d : -f 2,3 \
-	| tr -d \" \
-	| wget -qi - --show-progress -O "$TMPDIR/tokei.tar.gz"
-	tar zxf "$TMPDIR/tokei.tar.gz"
-	sudo mv tokei /usr/local/bin
-fi
-
-_step "Installing Bat..."
-if [[ $arch != "armhf" ]]; then
-	curl -s https://api.github.com/repos/sharkdp/bat/releases/latest \
-	| grep "browser_download_url.*bat_.*_amd64.deb" \
-	| cut -d : -f 2,3 \
-	| tr -d \" \
-	| wget -qi - --show-progress -O "$TMPDIR/bat.deb"
-	sudo dpkg -i "$TMPDIR/bat.deb"
-else
-	curl -s https://api.github.com/repos/sharkdp/bat/releases/latest \
-	| grep "browser_download_url.*bat_.*_armhf.deb" \
-	| cut -d : -f 2,3 \
-	| tr -d \" \
-	| wget -qi - --show-progress -O "$TMPDIR/bat.deb"
-	sudo dpkg -i "$TMPDIR/bat.deb"
-fi
-
-_step "Installing Exa..."
-if [[ $arch != "armhf" ]]; then
-	curl -s https://api.github.com/repos/ogham/exa/releases/latest \
-	| grep "browser_download_url.*exa-linux-x86_64-.*.zip" \
-	| cut -d : -f 2,3 \
-	| tr -d \" \
-	| wget -qi - --show-progress -O "$TMPDIR/exa.zip"
-	unzip "$TMPDIR/exa.zip" -d "$TMPDIR/exa"
-	sudo mv "$TMPDIR/exa/"exa-* /usr/local/bin/exa
-else
-	cargo install exa
-fi
-
-_step "Installing Fd..."
-if [[ $arch != "armhf" ]]; then
-	curl -s https://api.github.com/repos/sharkdp/fd/releases/latest \
-	| grep "browser_download_url.*fd-musl_.*_amd64.deb" \
-	| cut -d : -f 2,3 \
-	| tr -d \" \
-	| wget -qi - --show-progress -O "$TMPDIR/fd.deb"
-	sudo dpkg -i "$TMPDIR/fd.deb"
-else
-	curl -s https://api.github.com/repos/sharkdp/fd/releases/latest \
-	| grep "browser_download_url.*fd-musl_.*_armhf.deb" \
-	| cut -d : -f 2,3 \
-	| tr -d \" \
-	| wget -qi - --show-progress -O "$TMPDIR/fd.deb"
-	sudo dpkg -i "$TMPDIR/fd.deb"
-fi
-
-_step "Installing Fuzzy Finder..."
-if [[ -d ~/.fzf ]]; then
-	echo -e "\e[33m\!/ A previous version of \e[32mFuzzy Finder \e[33mwas detected ==> backing it up to \e[32m~/.fzf.bak\e[33m...\e[0m"
-	mv ~/.fzf ~/.fzf.bak
-else
-	git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-	~/.fzf/install --all
-fi
-
-_step "Installing Zoxide..."
-if [[ $arch != "armhf" ]]; then
-	curl -s https://api.github.com/repos/ajeetdsouza/zoxide/releases/latest \
-	| grep "browser_download_url.*zoxide-x86_64-unknown-linux-gnu" \
-	| cut -d : -f 2,3 \
-	| tr -d \" \
-	| wget -qi - --show-progress -O "$TMPDIR/zoxide"
-	sudo mv "$TMPDIR/zoxide" /usr/local/bin/zoxide
-	sudo chmod +x /usr/local/bin/zoxide
-else
-	curl -s https://api.github.com/repos/ajeetdsouza/zoxide/releases/latest \
-	| grep "browser_download_url.*zoxide-armv7-unknown-linux-musleabihf" \
-	| cut -d : -f 2,3 \
-	| tr -d \" \
-	| wget -qi - --show-progress -O "$TMPDIR/zoxide"
-	sudo mv "$TMPDIR/zoxide" /usr/local/bin/zoxide
-	sudo chmod +x /usr/local/bin/zoxide
-fi
-
-_step "Installing Trasher..."
-if [[ $arch != "armhf" ]]; then
-	curl -s https://api.github.com/repos/ClementNerma/Trasher/releases/latest \
-	| grep "browser_download_url.*trasher-linux-x86_64" \
-	| cut -d : -f 2,3 \
-	| tr -d \" \
-	| wget -qi - --show-progress -O "$TMPDIR/trasher.zip"
-	unzip "$TMPDIR/trasher.zip" -d "$TMPDIR/trasher"
-	sudo mv "$TMPDIR/trasher/"trasher-* /usr/local/bin/trasher
-	sudo chmod +x /usr/local/bin/trasher
-else
-	cargo install trasher
-
-	TRASHER_SUPPOSED_PATH="/home/$USER/.cargo/bin/trasher"
-
-	if [[ ! -f "$TRASHER_SUPPOSED_PATH" ]]; then
-		echo -e "\e[33m\!/ WARNING: Symbolic link for \e[32mTrasher \e[33mpoints to invalid location\e[32m$TRASHER_SUPPOSED_PATH\e[33m! \e[0m"
-	fi
-
-	sudo ln -s "$TRASHER_SUPPOSED_PATH" /usr/local/bin/trasher
-fi
-
-_step "Installing Youtube-DL..."
-sudo curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl
-sudo chmod a+rx /usr/local/bin/youtube-dl
-
-_step "Installing AtomicParsley for Youtube-DL..."
-sudo apt install atomicparsley
-
-_step "Installing utilities..."
-sudo apt install -y pv htop ncdu net-tools rsync
-
 _step "Backing up important files before overriding them..."
-mv ~/.zshrc ~/.zshrc.bak
+
+if [ -d ~/zsh-sub ]; then
+	echo -e "\e[33m\!/ A previous version of \e[32mSetup Env \e[33mwas detected ==> backing it up to \e[32m~/zsh-sub.$AUTO_INSTALLER_STARTED_AT\e[33m...\e[0m"
+	mv ~/zsh-sub ~/zsh-sub.$AUTO_INSTALLER_STARTED_AT
+fi
+
+if [ -f ~/.zshrc ]; then
+	mv ~/.zshrc ~/.zshrc.bak
+fi
 
 if [ -f ~/.bashrc ]; then
 	mv ~/.bashrc ~/.bashrc.bak
 fi
 
+_step "Updating repositories..."
+sudo apt update
+
+_step "Installing required packages..."
+sudo apt install -y zsh git
+
 _step "Installing Oh-My-ZSH!..."
+
 if [ -d ~/.oh-my-zsh ]; then
 	echo -e "\e[33m\!/ A previous version of \e[32mOh-My-ZSH! \e[33mwas detected ==> backing it up to \e[32m~/.oh-my-zsh.bak\e[33m...\e[0m"
 	rm -rf ~/.oh-my-zsh.bak
@@ -290,16 +125,4 @@ fi
 printf "Automated installer completed in "
 print_seconds "$(($(date +%s) - ${AUTO_INSTALLER_STARTED_AT}))"
 
-echo
-echo You may want to reboot now.
-if [ -x /sbin/rboot ]; then
-	echo
-	echo
-	if [ ! -x /usr/bin/sudo ]; then
-		echo \> reboot
-	else
-		echo \> sudo reboot
-	fi
-fi
-echo
-echo
+echo ""

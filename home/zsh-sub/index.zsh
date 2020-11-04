@@ -11,6 +11,18 @@ export ZSH_SUB_DIR=$(dirname "${(%):-%x}")
 # Load the configuration file
 source "$ZSH_SUB_DIR/config.zsh"
 
+# Set path to the installer
+export ZSH_INSTALLER_DIR="$ZSH_SUB_DIR/installer"
+
+# Load the installer
+export ZSH_INSTALLER_ABORTED=0
+
+source "$ZSH_INSTALLER_DIR/index.zsh"
+
+if [[ $ZSH_INSTALLER_ABORTED = 1 ]]; then
+	return
+fi
+
 # Synchronize a directory
 function rsync_dir() {
 	if [[ $SUDO_RSYNC = "true" ]]; then
@@ -281,8 +293,6 @@ fi
 
 # NOTE: Forced to "source" as a simple "eval" isn't enough to declare aliases
 source "$ZOXIDE_LOAD_FILE"
-
-alias cd="z"
 
 # Integration for Deno
 export DENO_INSTALL="$HOME/.deno"
