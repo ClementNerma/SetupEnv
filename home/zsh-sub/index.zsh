@@ -245,6 +245,15 @@ alias gp="git push"
 alias gpb="git push --set-upstream origin \$(git rev-parse --abbrev-ref HEAD)"
 alias gop="git reflog expire --expire=now --all && git gc --prune=now && git gc --aggressive --prune=now"
 
+# Software: Github
+function ghdl() {
+	if [[ $1 != "https://github.com/"* ]]; then
+		echo -e "\e[91mInvalid GitHub repository URL: \e[93m$1\e[0m"
+	fi
+
+	local zipurl="${1/https:\/\/github.com\//https://codeload.github.com/}/zip/master"
+}
+
 # Software: Youtube-DL
 alias ytdlt="youtube-dl -f bestvideo+bestaudio/best --embed-thumbnail"
 alias ytdlnt="youtube-dl -f bestvideo+bestaudio/best"

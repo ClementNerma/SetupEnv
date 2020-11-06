@@ -75,7 +75,7 @@ if [[ ${#SETUPENV_TO_INSTALL[@]} != 0 ]]; then
     echo -e ""
 
     sudo apt update
-    sudo apt install wget curl sed grep unzip apt-transport-https dos2unix
+    sudo apt install wget curl sed grep unzip zipinfo apt-transport-https dos2unix
 
     for component in $SETUPENV_TO_INSTALL
     do
