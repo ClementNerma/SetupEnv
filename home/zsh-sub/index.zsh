@@ -251,7 +251,15 @@ function ghdl() {
 		echo -e "\e[91mInvalid GitHub repository URL: \e[93m$1\e[0m"
 	fi
 
-	local zipurl="${1/https:\/\/github.com\//https://codeload.github.com/}/zip/master"
+	local repoauthor=$(echo "$1" | cut -d'/' -f4)
+	local reponame=$(echo "$1" | cut -d'/' -f5)
+
+	echo -e "\e[92mCloning from repository: \e[93m$repoauthor/$reponame\e[92m..."
+	echo -e "\e[34m> Fetching default branch..."
+
+	
+	
+	wget -q --show-progress "https://codeload.github.com/$repoauthor/$reponame/zip/$branch"
 }
 
 # Software: Youtube-DL
