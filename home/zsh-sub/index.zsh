@@ -254,12 +254,36 @@ function ghdl() {
 	local repoauthor=$(echo "$1" | cut -d'/' -f4)
 	local reponame=$(echo "$1" | cut -d'/' -f5)
 
-	echo -e "\e[92mCloning from repository: \e[93m$repoauthor/$reponame\e[92m..."
-	echo -e "\e[34m> Fetching default branch..."
+	echo -e "\e[92mCloning from repository: \e[93m$repoauthor/$reponame\e[92m...\e[0m"
 
+	if [[ -d "$reponame" ]]; then
+		echo -e "\e[91m> ERROR: Directory \e[95m$reponame\e[91m already exists!\e[0m"
+		return
+	fi
+
+	echo -e "\e[34m> Fetching default branch..."
+	local branch=$(curl -s "https://api.github.com/repos/$repoauthor/$reponame" | jq -r ".default_branch")
+
+	if [[ $branch == "null" ]]; then
+		echo -e "\e[91m> ERROR: Failed to determine default branch!\e[0m"
+		return
+	fi
+
+	local filename="$reponame.zip"
+	echo -e "\e[34m> Fetching archive for branch \e[93m$branch\e[34m to \e[95m$filename\e[34m...\e[0m"
 	
-	
-	wget -q --show-progress "https://codeload.github.com/$repoauthor/$reponame/zip/$branch"
+	local zipurl="https://codeload.github.com/$repoauthor/$reponame/zip/$branch"
+
+	if ! wget -q --show-progress "$zipurl" -O "$filename"; then
+		echo -e "\e[91m> ERROR: Failed to fetch archive from URL: \e[93m$zipurl\e[91m!\e[0m"
+		return
+	fi
+
+	echo -e "\e[34m> Extracting archive to directory \e[93m$reponame\e[34m...\e[0m"
+	unzip -q "$filename"
+	mv "$reponame-$branch" "$reponame"
+
+	echo -e "\e[92mDone!\e[0m"
 }
 
 # Software: Youtube-DL
