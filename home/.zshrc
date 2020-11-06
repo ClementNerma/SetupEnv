@@ -10,6 +10,10 @@ function zerperf() {
 	ZSH_PROFILING=true zsh -c "source ~/.zshrc && exit"
 }
 
+# Increase history capacity
+export HISTSIZE=10000000
+export SAVEHIST=10000000
+
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
