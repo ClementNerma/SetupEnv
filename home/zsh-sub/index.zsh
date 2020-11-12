@@ -365,5 +365,16 @@ else
 	source "$ZSH_SUB_DIR/linux/script.zsh"
 fi
 
+# Filter the commands to put in the history
+function zshaddhistory() {
+  emulate -L zsh
+  if ! [[ "$1" == "open "* ]] ; then
+      print -sr -- "${1%%$'\n'}"
+      fc -p
+  else
+      return 1
+  fi
+}
+
 # Load the local script
 source "$ZSH_SUB_DIR/local/script.zsh"
