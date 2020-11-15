@@ -307,6 +307,11 @@ function ytdl() {
 	fi
 }
 
+# Download a YouTube video with separate french and english subtitle files (if available)
+function ytdlsubs() {
+	ytdl "$1" --write-sub --sub-lang "fr,en"
+}
+
 # Set the default editor
 export EDITOR="micro"
 
