@@ -215,6 +215,15 @@ p() {
 	fi
 }
 
+# Create a directory and go into it
+mkcd() {
+	if [[ ! -d "$1" ]]; then
+		mkdir -p "$1"
+	fi
+
+	cd "$1"
+}
+
 # Software: Trasher
 trasher() { sudo trasher --create-trash-dir --trash-dir "$TRASHDIR" "$@" }
 rm() { trasher rm --move-ext-filesystems "$@" }
