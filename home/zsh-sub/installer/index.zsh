@@ -75,7 +75,7 @@ if [[ ${#SETUPENV_TO_INSTALL[@]} != 0 ]]; then
     echo -e ""
 
     sudo apt update
-    sudo apt install -yqqq wget curl sed grep unzip jq apt-transport-https dos2unix
+    sudo apt install -yqqq wget sed grep unzip jq apt-transport-https dos2unix
 
     for component in $SETUPENV_TO_INSTALL
     do
