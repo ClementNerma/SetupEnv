@@ -142,9 +142,6 @@ alias reload="source ${(%):-%x}"
 # Allow fast editing of this file, with automatic reloading
 alias zer="nano ${(%):-%x} && reload"
 
-# Load the local configuration
-source "$ZSH_SUB_DIR/local/env.zsh"
-
 # Load platform-specific configuration
 if grep -q microsoft /proc/version; then
 	if [[ -d "$ZSH_SUB_DIR/linux" ]]; then
@@ -161,6 +158,9 @@ else
 
 	source "$ZSH_SUB_DIR/linux/env.zsh"
 fi
+
+# Load the local configuration
+source "$ZSH_SUB_DIR/local/env.zsh"
 
 # Load the updater
 source "$ZSH_SUB_DIR/updater.zsh"
