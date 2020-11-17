@@ -126,3 +126,5 @@ printf "Automated installer completed in "
 print_seconds "$(($(date +%s) - ${AUTO_INSTALLER_STARTED_AT}))"
 
 echo ""
+echo "> Please restart your shell !"
+echo ""
