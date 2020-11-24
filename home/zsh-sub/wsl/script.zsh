@@ -176,15 +176,9 @@ function clip() {
   cat "$1" | clip.exe
 }
 
-# Run *some* Git commands from Windows
-alias ga="git.exe add"
-alias gb="git.exe checkout -b"
-alias gd="git.exe diff"
-alias gms="git commit -m" # For signing commits, from WSL
-alias gs="git.exe status"
-alias gr="git.exe reset"
-alias gc="git.exe checkout"
-alias gm="git.exe commit -m"
+# Run Git commands from Windows
+alias git="git.exe" 
+alias gms="command git commit -m" # For signing commits, from WSL
 
 # Run Node.js tools from Windows
 winalias volta node npm yarn pnpm ts-node
