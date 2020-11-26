@@ -27,8 +27,9 @@ function check_component() {
 }
 
 function install_component() {
-    source "$ZSH_INSTALLER_DIR/scripts/$1.zsh"
-    echo "export SETUPENV_INSTALLED_${${1//-/_}:u}=1" >> "$ZSH_INSTALLED_LIST_FILE"
+    if source "$ZSH_INSTALLER_DIR/scripts/$1.zsh"; then
+        echo "export SETUPENV_INSTALLED_${${1//-/_}:u}=1" >> "$ZSH_INSTALLED_LIST_FILE"
+    fi
 }
 
 function _step() {
