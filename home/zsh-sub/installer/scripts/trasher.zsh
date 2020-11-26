@@ -1,4 +1,9 @@
 
+if [[ $(dpkg --print-architecture) = "arm64" ]]; then
+	cargo install trasher
+	return
+fi
+
 curl -s https://api.github.com/repos/ClementNerma/Trasher/releases/latest \
 	| grep "browser_download_url.*trasher-linux-x86_64" \
 	| cut -d : -f 2,3 \

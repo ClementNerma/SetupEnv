@@ -1,4 +1,9 @@
 
+if [[ $(dpkg --print-architecture) = "arm64" ]]; then
+	cargo install exa
+	return
+fi
+
 curl -s https://api.github.com/repos/ogham/exa/releases/latest \
 	| grep "browser_download_url.*exa-linux-x86_64-.*.zip" \
 	| cut -d : -f 2,3 \

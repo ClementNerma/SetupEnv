@@ -55,7 +55,7 @@ echo -e "\e[92m=================================\e[0m"
 
 _step "Checking compatibility..."
 arch="$(dpkg --print-architecture)"
-if [[ $arch != "amd64" ]]; then
+if [[ $arch != "amd64" && $arch != "arm64" ]]; then
 	echo "ERROR: Unsupported CPU architecture detected: ${arch}"
 	echo "ERROR: Exiting now."
 	exit 1
