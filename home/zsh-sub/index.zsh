@@ -71,6 +71,11 @@ function cp_proj_nodeps() {
 		  --delete --delete-excluded "$1/" "$2" "${@:3}"
 }
 
+# Backup a project
+function bakproj() {
+	cp_proj_nodeps "$1" "$2.bak"
+}
+
 # Run a Cargo project located in the projects directory
 function cargext() {
 	cargo run "--manifest-path=$PROJDIR/$1/Cargo.toml" -- ${@:2}
