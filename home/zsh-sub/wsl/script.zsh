@@ -155,6 +155,26 @@ function open() {
   cd "$current_dir"
 }
 
+# Open a file or directory on Windows from a 'fd' search
+function openfd() {
+  local results=$(fd "$@")
+  local count=$(echo "$results" | wc -l)
+
+  if [[ $count = 0 ]]; then
+      echo -e "\e[91mERROR: No result found for this search.\e[0m"
+      return
+  fi
+
+  if [[ $count != 1 ]]; then
+    echo -e "\e[91mERROR: Multiple results ($count) found for this search:"
+    echo "$results"
+    printf "\e[0m"
+    return 1
+  fi
+
+  open "$results"
+}
+
 # Link a WSL port with a Windows port
 function wslport() {
   if [[ -z "$1" ]]; then
