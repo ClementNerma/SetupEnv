@@ -175,6 +175,18 @@ function openfd() {
   open "$results"
 }
 
+# Open a file or directory on Windows from a 'zoxide' search
+function openz() {
+  local result=$(zoxide query "$1" 2>/dev/null)
+
+  if [[ -z "$result" ]]; then
+    echo -e "\e[91mERROR: No result found by Zoxide.\e[0m"
+    return
+  fi
+
+  open "$result"
+}
+
 # Link a WSL port with a Windows port
 function wslport() {
   if [[ -z "$1" ]]; then
