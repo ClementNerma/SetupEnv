@@ -160,7 +160,7 @@ function openfd() {
   local results=$(fd "$@")
   local count=$(echo "$results" | wc -l)
 
-  if [[ $count = 0 ]]; then
+  if [[ -z "$results" ]]; then
       echo -e "\e[91mERROR: No result found for this search.\e[0m"
       return
   fi
