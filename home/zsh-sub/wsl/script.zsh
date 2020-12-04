@@ -165,14 +165,18 @@ function openfd() {
       return
   fi
 
-  if [[ $count != 1 ]]; then
-    echo -e "\e[91mERROR: Multiple results ($count) found for this search:"
-    echo "$results"
-    printf "\e[0m"
+  if [[ $count = 1 ]]; then
+    open "$results"
+    return
+  fi
+
+  local selected=$(echo "$results" | fzf)
+
+  if [[ -z "$selected" ]]; then
     return 1
   fi
 
-  open "$results"
+  open "$selected"
 }
 
 # Open a file or directory on Windows from a 'zoxide' search
