@@ -191,6 +191,17 @@ function openz() {
   open "$result"
 }
 
+# Open a file or directory on Windows from a 'zoxide' + 'fd' search
+function openfz() {
+  if [[ -z "$1" ]]; then
+    echo -e "\e[91mERROR: Please provide a search for Zoxide.\e[0m"
+    return
+  fi
+
+  z "$1"
+  openfd
+}
+
 # Link a WSL port with a Windows port
 function wslport() {
   if [[ -z "$1" ]]; then
