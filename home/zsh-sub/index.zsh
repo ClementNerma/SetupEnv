@@ -301,14 +301,11 @@ function ghdl() {
 }
 
 # Software: Youtube-DL
-alias ytdlt="youtube-dl -f bestvideo+bestaudio/best --embed-thumbnail"
-alias ytdlnt="youtube-dl -f bestvideo+bestaudio/best"
-
 function ytdl() {
 	if [[ $1 == "https://www.youtube.com/"* ]]; then
-		ytdlnt "$1" "$@"
+		youtube-dl -f bestvideo+bestaudio/best "$1" "$@"
 	else
-		ytdlt "$1" "$@"
+		youtube-dl -f bestvideo+bestaudio/best --embed-thumbnail "$1" "$@"
 	fi
 }
 
