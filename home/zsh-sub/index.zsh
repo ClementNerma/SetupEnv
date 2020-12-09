@@ -301,17 +301,21 @@ function ghdl() {
 }
 
 # Software: Youtube-DL
+function ytdlbase() {
+	youtube-dl -f bestvideo+bestaudio/best --add-metadata "$@"
+}
+
 function ytdl() {
 	if [[ $1 == "https://www.youtube.com/"* ]]; then
-		youtube-dl -f bestvideo+bestaudio/best "$1" "$@"
+		ytdlbase "$@"
 	else
-		youtube-dl -f bestvideo+bestaudio/best --embed-thumbnail "$1" "$@"
+		ytdlbase --embed-thumbnail "$@"
 	fi
 }
 
 # Download a YouTube video with separate french and english subtitle files (if available)
 function ytdlsubs() {
-	ytdl "$1" --write-sub --sub-lang "fr,en"
+	ytdl "$@" --write-sub --sub-lang "fr,en"
 }
 
 # Set the default editor
