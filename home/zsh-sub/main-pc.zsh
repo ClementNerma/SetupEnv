@@ -18,7 +18,7 @@ function backupy() {
 
 	if [[ ! -f "$backupy_path" ]]; then
 		echo -e "\e[91mERROR: Could not find \e[92mBackupy\e[91m files at path \e[93m$backupy_path\e[0m"
-		return
+		return 1
 	fi
 
 	bash "$backupy_path" $@
@@ -30,7 +30,7 @@ function adbtool() {
 
   if [[ ! -f "$tool_path/$1" ]]; then
     echo -e "\e[91mERROR: Could not find Platform Tools binary \e[93m$1\e[91m at path \e[93m$tool_path\e[0m"
-    return
+    return 1
   fi
 
   "$tool_path/$1" ${@:2}

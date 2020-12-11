@@ -98,7 +98,7 @@ function gitrename() {
 # A simple 'rm' with progress
 function rmprogress() {
 	if [ -z "$1" ]; then
-		return
+		return 1
 	fi
 	
 	command rm -rv "$1" | pv -l -s $( du -a "$1" | wc -l ) > /dev/null
@@ -272,7 +272,7 @@ function ghdl() {
 
 	if [[ -d "$reponame" ]]; then
 		echo -e "\e[91m> ERROR: Directory \e[95m$reponame\e[91m already exists!\e[0m"
-		return
+		return 1
 	fi
 
 	echo -e "\e[34m> Fetching default branch..."
@@ -280,7 +280,7 @@ function ghdl() {
 
 	if [[ $branch == "null" ]]; then
 		echo -e "\e[91m> ERROR: Failed to determine default branch!\e[0m"
-		return
+		return 1
 	fi
 
 	local filename="$reponame.zip"
@@ -290,7 +290,7 @@ function ghdl() {
 
 	if ! wget -q --show-progress "$zipurl" -O "$filename"; then
 		echo -e "\e[91m> ERROR: Failed to fetch archive from URL: \e[93m$zipurl\e[91m!\e[0m"
-		return
+		return 1
 	fi
 
 	echo -e "\e[34m> Extracting archive to directory \e[93m$reponame\e[34m...\e[0m"

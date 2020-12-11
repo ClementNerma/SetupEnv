@@ -5,14 +5,14 @@
 if [[ -z "$ZSH_INSTALLER_DIR" ]]; then
     echo -e "\e[91mERROR: Environment variable \e[93m\$ZSH_INSTALLER_DIR\e[91m is not defined.\e[0m"
     echo -e "\e[91m       Please make sure the current script is run from Setup Env.\e[0m"
-    return
+    return 1
 fi
 
 export ZSH_INSTALLED_LIST_FILE=$(realpath "$ZSH_INSTALLER_DIR/../local/.installed.auto.zsh")
 
 if [[ ! -f "$ZSH_INSTALLED_LIST_FILE" ]]; then
     echo -e "\e[91mERROR: Installation list was not found at path \e[95m$ZSH_INSTALLED_LIST_FILE\e[91m. Aborting installation.\e[0m"
-    return
+    return 1
 fi
 
 source "$ZSH_INSTALLED_LIST_FILE"
@@ -66,7 +66,7 @@ if [[ ${#SETUPENV_TO_INSTALL[@]} != 0 ]]; then
         echo -e "\e[93mInstallation has been aborted.\e[0m"
         echo -e ""
         export ZSH_INSTALLER_ABORTED=1
-        return
+        return 1
     fi
 
     echo -e ""

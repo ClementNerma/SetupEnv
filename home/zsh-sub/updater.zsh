@@ -40,20 +40,20 @@ function zerupdate() {
 			local update_path="$PROJDIR/_Done/Setup Environment"
 		else
 			echo -e "\e[91mERROR: Please provide a path to update ZSH (default path is only available for main computer)\e[0m"
-			return
+			return 1
 		fi
 	fi
 
 	if [[ ! -d "$update_path" ]] || [[ ! -f "$update_path/auto-install.bash" ]] || [[ ! -f "$update_path/home/.zshrc" ]]; then
 		echo -e "\e[91mERROR: Could not find \e[92mSetup Environment\e[91m files at path \e[95m$update_path\e[0m"
-		return
+		return 1
 	fi
 
 	# Ensure line endings are Unix-compliant
 	if ! dos2unix < "$update_path/home/.zshrc" | cmp -s "$update_path/home/.zshrc"; then
 		echo -e "\e[91mERROR: Line endings of the update directory are CRLF instead of LF\e[0m"
 		echo -e "\e[91m       Update is aborted as wrong line endings would cause runtime errors.\e[0m"
-		return
+		return 1
 	fi
 
 	# Backup current environment
@@ -98,7 +98,7 @@ function zeronline() {
 
 	if ! wget --show-progress "$setupenv_url" -O "$setupenv_zip_path"; then
 		echo -e "\e[91mERROR: Download failed.\e[0m"
-		return
+		return 1
 	fi
 
 	# Extract the downloaded archive
@@ -106,7 +106,7 @@ function zeronline() {
 
 	if ! unzip -q "$setupenv_zip_path" -d "$tmpdir/setupenv"; then
 		echo -e "\e[91mERROR: Archive extraction failed!\e[0m"
-		return
+		return 1
 	fi
 
 	# Update the environment

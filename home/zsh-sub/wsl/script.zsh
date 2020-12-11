@@ -119,7 +119,7 @@ function open() {
 
   if [[ ! -f "$topath" && ! -d "$topath" && ! -L "$topath" ]]; then
     echo -e "\e[91mERROR: target path \e[93m$topath\e[91m was not found!\e[0m"
-    return
+    return 1
   fi
 
   # Convert path to display symlink path in Windows Explorer, unless disabled explicitly
@@ -162,7 +162,7 @@ function openfd() {
 
   if [[ -z "$results" ]]; then
       echo -e "\e[91mERROR: No result found for this search.\e[0m"
-      return
+      return 1
   fi
 
   if [[ $count = 1 ]]; then
@@ -185,7 +185,7 @@ function openz() {
 
   if [[ -z "$result" ]]; then
     echo -e "\e[91mERROR: No result found by Zoxide.\e[0m"
-    return
+    return 1
   fi
 
   open "$result"
@@ -195,7 +195,7 @@ function openz() {
 function openfz() {
   if [[ -z "$1" ]]; then
     echo -e "\e[91mERROR: Please provide a search for Zoxide.\e[0m"
-    return
+    return 1
   fi
 
   z "$1"
@@ -211,7 +211,7 @@ function openfze() { openfz "$@" && exit }
 function wslport() {
   if [[ -z "$1" ]]; then
     echo -e "\e[91mERROR: please specify a port (syntax: wslport <wsl port> [<windows port>]\e[0m"
-    return
+    return 1
   fi
 
   if [[ ! -z "$2" ]]; then
