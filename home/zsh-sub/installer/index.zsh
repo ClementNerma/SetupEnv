@@ -17,47 +17,17 @@ fi
 
 source "$ZSH_INSTALLED_LIST_FILE"
 
-function check_component() {
-    local script_name="${file/.zsh/}"
-    local var_name="SETUPENV_INSTALLED_${${script_name//-/_}:u}"
-
-    if [[ -z "${(P)var_name}" ]]; then
-        SETUPENV_TO_INSTALL+=("$script_name")
-    fi
-}
-
-function install_component() {
-    if source "$ZSH_INSTALLER_DIR/scripts/$1.zsh"; then
-        echo "export SETUPENV_INSTALLED_${${1//-/_}:u}=1" >> "$ZSH_INSTALLED_LIST_FILE"
-    fi
-}
-
-function _step() {
-    echo -e ""
-    echo -e "\e[93m>>> Sub-step: $1\e[0m"
-    echo -e ""
-}
-
-SETUPENV_TO_INSTALL=()
-
-for file in $(\ls "$ZSH_INSTALLER_DIR/scripts/" -1A)
-do
-    check_component "$file"
-done
-
-SETUPENV_INSTALL_STEP=0
-
-if [[ ${#SETUPENV_TO_INSTALL[@]} != 0 ]]; then
+function install_components_from_var() {
     # Choose a temporary directory
     local AUTO_INSTALLER_STARTED_AT=$(date +%s%N)
     INSTALLER_TMPDIR="/tmp/_setupenv_autoinstaller_$AUTO_INSTALLER_STARTED_AT"
     mkdir -p "$INSTALLER_TMPDIR"
 
-    echo -e "\e[93mDetected \e[91m${#SETUPENV_TO_INSTALL[@]} missing components:\e[0m"
+    echo -e "\e[93mDetected \e[91m${#SETUPENV_TO_INSTALL[@]}\e[93m $1:\e[0m"
     echo -e "\e[96m    ${SETUPENV_TO_INSTALL[@]}\e[0m"
     echo -e ""
     echo -e "\e[93mThese components will now be installed.\e[0m"
-    echo -e "\e[93mTo skip the installation process for now and not load the environment, type \e[31mN\e[93m/\e[31mn\e[93m.\e[0m"
+    echo -e "\e[93m$2type \e[31mN\e[93m/\e[31mn\e[93m.\e[0m"
 
     local install_choice
     read "install_choice?"
@@ -65,7 +35,11 @@ if [[ ${#SETUPENV_TO_INSTALL[@]} != 0 ]]; then
     if [[ $install_choice =~ ^[Nn]$ ]]; then
         echo -e "\e[93mInstallation has been aborted.\e[0m"
         echo -e ""
-        export ZSH_INSTALLER_ABORTED=1
+
+        if [[ $3 = 1 ]]; then
+            export ZSH_INSTALLER_ABORTED=1
+        fi
+
         return 1
     fi
 
@@ -89,7 +63,9 @@ if [[ ${#SETUPENV_TO_INSTALL[@]} != 0 ]]; then
         echo -e "\e[32m>\e[0m"
         echo ""
 
-        install_component "$component"
+        if source "$ZSH_INSTALLER_DIR/scripts/$component.zsh"; then
+            echo "export SETUPENV_INSTALLED_${${component//-/_}:u}=1" >> "$ZSH_INSTALLED_LIST_FILE"
+        fi
     done
 
     echo -e ""
@@ -98,11 +74,60 @@ if [[ ${#SETUPENV_TO_INSTALL[@]} != 0 ]]; then
     echo -e "\e[32m>\e[0m"
     echo -e ""
 
-    rm -rf "$INSTALLER_TMPDIR"
+    command rm -rf "$INSTALLER_TMPDIR"
 
     echo -e ""
-    echo -e "\e[93m=> Successfully installed \e[91m${#SETUPENV_TO_INSTALL[@]}\e[93m component(s)!\e[0m"
+    echo -e "\e[93m=> Successfully $4 \e[91m${#SETUPENV_TO_INSTALL[@]}\e[93m component(s)!\e[0m"
     echo -e ""
+}
+
+function check_component() {
+    local script_name="${file/.zsh/}"
+    local var_name="SETUPENV_INSTALLED_${${script_name//-/_}:u}"
+
+    if [[ -z "${(P)var_name}" ]]; then
+        SETUPENV_TO_INSTALL+=("$script_name")
+    fi
+}
+
+function update_component() {
+    if [[ ! -f "$ZSH_INSTALLER_DIR/scripts/$1.zsh" ]]; then
+        echo -e "\e[91mERROR: Provided component \e[96m$1\e[91m was not found.\e[0m"
+        return 1
+    fi
+
+    SETUPENV_TO_INSTALL=()
+
+    for component in "$@"
+    do
+        SETUPENV_TO_INSTALL+=("$component")
+    done
+
+    SETUPENV_INSTALL_STEP=0
+
+    install_components_from_var "components to update" "To abort the update process, " 0 "updated"
+
+    unset SETUPENV_TO_INSTALL
+    unset SETUPENV_INSTALL_STEP
+}
+
+function _step() {
+    echo -e ""
+    echo -e "\e[93m>>> Sub-step: $1\e[0m"
+    echo -e ""
+}
+
+SETUPENV_TO_INSTALL=()
+
+for file in $(\ls "$ZSH_INSTALLER_DIR/scripts/" -1A)
+do
+    check_component "$file"
+done
+
+SETUPENV_INSTALL_STEP=0
+
+if [[ ${#SETUPENV_TO_INSTALL[@]} != 0 ]]; then
+    install_components_from_var "missing components" "To skip the installation process for now and not load the environment, " 1 "installed"
 fi
 
 unset SETUPENV_TO_INSTALL
@@ -111,4 +136,3 @@ unset INSTALLER_TMPDIR
 
 unset -f _step
 unset -f check_component
-unset -f install_component
