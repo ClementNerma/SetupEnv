@@ -228,6 +228,35 @@ function clip() {
   cat "$1" | clip.exe
 }
 
+# Install Youtube-DL if not available
+export YTDL_WSL_PATH="/mnt/c/Users/Public/Documents/YoutubeDL"
+mkdir -p "$YTDL_WSL_PATH"
+
+export YTDL_BIN_PATH="$YTDL_WSL_PATH/youtube-dl.exe"
+export ATOMICPARSLEY_BIN_PATH="$YTDL_WSL_PATH/AtomicParsley.exe"
+
+if [[ ! -f "$YTDL_BIN_PATH" ]]; then
+  sudo curl -L https://yt-dl.org/downloads/latest/youtube-dl.exe -o "$YTDL_BIN_PATH"
+  sudo chmod +x "$YTDL_BIN_PATH"
+fi
+
+if [[ ! -f "$ATOMICPARSLEY_BIN_PATH" ]]; then
+  sudo curl -L https://netix.dl.sourceforge.net/project/atomicparsley/atomicparsley/AtomicParsley%20v0.9.0/AtomicParsley-win32-0.9.0.zip -o "$YTDL_WSL_PATH/AtomicParsley.zip"
+  sudo unzip "$YTDL_WSL_PATH/AtomicParsley.zip" -d "$YTDL_WSL_PATH/AtomicParsleyExtracted"
+  sudo mv "$YTDL_WSL_PATH/AtomicParsleyExtracted/AtomicParsley-win32-0.9.0/AtomicParsley.exe" "$ATOMICPARSLEY_BIN_PATH"
+  sudo rm "$YTDL_WSL_PATH/AtomicParsley.zip"
+  sudo rm -rf "$YTDL_WSL_PATH/AtomicParsleyExtracted"
+  sudo chmod +x "$ATOMICPARSLEY_BIN_PATH"
+fi
+
+function youtube-dl() {
+  "$YTDL_BIN_PATH" "$@"
+}
+
+function atomicparsley() {
+  "$ATOMICPARSLEY_BIN_PATH" "$@"
+}
+
 # Run Git commands from Windows
 alias git="git.exe" 
 alias gms="command git commit -m" # For signing commits, from WSL
