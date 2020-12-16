@@ -7,8 +7,10 @@
 
 # Determine if current environment is WSL
 if grep -q microsoft /proc/version; then
+	command rm -rf "$ZSH_SUB_DIR/linux"
 	export IS_WSL_ENV=1
 else
+	command rm -rf "$ZSH_SUB_DIR/wsl"
 	export IS_WSL_ENV=0
 fi
 
@@ -156,18 +158,8 @@ alias zer="nano ${(%):-%x} && reload"
 
 # Load platform-specific configuration
 if [[ $IS_WSL_ENV = 1 ]]; then
-	if [[ -d "$ZSH_SUB_DIR/linux" ]]; then
-		command rm -rf "$ZSH_SUB_DIR/__linux"
-		mv "$ZSH_SUB_DIR/linux" "$ZSH_SUB_DIR/__linux"
-	fi
-
 	source "$ZSH_SUB_DIR/wsl/env.zsh"
 else
-	if [[ -d "$ZSH_SUB_DIR/wsl" ]]; then
-		command rm -rf "$ZSH_SUB_DIR/__wsl"
-		mv "$ZSH_SUB_DIR/wsl" "$ZSH_SUB_DIR/__wsl"
-	fi
-
 	source "$ZSH_SUB_DIR/linux/env.zsh"
 fi
 
