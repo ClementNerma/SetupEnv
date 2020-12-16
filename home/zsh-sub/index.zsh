@@ -5,6 +5,13 @@
 #  reloading the whole configuration each time ; as well as to keep the ~/.zshrc file as clean and simple as possible.
 #
 
+# Determine if current environment is WSL
+if grep -q microsoft /proc/version; then
+	export IS_WSL_ENV=1
+else
+	export IS_WSL_ENV=0
+fi
+
 # Set path to ZSH sub-files
 export ZSH_SUB_DIR=$(dirname "${(%):-%x}")
 
@@ -148,7 +155,7 @@ alias reload="source ${(%):-%x}"
 alias zer="nano ${(%):-%x} && reload"
 
 # Load platform-specific configuration
-if grep -q microsoft /proc/version; then
+if [[ $IS_WSL_ENV = 1 ]]; then
 	if [[ -d "$ZSH_SUB_DIR/linux" ]]; then
 		command rm -rf "$ZSH_SUB_DIR/__linux"
 		mv "$ZSH_SUB_DIR/linux" "$ZSH_SUB_DIR/__linux"
@@ -379,7 +386,7 @@ if [[ $DISABLE_DIR_HOME_SWITCHING != 1 ]]; then
 fi
 
 # Load platform-specific scripts
-if grep -q microsoft /proc/version; then
+if [[ $IS_WSL_ENV = 1 ]]; then
 	source "$ZSH_SUB_DIR/wsl/script.zsh"
 else
 	source "$ZSH_SUB_DIR/linux/script.zsh"
