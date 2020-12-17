@@ -198,7 +198,13 @@ function openfz() {
     return 1
   fi
 
-  z "$1"
+  local result=$(zoxide query "$1" 2>/dev/null)
+
+  if [[ -z "$result" ]]; then
+    echo -e "\e[91mERROR: No result found by Zoxide.\e[0m"
+    return 1
+  fi
+  
   openfd
 }
 
