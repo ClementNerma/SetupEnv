@@ -205,6 +205,7 @@ function openfz() {
     return 1
   fi
   
+  cd "$result"
   openfd
 }
 
