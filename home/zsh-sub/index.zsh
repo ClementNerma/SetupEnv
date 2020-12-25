@@ -58,7 +58,7 @@ fi
 
 # Ensure main directories are defined
 if [[ -z $HOMEDIR ]]; then echo -e "\e[91mERROR: Directory variable \e[92m\$HOMEDIR\e[91m is not defined!\e[0m"; fi
-if [[ ! -d "$HOMEDIR" ]]; then echo -e "\e[91mERROR: Home directory at location \e[93m$HOMEDIR\e[91m does not exist!\e[0m"; fi
+if [[ ! -z "$HOMEDIR" && ! -d "$HOMEDIR" ]]; then echo -e "\e[91mERROR: Home directory at location \e[93m$HOMEDIR\e[91m does not exist!\e[0m"; fi
 
 if [[ -z $TEMPDIR ]]; then echo -e "\e[91mERROR: Directory variable \e[92m\$TEMPDIR\e[91m is not defined!\e[0m"; fi
 if [[ -z $TRASHDIR ]]; then echo -e "\e[91mERROR: Directory variable \e[92m\$TRASHDIR\e[91m is not defined!\e[0m"; fi
