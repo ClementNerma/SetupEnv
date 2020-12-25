@@ -6,6 +6,13 @@
 # Get Windows username
 export WINUSER=$(powershell.exe -command '$env:UserName' | tr -d "\r")
 
+# Fail if username couldn't be get
+if [[ -z "$WINUSER" ]]
+then
+  echo -e "\e[91mERROR: Failed to get username from command-line (see error above)\e[0m"
+  return
+fi
+
 # Set up path to main directories
 export HOMEDIR="/mnt/c/Users/$WINUSER"
 export TEMPDIR="/mnt/c/Temp/__wsltemp"
