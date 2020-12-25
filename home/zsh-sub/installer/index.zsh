@@ -64,7 +64,7 @@ function install_components_from_var() {
         echo ""
 
         if source "$ZSH_INSTALLER_DIR/scripts/$component.zsh"; then
-            if [[ ! -z "${(P)var_name}" ]]; then
+            if [[ -z "${(P)var_name}" ]]; then
                 echo "export SETUPENV_INSTALLED_${${component//-/_}:u}=1" >> "$ZSH_INSTALLED_LIST_FILE"
             fi
         fi
