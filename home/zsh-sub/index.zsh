@@ -93,7 +93,7 @@ hash -d Software=$SOFTWAREDIR
 
 # Go to the a specific folder on startup, except if the shell has been started in a custom directory
 if [[ $DISABLE_DIR_HOME_SWITCHING != 1 ]]; then
-	if [ "$(pwd)" = "$HOME" ]; then
+	if [[ "$(pwd)" = "$HOME" || "$(pwd)" = "$HOMEDIR" ]]; then
 		if [ $ZSH_MAIN_PERSONAL_COMPUTER = 1 ]; then
 			goproj
 		else
