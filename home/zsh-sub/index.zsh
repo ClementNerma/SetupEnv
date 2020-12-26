@@ -9,9 +9,11 @@
 if grep -q microsoft /proc/version; then
 	command rm -rf "$ZSH_SUB_DIR/linux"
 	export IS_WSL_ENV=1
+	export ENV_NAME_STR="wsl"
 else
 	command rm -rf "$ZSH_SUB_DIR/wsl"
 	export IS_WSL_ENV=0
+	export ENV_NAME_STR="linux"
 fi
 
 # Set path to SetupEnv files
@@ -48,11 +50,7 @@ alias reload="source ${(%):-%x}"
 alias zer="nano ${(%):-%x} && reload"
 
 # Load platform-specific configuration
-if [[ $IS_WSL_ENV = 1 ]]; then
-	source "$ZSH_SUB_DIR/wsl/env.zsh"
-else
-	source "$ZSH_SUB_DIR/linux/env.zsh"
-fi
+source "$ZSH_SUB_DIR/$ENV_NAME_STR/env.zsh"
 
 # Load the local configuration
 source "$ZSH_SUB_DIR/local/env.zsh"
@@ -112,11 +110,7 @@ if [[ $DISABLE_DIR_HOME_SWITCHING != 1 ]]; then
 fi
 
 # Load platform-specific scripts
-if [[ $IS_WSL_ENV = 1 ]]; then
-	source "$ZSH_SUB_DIR/wsl/script.zsh"
-else
-	source "$ZSH_SUB_DIR/linux/script.zsh"
-fi
+source "$ZSH_SUB_DIR/$ENV_NAME_STR/script.zsh"
 
 # Filter the commands to put in the history
 function zshaddhistory() {
