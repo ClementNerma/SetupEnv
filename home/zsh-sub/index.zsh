@@ -14,8 +14,14 @@ else
 	export IS_WSL_ENV=0
 fi
 
-# Set path to ZSH sub-files
+# Set path to SetupEnv files
 export ZSH_SUB_DIR=$(dirname "${(%):-%x}")
+
+# Set path to data directory
+export ZSH_DATA_DIR="$ZSH_SUB_DIR/local/data"
+
+# Ensure this directory exists
+mkdir -p "$ZSH_DATA_DIR"
 
 # Load the configuration file
 source "$ZSH_SUB_DIR/config.zsh"
