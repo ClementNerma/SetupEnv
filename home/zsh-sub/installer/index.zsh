@@ -84,7 +84,7 @@ function install_components_from_var() {
 }
 
 function check_component() {
-    local script_name="${file/.zsh/}"
+    local script_name="${1/.zsh/}"
     local var_name="SETUPENV_INSTALLED_${${script_name//-/_}:u}"
 
     if [[ -z "${(P)var_name}" ]]; then
@@ -121,9 +121,9 @@ function _step() {
 
 SETUPENV_TO_INSTALL=()
 
-for file in $(\ls "$ZSH_INSTALLER_DIR/scripts/" -1A)
+for file in "$ZSH_INSTALLER_DIR/scripts/"{all,$ENV_NAME_STR}/*.zsh
 do
-    check_component "$file"
+    check_component "$(basename "$file")"
 done
 
 SETUPENV_INSTALL_STEP=0
