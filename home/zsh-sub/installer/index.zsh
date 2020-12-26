@@ -136,5 +136,4 @@ unset SETUPENV_TO_INSTALL
 unset SETUPENV_INSTALL_STEP
 unset INSTALLER_TMPDIR
 
-unset -f _step
 unset -f check_component
