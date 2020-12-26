@@ -23,8 +23,11 @@ export ZSH_DATA_DIR="$ZSH_SUB_DIR/local/data"
 # Ensure this directory exists
 mkdir -p "$ZSH_DATA_DIR"
 
-# Load the configuration file
+# Load the default configuration file
 source "$ZSH_SUB_DIR/config.zsh"
+
+# Load the local configuration file
+source "$ZSH_SUB_DIR/local/config.zsh"
 
 # Set path to the installer
 export ZSH_INSTALLER_DIR="$ZSH_SUB_DIR/installer"

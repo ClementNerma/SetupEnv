@@ -6,8 +6,5 @@
 # Edit this file and reload it
 alias zerenv="nano ${(%):-%x} && source ${(%):-%x}"
 
-# If this computer is the main personal computer, uncomment the following line:
-# export ZSH_MAIN_PERSONAL_COMPUTER=1
-
 # Put your own configuration here
 

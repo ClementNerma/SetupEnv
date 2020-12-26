@@ -1,6 +1,6 @@
 #
-# This file contains the configuration used by all other ZSH files
-# It is overriden by updates, so this configuration should be overriden in .zshrc.this.zsh instead
+# This file contains the default configuration used by all other ZSH files
+# Its content can be overriden by the `local/config.zsh` file
 #
 
 # Is this my main computer?
