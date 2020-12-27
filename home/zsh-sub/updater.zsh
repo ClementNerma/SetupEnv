@@ -37,7 +37,7 @@ function zerupdate() {
 		local update_path="$1"
 	else
 		if [[ $ZSH_MAIN_PERSONAL_COMPUTER = 1 ]]; then
-			local update_path="$PROJDIR/_Done/Setup Environment"
+			local update_path="$PROJDIR/_Done/SetupEnv"
 		else
 			echo -e "\e[91mERROR: Please provide a path to update ZSH (default path is only available for main computer)\e[0m"
 			return 1
