@@ -63,7 +63,18 @@ function install_components_from_var() {
         echo -e "\e[32m>\e[0m"
         echo ""
 
-        if source "$ZSH_INSTALLER_DIR/scripts/$component.zsh"; then
+        local script_path="$ZSH_INSTALLER_DIR/scripts/all/$component.zsh"
+
+        if [[ ! -f $script_path ]]; then
+            local script_path="$ZSH_INSTALLER_DIR/scripts/$ENV_NAME_STR/$component.zsh"
+
+            if [[ ! -f $script_path ]]; then
+                echo -e "\e[91m> Failed to install component \e[96m$component\e[91m: installation script not found\e[0m"
+                return 1
+            fi
+        fi
+
+        if source "$script_path"; then
             if [[ -z "${(P)var_name}" ]]; then
                 echo "export SETUPENV_INSTALLED_${${component//-/_}:u}=1" >> "$ZSH_INSTALLED_LIST_FILE"
             fi
@@ -135,5 +146,3 @@ fi
 unset SETUPENV_TO_INSTALL
 unset SETUPENV_INSTALL_STEP
 unset INSTALLER_TMPDIR
-
-unset -f check_component
