@@ -106,7 +106,7 @@ function check_component() {
     fi
 }
 
-function update_component() {
+function zerupdate_component() {
     if [[ ! -f "$ZSH_INSTALLER_DIR/scripts/all/$1.zsh" && ! -f "$ZSH_INSTALLER_DIR/scripts/$ENV_NAME_STR/$1.zsh" ]]; then
         echoerr "Provided component \e[96m$1\e[91m was not found."
         return 1

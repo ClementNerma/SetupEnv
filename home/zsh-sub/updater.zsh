@@ -77,7 +77,7 @@ function zerupdate() {
 }
 
 # Download latest version and update
-function zeronline() {
+function zerupdate_online() {
 	# Create a temporary directory
 	local tmpdir="/tmp/_setupenv_updater_$(date +%s)"
 	command rm -rf "$tmpdir"
