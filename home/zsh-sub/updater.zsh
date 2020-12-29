@@ -96,7 +96,7 @@ function zeronline() {
 
 	local setupenv_zip_path="$tmpdir/setupenv.zip"
 
-	if ! wget --show-progress "$setupenv_url" -O "$setupenv_zip_path"; then
+	if ! dl "$setupenv_url" "$setupenv_zip_path"; then
 		echoerr "Download failed."
 		return 1
 	fi

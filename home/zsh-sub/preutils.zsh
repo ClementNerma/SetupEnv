@@ -18,11 +18,19 @@ function echoinfo() {
     echocolored "\e[93m" "$@"
 }
 
+# Arguments: "<url>" "<download location>"
+function dl() { wget -q --show-progress -O "$2" "$1" }
+function sudodl() { sudo wget -q --show-progress -O "$2" "$1" }
+
+# Arguments: "<download location>"
+function dli() { wget -qi - --show-progress -O "$1" }
+function sudodli() { sudo wget -qi - --show-progress -O "$1" }
+
 # Arguments: "<repo author>/<reponame>" "<file grep pattern>" "<download location>"
 function dlghrelease() {
     curl -s "https://api.github.com/repos/$1/releases/latest" \
         | grep "browser_download_url.*$2" \
         | cut -d : -f 2,3 \
         | tr -d \" \
-        | wget -qi - --show-progress -O "$3"
+        | dli "$3"
 }
