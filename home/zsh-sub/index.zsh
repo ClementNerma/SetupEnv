@@ -42,6 +42,16 @@ export ZSH_INSTALLER_ABORTED=0
 
 source "$ZSH_INSTALLER_DIR/index.zsh"
 
+# Load platform-specific configuration
+source "$ZSH_SUB_DIR/$ENV_NAME_STR/env.zsh"
+
+# Load the local configuration
+source "$ZSH_SUB_DIR/local/env.zsh"
+
+# Load the updater
+source "$ZSH_SUB_DIR/updater.zsh"
+
+# Exit if the installer aborted
 if [[ $ZSH_INSTALLER_ABORTED = 1 ]]; then
 	return
 fi
@@ -51,15 +61,6 @@ alias reload="source ${(%):-%x}"
 
 # Allow fast editing of this file, with automatic reloading
 alias zer="nano ${(%):-%x} && reload"
-
-# Load platform-specific configuration
-source "$ZSH_SUB_DIR/$ENV_NAME_STR/env.zsh"
-
-# Load the local configuration
-source "$ZSH_SUB_DIR/local/env.zsh"
-
-# Load the updater
-source "$ZSH_SUB_DIR/updater.zsh"
 
 # Load the script for the main computer (if applies)
 if [ $ZSH_MAIN_PERSONAL_COMPUTER = 1 ]; then
