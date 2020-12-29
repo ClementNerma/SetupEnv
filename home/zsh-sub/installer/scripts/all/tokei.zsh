@@ -5,11 +5,7 @@ else
 	_TOKEI_GREPPER="tokei-aarch64-linux-android.tar.gz"
 fi
 
-curl -s https://api.github.com/repos/XAMPPRocky/tokei/releases/latest \
-	| grep "browser_download_url.*$_TOKEI_GREPPER" \
-	| cut -d : -f 2,3 \
-	| tr -d \" \
-	| wget -qi - --show-progress -O "$INSTALLER_TMPDIR/tokei.tar.gz"
+dlghrelease "XAMPPRocky/tokei" "$_TOKEI_GREPPER" "$INSTALLER_TMPDIR/tokei.tar.gz"
 
 tar zxf "$INSTALLER_TMPDIR/tokei.tar.gz"
 

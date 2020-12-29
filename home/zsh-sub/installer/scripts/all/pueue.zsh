@@ -5,17 +5,8 @@ else
 	_FD_GREPPER="x86_64"
 fi
 
-curl -s https://api.github.com/repos/Nukesor/pueue/releases/latest \
-	| grep "browser_download_url.*pueue-linux-$_FD_GREPPER" \
-	| cut -d : -f 2,3 \
-	| tr -d \" \
-	| wget -qi - --show-progress -O "$INSTALLER_TMPDIR/pueue"
-
-curl -s https://api.github.com/repos/Nukesor/pueue/releases/latest \
-	| grep "browser_download_url.*pueued-linux-$_FD_GREPPER" \
-	| cut -d : -f 2,3 \
-	| tr -d \" \
-	| wget -qi - --show-progress -O "$INSTALLER_TMPDIR/pueued"
+dlghrelease "Nukesor/pueue" "pueue-linux-$_FD_GREPPER" "$INSTALLER_TMPDIR/pueue"
+dlghrelease "Nukesor/pueue" "pueued-linux-$_FD_GREPPER" "$INSTALLER_TMPDIR/pueued"
 
 sudo chmod +x "$INSTALLER_TMPDIR/pueue"
 sudo chmod +x "$INSTALLER_TMPDIR/pueued"
