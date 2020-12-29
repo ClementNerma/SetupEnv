@@ -9,7 +9,7 @@ export WINUSER=$(powershell.exe -command '$env:UserName' | tr -d "\r")
 # Fail if username couldn't be get
 if [[ -z "$WINUSER" ]]
 then
-  echo -e "\e[91mERROR: Failed to get username from command-line (see error above)\e[0m"
+  echoerr "Failed to get username from command-line (see error above)"
   return
 fi
 
@@ -35,7 +35,7 @@ else
     export $1="$HOMEDIR/$4"
 
     if [[ ! -L "$HOMEDIR/$4" ]]; then
-      echo -e "\e[93mNOTICE: Windows $2 Projects directory was not found in user directory under name \e[95m$4\e[93m."
+      echoinfo "NOTICE: Windows $2 Projects directory was not found in user directory under name \e[95m$4\e[93m."
       _twsccl+=("\e[94mmklink /D \"C:\\\\Users\\\\$WINUSER\\\\_$4WSLSymlink\" \"\\\\\\\\wsl$\\Debian\\\\home\\\\$USER\\\\$3\"\e[0m")
       _twsccl+=("\e[94mmklink /J /D \"C:\\\\Users\\\\$WINUSER\\\\$4\" \"C:\\\\Users\\\\$WINUSER\\\\_$4WSLSymlink\"\e[0m")
     fi
@@ -49,7 +49,7 @@ else
 
   if [ ${#_twsccl[@]} -ne 0 ]; then
     echo ""
-    echo -e "\e[93mTo create missing directories, run the following commands in \e[95mCMD.EXE\e[93m:"
+    echoinfo "To create missing directories, run the following commands in \e[95mCMD.EXE\e[93m:"
     echo ""
 
     for value in ${_twsccl[@]}; do

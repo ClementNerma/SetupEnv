@@ -3,15 +3,15 @@
 #
 
 if [[ -z "$ZSH_INSTALLER_DIR" ]]; then
-    echo -e "\e[91mERROR: Environment variable \e[93m\$ZSH_INSTALLER_DIR\e[91m is not defined.\e[0m"
-    echo -e "\e[91m       Please make sure the current script is run from Setup Env.\e[0m"
+    echoerr "Environment variable \e[93m\$ZSH_INSTALLER_DIR\e[91m is not defined."
+    echoerr "       Please make sure the current script is run from Setup Env."
     return 1
 fi
 
 export ZSH_INSTALLED_LIST_FILE=$(realpath "$ZSH_INSTALLER_DIR/../local/.installed.auto.zsh")
 
 if [[ ! -f "$ZSH_INSTALLED_LIST_FILE" ]]; then
-    echo -e "\e[91mERROR: Installation list was not found at path \e[95m$ZSH_INSTALLED_LIST_FILE\e[91m. Aborting installation.\e[0m"
+    echoerr "Installation list was not found at path \e[95m$ZSH_INSTALLED_LIST_FILE\e[91m. Aborting installation."
     return 1
 fi
 
@@ -23,17 +23,17 @@ function install_components_from_var() {
     INSTALLER_TMPDIR="/tmp/_setupenv_autoinstaller_$AUTO_INSTALLER_STARTED_AT"
     mkdir -p "$INSTALLER_TMPDIR"
 
-    echo -e "\e[93mDetected \e[91m${#SETUPENV_TO_INSTALL[@]}\e[93m $1:\e[0m"
-    echo -e "\e[96m    ${SETUPENV_TO_INSTALL[@]}\e[0m"
+    echoinfo "Detected \e[91m${#SETUPENV_TO_INSTALL[@]}\e[93m $1:"
+    echo -e "\e[96m    ${SETUPENV_TO_INSTALL[@]}"
     echo -e ""
-    echo -e "\e[93mThese components will now be installed.\e[0m"
-    echo -e "\e[93m$2type \e[31mN\e[93m/\e[31mn\e[93m.\e[0m"
+    echoinfo "These components will now be installed."
+    echoinfo "$2type \e[31mN\e[93m/\e[31mn\e[93m."
 
     local install_choice
     read "install_choice?"
 
     if [[ $install_choice =~ ^[Nn]$ ]]; then
-        echo -e "\e[93mInstallation has been aborted.\e[0m"
+        echoinfo "Installation has been aborted."
         echo -e ""
 
         if [[ $3 = 1 ]]; then
@@ -44,9 +44,9 @@ function install_components_from_var() {
     fi
 
     echo -e ""
-    echo -e "\e[32m>\e[0m"
-    echo -e "\e[32m> Preparing the environment for update...\e[0m"
-    echo -e "\e[32m>\e[0m"
+    echosuccess ">"
+    echosuccess "> Preparing the environment for update..."
+    echosuccess ">"
     echo -e ""
 
     sudo apt update
@@ -57,10 +57,10 @@ function install_components_from_var() {
         SETUPENV_INSTALL_STEP=$((SETUPENV_INSTALL_STEP + 1))
 
         echo ""
-        echo -e "\e[32m>\e[0m"
-        echo -e "\e[32m> Installing component \e[94m$SETUPENV_INSTALL_STEP\e[32m /" \
-                "\e[91m${#SETUPENV_TO_INSTALL[@]}\e[32m: \e[96m$component\e[32m\e[0m"
-        echo -e "\e[32m>\e[0m"
+        echosuccess ">"
+        echosuccess "> Installing component \e[94m$SETUPENV_INSTALL_STEP\e[32m /" \
+                "\e[91m${#SETUPENV_TO_INSTALL[@]}\e[32m: \e[96m$component\e[32m"
+        echosuccess ">"
         echo ""
 
         local script_path="$ZSH_INSTALLER_DIR/scripts/all/$component.zsh"
@@ -69,7 +69,7 @@ function install_components_from_var() {
             local script_path="$ZSH_INSTALLER_DIR/scripts/$ENV_NAME_STR/$component.zsh"
 
             if [[ ! -f $script_path ]]; then
-                echo -e "\e[91m> Failed to install component \e[96m$component\e[91m: installation script not found\e[0m"
+                echoerr "> Failed to install component \e[96m$component\e[91m: installation script not found"
                 return 1
             fi
         fi
@@ -82,15 +82,15 @@ function install_components_from_var() {
     done
 
     echo -e ""
-    echo -e "\e[32m>\e[0m"
-    echo -e "\e[32m> Cleaning the temporary directory..."
-    echo -e "\e[32m>\e[0m"
+    echosuccess ">"
+    echosuccess "> Cleaning the temporary directory..."
+    echosuccess ">"
     echo -e ""
 
     command rm -rf "$INSTALLER_TMPDIR"
 
     echo -e ""
-    echo -e "\e[93m=> Successfully $4 \e[91m${#SETUPENV_TO_INSTALL[@]}\e[93m component(s)!\e[0m"
+    echoinfo "=> Successfully $4 \e[91m${#SETUPENV_TO_INSTALL[@]}\e[93m component(s)!"
     echo -e ""
 }
 
@@ -105,7 +105,7 @@ function check_component() {
 
 function update_component() {
     if [[ ! -f "$ZSH_INSTALLER_DIR/scripts/all/$1.zsh" && ! -f "$ZSH_INSTALLER_DIR/scripts/$ENV_NAME_STR/$1.zsh" ]]; then
-        echo -e "\e[91mERROR: Provided component \e[96m$1\e[91m was not found.\e[0m"
+        echoerr "Provided component \e[96m$1\e[91m was not found."
         return 1
     fi
 
@@ -126,7 +126,7 @@ function update_component() {
 
 function _step() {
     echo -e ""
-    echo -e "\e[93m>>> Sub-step: $1\e[0m"
+    echoinfo ">>> Sub-step: $1"
     echo -e ""
 }
 

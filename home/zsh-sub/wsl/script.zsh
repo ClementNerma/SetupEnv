@@ -95,7 +95,7 @@ function mount_wsl_drives() {
 
         remount "$letter"
       elif [[ $drive_status != "NOPE" ]]; then
-        echo -e "\e[91mAssertion error: drive status command for \e[95m${letter:u}: \e[91mdrive returned an invalid content: \e[95m$drive_status\e[91m (${#drive_status} characters)\e[0m"
+        echoerr "Assertion error: drive status command for \e[95m${letter:u}: \e[91mdrive returned an invalid content: \e[95m$drive_status\e[91m (${#drive_status} characters)"
       elif [[ $1 == "--debug" ]]; then
         echo Ignoring: $letter
       fi
@@ -103,7 +103,7 @@ function mount_wsl_drives() {
   done
 
   if [[ $c == 0 ]]; then
-    echo -e "\e[91mAssertion error: \e[95mC:\e[91m drive was not found while mounting WSL drives!\e[0m"
+    echoerr "Assertion error: \e[95mC:\e[91m drive was not found while mounting WSL drives!"
   fi
 
   cd "$init_cwd"
@@ -118,7 +118,7 @@ function open() {
   fi
 
   if [[ ! -f "$topath" && ! -d "$topath" && ! -L "$topath" ]]; then
-    echo -e "\e[91mERROR: target path \e[93m$topath\e[91m was not found!\e[0m"
+    echoerr "target path \e[93m$topath\e[91m was not found!"
     return 1
   fi
 
@@ -161,7 +161,7 @@ function openfd() {
   local count=$(echo "$results" | wc -l)
 
   if [[ -z "$results" ]]; then
-      echo -e "\e[91mERROR: No result found for this search.\e[0m"
+      echoerr "No result found for this search."
       return 1
   fi
 
@@ -184,7 +184,7 @@ function openz() {
   local result=$(zoxide query "$1" 2>/dev/null)
 
   if [[ -z "$result" ]]; then
-    echo -e "\e[91mERROR: No result found by Zoxide.\e[0m"
+    echoerr "No result found by Zoxide."
     return 1
   fi
 
@@ -194,14 +194,14 @@ function openz() {
 # Open a file or directory on Windows from a 'zoxide' + 'fd' search
 function openfz() {
   if [[ -z "$1" ]]; then
-    echo -e "\e[91mERROR: Please provide a search for Zoxide.\e[0m"
+    echoerr "Please provide a search for Zoxide."
     return 1
   fi
 
   local result=$(zoxide query "$1" 2>/dev/null)
 
   if [[ -z "$result" ]]; then
-    echo -e "\e[91mERROR: No result found by Zoxide.\e[0m"
+    echoerr "No result found by Zoxide."
     return 1
   fi
   
@@ -217,7 +217,7 @@ function openfze() { openfz "$@" && exit }
 # Link a WSL port with a Windows port
 function wslport() {
   if [[ -z "$1" ]]; then
-    echo -e "\e[91mERROR: please specify a port (syntax: wslport <wsl port> [<windows port>]\e[0m"
+    echoerr "please specify a port (syntax: wslport <wsl port> [<windows port>]"
     return 1
   fi
 

@@ -1,12 +1,12 @@
 
 if [ -d ~/.rustup ]; then
-	echo -e "\e[33m\!/ A previous version of \e[32mRust\e[33m was detected ==> backing it up to \e[32m~/.rustup.bak\e[33m...\e[0m"
+	echo -e "\e[33m\!/ A previous version of \e[32mRust\e[33m was detected ==> backing it up to \e[32m~/.rustup.bak\e[33m..."
 	command rm -rf ~/.rustup.bak
 	mv ~/.rustup ~/.rustup.bak
 fi
 
 if [ -d ~/.cargo ]; then
-	echo -e "\e[33m\!/ A previous version of \e[32mCargo\e[33m was detected ==> backing it up to \e[32m~/.cargo.bak\e[33m...\e[0m"
+	echo -e "\e[33m\!/ A previous version of \e[32mCargo\e[33m was detected ==> backing it up to \e[32m~/.cargo.bak\e[33m..."
 	command rm -rf ~/.cargo.bak
 	mv ~/.cargo ~/.cargo.bak
 fi

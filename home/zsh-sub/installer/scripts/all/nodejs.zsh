@@ -1,6 +1,6 @@
 
 if [[ -d ~/.volta ]]; then
-	echo -e "\e[33m\!/ A previous version of \e[32mVolta\e[33m was detected ==> backing it up to \e[32m~/.volta.bak\e[33m...\e[0m"
+	echo -e "\e[33m\!/ A previous version of \e[32mVolta\e[33m was detected ==> backing it up to \e[32m~/.volta.bak\e[33m..."
 	command rm -rf "~/.volta.bak"
 	mv ~/.volta ~/.volta.bak
 fi

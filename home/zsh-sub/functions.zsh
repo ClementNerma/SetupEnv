@@ -183,16 +183,16 @@ alias gop="git reflog expire --expire=now --all && git gc --prune=now && git gc 
 # Software: Github
 function ghdl() {
 	if [[ $1 != "https://github.com/"* ]]; then
-		echo -e "\e[91mInvalid GitHub repository URL: \e[93m$1\e[0m"
+		echoerr "Invalid GitHub repository URL: \e[93m$1"
 	fi
 
 	local repoauthor=$(echo "$1" | cut -d'/' -f4)
 	local reponame=$(echo "$1" | cut -d'/' -f5)
 
-	echo -e "\e[92mCloning from repository: \e[93m$repoauthor/$reponame\e[92m...\e[0m"
+	echosuccess "Cloning from repository: \e[93m$repoauthor/$reponame\e[92m..."
 
 	if [[ -d "$reponame" ]]; then
-		echo -e "\e[91m> ERROR: Directory \e[95m$reponame\e[91m already exists!\e[0m"
+		echoerr "> Directory \e[95m$reponame\e[91m already exists!"
 		return 1
 	fi
 
@@ -200,25 +200,25 @@ function ghdl() {
 	local branch=$(curl -s "https://api.github.com/repos/$repoauthor/$reponame" | jq -r ".default_branch")
 
 	if [[ $branch == "null" ]]; then
-		echo -e "\e[91m> ERROR: Failed to determine default branch!\e[0m"
+		echoerr "> Failed to determine default branch!"
 		return 1
 	fi
 
 	local filename="$reponame.zip"
-	echo -e "\e[34m> Fetching archive for branch \e[93m$branch\e[34m to \e[95m$filename\e[34m...\e[0m"
+	echo -e "\e[34m> Fetching archive for branch \e[93m$branch\e[34m to \e[95m$filename\e[34m..."
 	
 	local zipurl="https://codeload.github.com/$repoauthor/$reponame/zip/$branch"
 
 	if ! wget -q --show-progress "$zipurl" -O "$filename"; then
-		echo -e "\e[91m> ERROR: Failed to fetch archive from URL: \e[93m$zipurl\e[91m!\e[0m"
+		echoerr "> Failed to fetch archive from URL: \e[93m$zipurl\e[91m!"
 		return 1
 	fi
 
-	echo -e "\e[34m> Extracting archive to directory \e[93m$reponame\e[34m...\e[0m"
+	echo -e "\e[34m> Extracting archive to directory \e[93m$reponame\e[34m..."
 	unzip -q "$filename"
 	mv "$reponame-$branch" "$reponame"
 
-	echo -e "\e[92mDone!\e[0m"
+	echosuccess "Done!"
 }
 
 # Software: Youtube-DL

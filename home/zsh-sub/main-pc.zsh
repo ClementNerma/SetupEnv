@@ -17,7 +17,7 @@ function backupy() {
   	local backupy_path="$PROJDIR/_Done/Backupy/backupy.bash"
 
 	if [[ ! -f "$backupy_path" ]]; then
-		echo -e "\e[91mERROR: Could not find \e[92mBackupy\e[91m files at path \e[93m$backupy_path\e[0m"
+		echoerr "Could not find \e[92mBackupy\e[91m files at path \e[93m$backupy_path"
 		return 1
 	fi
 
@@ -29,7 +29,7 @@ function adbtool() {
   local tool_path="$SOFTWAREDIR/PlatformTools"
 
   if [[ ! -f "$tool_path/$1" ]]; then
-    echo -e "\e[91mERROR: Could not find Platform Tools binary \e[93m$1\e[91m at path \e[93m$tool_path\e[0m"
+    echoerr "Could not find Platform Tools binary \e[93m$1\e[91m at path \e[93m$tool_path"
     return 1
   fi
 
