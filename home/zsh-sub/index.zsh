@@ -59,9 +59,6 @@ fi
 # Allow fast reloading of this file after changes
 alias reload="source ${(%):-%x}"
 
-# Allow fast editing of this file, with automatic reloading
-alias zer="nano ${(%):-%x} && reload"
-
 # Load the script for the main computer (if applies)
 if [ $ZSH_MAIN_PERSONAL_COMPUTER = 1 ]; then
 	source "$ZSH_SUB_DIR/main-pc.zsh"
