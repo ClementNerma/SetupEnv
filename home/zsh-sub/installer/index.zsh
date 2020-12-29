@@ -104,7 +104,7 @@ function check_component() {
 }
 
 function update_component() {
-    if [[ ! -f "$ZSH_INSTALLER_DIR/scripts/$1.zsh" ]]; then
+    if [[ ! -f "$ZSH_INSTALLER_DIR/scripts/all/$1.zsh" && ! -f "$ZSH_INSTALLER_DIR/scripts/$ENV_NAME_STR/$1.zsh" ]]; then
         echo -e "\e[91mERROR: Provided component \e[96m$1\e[91m was not found.\e[0m"
         return 1
     fi
