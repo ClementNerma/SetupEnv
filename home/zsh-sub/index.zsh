@@ -31,6 +31,9 @@ source "$ZSH_SUB_DIR/config.zsh"
 # Load the local configuration file
 source "$ZSH_SUB_DIR/local/config.zsh"
 
+# Load common utilities usable by the installer
+source "$ZSH_SUB_DIR/preutils.zsh"
+
 # Set path to the installer
 export ZSH_INSTALLER_DIR="$ZSH_SUB_DIR/installer"
 
