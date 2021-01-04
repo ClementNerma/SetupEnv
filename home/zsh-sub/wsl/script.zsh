@@ -212,6 +212,7 @@ function openfz() {
 # Aliases to exit after open commands
 function opene() { open "$@" && exit }
 function openze() { openz "$@" && exit }
+function openfde() { openfd "$@" && exit }
 function openfze() { openfz "$@" && exit }
 
 # Link a WSL port with a Windows port
