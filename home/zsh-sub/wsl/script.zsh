@@ -36,12 +36,12 @@ function winalias() {
 
 # Run a Cargo project located in the projects directory, on Windows
 function cargextw() {
-	win cargo run "--manifest-path=C:\\Users\\cleme\\Projets\\$1\\Cargo.toml" -- ${@:2}
+	win cargo run "--manifest-path=C:\\Users\\$WINUSER\\Projets\\$1\\Cargo.toml" -- ${@:2}
 }
 
 # Run a Cargo project located in the projects directory in release mode, on Windows
 function cargextwr() {
-	win cargo run "--manifest-path=C:\\Users\\cleme\\Projets\\$1\\Cargo.toml" --release -- ${@:2}
+	win cargo run "--manifest-path=C:\\Users\\$WINUSER\\Projets\\$1\\Cargo.toml" --release -- ${@:2}
 }
 
 # Remount a drive in WSL
