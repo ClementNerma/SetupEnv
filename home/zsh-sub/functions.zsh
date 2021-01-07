@@ -261,7 +261,7 @@ if [[ -d ~/go ]]; then
 fi
 
 # Integration for Python
-export PATH="/home/clement/.local/bin:$PATH"
+export PATH="/home/$USER/.local/bin:$PATH"
 
 # Integration for Volta
 export VOLTA_HOME="$HOME/.volta"
