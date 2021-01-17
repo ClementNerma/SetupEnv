@@ -1,11 +1,11 @@
 mkdir -p "$YTDL_WSL_PATH"
 
-if [[ ! -f "$YOUTUBEDL_BIN_PATH" ]]; then
+if [[ $ZER_UPDATING = 1 || ! -f "$YOUTUBEDL_BIN_PATH" ]]; then
     _step "Downloading Youtube-DL..."
     sudodl https://yt-dl.org/downloads/latest/youtube-dl.exe "$YOUTUBEDL_BIN_PATH"
 fi
 
-if [[ ! -f "$FFMPEG_BIN_PATH" || ! -f "$FFPLAY_BIN_PATH" || ! -f "$FFPROBE_BIN_PATH" ]]; then
+if [[ $ZER_UPDATING = 1 || ! -f "$FFMPEG_BIN_PATH" || ! -f "$FFPLAY_BIN_PATH" || ! -f "$FFPROBE_BIN_PATH" ]]; then
     _step "Downloading FFMpeg..."
     sudodl https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip "$YTDL_WSL_PATH/ffmpeg.zip"
     _step "Extracting FFMpeg..."
@@ -17,7 +17,7 @@ if [[ ! -f "$FFMPEG_BIN_PATH" || ! -f "$FFPLAY_BIN_PATH" || ! -f "$FFPROBE_BIN_P
     sudo rm -rf "$YTDL_WSL_PATH/FFMpegExtracted"
 fi
 
-if [[ ! -f "$ATOMICPARSLEY_BIN_PATH" ]]; then
+if [[ $ZER_UPDATING = 1 || ! -f "$ATOMICPARSLEY_BIN_PATH" ]]; then
     _step "Downloading AtomicParsley..."
     sudodl https://netix.dl.sourceforge.net/project/atomicparsley/atomicparsley/AtomicParsley%20v0.9.0/AtomicParsley-win32-0.9.0.zip "$YTDL_WSL_PATH/AtomicParsley.zip"
     _step "Extracting AtomicParsley..."

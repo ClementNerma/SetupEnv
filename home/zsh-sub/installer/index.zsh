@@ -74,6 +74,7 @@ function install_components_from_var() {
             fi
         fi
 
+        export ZER_UPDATING=$5
 
         if source "$script_path"; then
             local var_name="SETUPENV_INSTALLED_${${component//-/_}:u}"
@@ -83,6 +84,8 @@ function install_components_from_var() {
             fi
         fi
     done
+
+    unset ZER_UPDATING
 
     echo -e ""
     echosuccess ">"
@@ -121,7 +124,7 @@ function zerupdate_component() {
 
     SETUPENV_INSTALL_STEP=0
 
-    install_components_from_var "components to update" "To abort the update process, " 0 "updated"
+    install_components_from_var "components to update" "To abort the update process, " 0 "updated" 1
 
     unset SETUPENV_TO_INSTALL
     unset SETUPENV_INSTALL_STEP
@@ -143,7 +146,7 @@ done
 SETUPENV_INSTALL_STEP=0
 
 if [[ ${#SETUPENV_TO_INSTALL[@]} != 0 ]]; then
-    install_components_from_var "missing components" "To skip the installation process for now and not load the environment, " 1 "installed"
+    install_components_from_var "missing components" "To skip the installation process for now and not load the environment, " 1 "installed" 0
 fi
 
 unset SETUPENV_TO_INSTALL
