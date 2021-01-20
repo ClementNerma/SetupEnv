@@ -29,33 +29,35 @@ else
   export WORKDIR="/home/$USER/Work"
   export TRASHDIR="/home/$USER/.trasher"
 
-  # Check if projects directory are available from Windows
-  # Arguments: _checkdir <variable name> <display name> <wsl directory name> <symlink name>
-  _checkdir() {
-    export $1="$HOMEDIR/$4"
+  if [[ $DISABLE_WSL_WARNING_WINDOWS_PROJ_SYMLINKS = 0 ]]; then
+    # Check if projects directory are available from Windows
+    # Arguments: _checkdir <variable name> <display name> <wsl directory name> <symlink name>
+    _checkdir() {
+      export $1="$HOMEDIR/$4"
 
-    if [[ ! -L "$HOMEDIR/$4" ]]; then
-      echoinfo "NOTICE: Windows $2 Projects directory was not found in user directory under name \e[95m$4\e[93m."
-      _twsccl+=("\e[94mmklink /D \"C:\\\\Users\\\\$WINUSER\\\\_$4WSLSymlink\" \"\\\\\\\\wsl$\\Debian\\\\home\\\\$USER\\\\$3\"\e[0m")
-      _twsccl+=("\e[94mmklink /J /D \"C:\\\\Users\\\\$WINUSER\\\\$4\" \"C:\\\\Users\\\\$WINUSER\\\\_$4WSLSymlink\"\e[0m")
+      if [[ ! -L "$HOMEDIR/$4" ]]; then
+        echoinfo "NOTICE: Windows $2 Projects directory was not found in user directory under name \e[95m$4\e[93m."
+        _twsccl+=("\e[94mmklink /D \"C:\\\\Users\\\\$WINUSER\\\\_$4WSLSymlink\" \"\\\\\\\\wsl$\\Debian\\\\home\\\\$USER\\\\$3\"\e[0m")
+        _twsccl+=("\e[94mmklink /J /D \"C:\\\\Users\\\\$WINUSER\\\\$4\" \"C:\\\\Users\\\\$WINUSER\\\\_$4WSLSymlink\"\e[0m")
+      fi
+    }
+
+    # Temporary Windows Symlinks Creation Commands List
+    _twsccl=()
+
+    _checkdir WIN_PROJDIR Home Projets Projets
+    _checkdir WIN_PROJDIR Work Work Work
+
+    if [ ${#_twsccl[@]} -ne 0 ]; then
+      echo ""
+      echoinfo "To create missing directories, run the following commands in \e[95mCMD.EXE\e[93m:"
+      echo ""
+
+      for value in ${_twsccl[@]}; do
+        echo $value
+      done
+
+      echo ""
     fi
-  }
-
-  # Temporary Windows Symlinks Creation Commands List
-  _twsccl=()
-
-  _checkdir WIN_PROJDIR Home Projets Projets
-  _checkdir WIN_PROJDIR Work Work Work
-
-  if [ ${#_twsccl[@]} -ne 0 ]; then
-    echo ""
-    echoinfo "To create missing directories, run the following commands in \e[95mCMD.EXE\e[93m:"
-    echo ""
-
-    for value in ${_twsccl[@]}; do
-      echo $value
-    done
-
-    echo ""
   fi
 fi
