@@ -259,16 +259,18 @@ function atomicparsley() {
   "$ATOMICPARSLEY_BIN_PATH" "$@"
 }
 
-# Run Git commands from Windows
-alias git="git.exe" 
-alias gms="command git commit -m" # For signing commits, from WSL
+# Run Git commands from Windows if the project directories are not stored inside WSL's own filesystem
+if [[ $PROJECT_DIRS_IN_WSL_FS = 0 ]]; then
+  alias git="git.exe" 
+  alias gms="command git commit -m" # For signing commits, from WSL
 
-# Run Node.js tools from Windows
-winalias volta node npm yarn pnpm ts-node
+  # Run Node.js tools from Windows
+  winalias volta node npm yarn pnpm ts-node
 
-# Run Rust tools from Windows
-alias cargo="cargo.exe" # Faster
-winalias rustup rustc mdbook
+  # Run Rust tools from Windows
+  alias cargo="cargo.exe" # Faster
+  winalias rustup rustc mdbook
+fi
 
 # Mount storage devices on startup (this typically takes 50~100 ms)
 mount_wsl_drives
