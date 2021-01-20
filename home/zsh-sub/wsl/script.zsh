@@ -215,6 +215,14 @@ function openze() { openz "$@" && exit }
 function openfde() { openfd "$@" && exit }
 function openfze() { openfz "$@" && exit }
 
+# Edit a file directly in Sublime Text, even if stored inside WSL
+function edit() {
+  local currdir=$(pwd)
+  cd "$(dirname "$1")"
+  /mnt/c/Program\ Files/Sublime\ Text\ 3/sublime_text.exe "$(basename "$1")"
+  cd "$currdir"
+}
+
 # Link a WSL port with a Windows port
 function wslport() {
   if [[ -z "$1" ]]; then
