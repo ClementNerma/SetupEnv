@@ -55,16 +55,18 @@ function remount() {
 export WSL_HOST_IP=$(awk '/nameserver/ { print $2 }' /etc/resolv.conf)
 
 # Integration of some Windows tools
-function code() {
-  if [[ -z "$1" ]]; then
-    code
-  else
-    local from=$(pwd)
-    cd "$1"
-    win code .
-    cd "$from"
-  fi
-}
+if [[ $PROJECT_DIRS_IN_WSL_FS = 0 ]]; then
+  function code() {
+    if [[ -z "$1" ]]; then
+      command code
+    else
+      local from=$(pwd)
+      cd "$1"
+      command code .
+      cd "$from"
+    fi
+  }
+fi
 
 # Mount drives in WSL, including removable ones
 function mount_wsl_drives() {
