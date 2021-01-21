@@ -239,6 +239,10 @@ function ytdlsubs() {
 	ytdl "$@" --write-sub --sub-lang "fr,en"
 }
 
+# Software: HTTPie
+alias ht="https -F --print=b"
+alias htdl="ht --download"
+
 # Set the default editor
 export EDITOR="micro"
 
