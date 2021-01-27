@@ -213,3 +213,18 @@ function ytdl() {
 function ytdlsubs() {
 	ytdl "$@" --write-sub --sub-lang "fr,en"
 }
+
+# Install a Debian package
+function debi() {
+	sudo apt update
+	sudo dpkg -i "$1"
+	sudo apt install -f
+}
+
+# Install a Debian package from the web
+function debir() {
+	local debpath="/tmp/$(date +%s).deb"
+	htdl "$1" -o "$debpath"
+	debi "$debpath"
+	rm "$debpath"
+}
