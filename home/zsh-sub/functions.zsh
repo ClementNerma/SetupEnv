@@ -120,20 +120,8 @@ function howlong() {
 	printf "\n"
 }
 
-# Shortcuts for main directories in paths
-alias gohome="cd $HOMEDIR"
-alias gotemp="cd $TEMPDIR"
-alias godl="cd $DLDIR"
-alias gotrash="cd $TRASHDIR"
-alias goproj="cd $PROJDIR"
-alias gowork="cd $WORKDIR"
-alias gosoft="cd $SOFTWAREDIR"
-
-# Run Bash
-alias bash="BASH_NO_ZSH=true bash"
-
 # Go to a directory located in the projects directory
-p() {
+function p() {
 	if [[ -z "$1" ]]; then
 		echo Please provide a project to go to.
 	else
@@ -142,7 +130,7 @@ p() {
 }
 
 # Create a directory and go into it
-mkcd() {
+function mkcd() {
 	if [[ ! -d "$1" ]]; then
 		mkdir -p "$1"
 	fi
@@ -155,30 +143,6 @@ trasher() { sudo trasher --create-trash-dir --trash-dir "$TRASHDIR" "$@" }
 rm() { trasher rm --move-ext-filesystems "$@" }
 rmperma() { trasher rm --permanently "$@" }
 unrm() { trasher unrm --move-ext-filesystems "$@" }
-
-# Software: Exa
-alias ls="exa --all --long --group-directories-first --color-scale"
-alias tree="ls --tree"
-
-# Software: Micro
-alias nano="micro"
-alias e="micro"
-
-# Software: Bat
-alias cat="bat --theme=base16"
-
-# Software: Git
-alias ga="git add"
-alias gb="git checkout -b"
-alias gd="git diff"
-alias gs="git status"
-alias gr="git reset"
-alias gl="git log"
-alias gm="git commit -m"
-alias gc="git checkout"
-alias gp="git push"
-alias gpb="git push --set-upstream origin \$(git rev-parse --abbrev-ref HEAD)"
-alias gop="git reflog expire --expire=now --all && git gc --prune=now && git gc --aggressive --prune=now"
 
 # Software: Github
 function ghdl() {
@@ -242,6 +206,42 @@ function ytdlsubs() {
 # Software: HTTPie
 alias ht="https -F --print=b"
 alias htdl="ht --download"
+
+# Shortcuts for main directories in paths
+alias gohome="cd $HOMEDIR"
+alias gotemp="cd $TEMPDIR"
+alias godl="cd $DLDIR"
+alias gotrash="cd $TRASHDIR"
+alias goproj="cd $PROJDIR"
+alias gowork="cd $WORKDIR"
+alias gosoft="cd $SOFTWAREDIR"
+
+# Run Bash
+alias bash="BASH_NO_ZSH=true bash"
+
+# Software: Exa
+alias ls="exa --all --long --group-directories-first --color-scale"
+alias tree="ls --tree"
+
+# Software: Micro
+alias nano="micro"
+alias e="micro"
+
+# Software: Bat
+alias cat="bat --theme=base16"
+
+# Software: Git
+alias ga="git add"
+alias gb="git checkout -b"
+alias gd="git diff"
+alias gs="git status"
+alias gr="git reset"
+alias gl="git log"
+alias gm="git commit -m"
+alias gc="git checkout"
+alias gp="git push"
+alias gpb="git push --set-upstream origin \$(git rev-parse --abbrev-ref HEAD)"
+alias gop="git reflog expire --expire=now --all && git gc --prune=now && git gc --aggressive --prune=now"
 
 # Set the default editor
 export EDITOR="micro"
