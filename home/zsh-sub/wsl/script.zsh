@@ -282,5 +282,8 @@ if [[ $PROJECT_DIRS_IN_WSL_FS = 0 ]]; then
   winalias rustup rustc mdbook
 fi
 
+# Enable screen provider on Windows
+export DISPLAY="$WSL_HOST_IP:0.0"
+
 # Mount storage devices on startup (this typically takes 50~100 ms)
 mount_wsl_drives
