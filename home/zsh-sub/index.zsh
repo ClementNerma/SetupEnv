@@ -88,7 +88,10 @@ if [[ ! -d $PROJDIR ]]; then mkdir -p "$PROJDIR"; fi
 if [[ ! -d $WORKDIR ]]; then mkdir -p "$WORKDIR"; fi
 if [[ ! -d $SOFTWAREDIR ]]; then mkdir -p "$SOFTWAREDIR"; fi
 
-# Load functions and aliases
+# Load software configuration and aliases
+source "$ZSH_SUB_DIR/config-aliases.zsh"
+
+# Load functions
 source "$ZSH_SUB_DIR/functions.zsh"
 
 # Dir hashes
