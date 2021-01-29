@@ -52,7 +52,7 @@ function cp_proj_nodeps() {
 
 # Backup a project
 function bakproj() {
-	cp_proj_nodeps "$1" "$2.bak"
+	cp_proj_nodeps "$1" "$1.bak"
 }
 
 # Run a Cargo project located in the projects directory
