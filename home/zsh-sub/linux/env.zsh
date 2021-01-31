@@ -11,3 +11,9 @@ export DLDIR="$HOMEDIR/Downloads"
 export SOFTWAREDIR="$HOMEDIR/Logiciels"
 export PROJDIR="$HOMEDIR/Projets"
 export WORKDIR="$HOMEDIR/Work"
+
+# Set up opening function
+function open() {
+    echo "Opening is not currently supported"
+    false
+}

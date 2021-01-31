@@ -88,6 +88,9 @@ if [[ ! -d $PROJDIR ]]; then mkdir -p "$PROJDIR"; fi
 if [[ ! -d $WORKDIR ]]; then mkdir -p "$WORKDIR"; fi
 if [[ ! -d $SOFTWAREDIR ]]; then mkdir -p "$SOFTWAREDIR"; fi
 
+# Ensure the 'open' function is defined
+if ! typeset -f open > /dev/null; then echoinfo "WARNING: 'open' command is not defined. 'open'-related functions won't work correctly."; fi
+
 # Load software configuration and aliases
 source "$ZSH_SUB_DIR/config-aliases.zsh"
 

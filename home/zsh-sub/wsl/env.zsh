@@ -28,3 +28,25 @@ else
   export WORKDIR="/home/$USER/Work"
   export TRASHDIR="/home/$USER/.trasher"
 fi
+
+# Open a file or directory in Windows
+function open() {
+  local topath="$1"
+
+  if [[ -z "$topath" ]]; then
+    local topath=$(pwd)
+  fi
+
+  if [[ ! -f "$topath" && ! -d "$topath" && ! -L "$topath" ]]; then
+    echoerr "target path \e[93m$topath\e[91m was not found!"
+    return 1
+  fi
+
+  local current_dir=$(pwd)
+  local file_dir_path=$(dirname "$topath")
+  local file_name=$(basename "$topath")
+
+  cd "$file_dir_path"
+  explorer.exe "$file_name"
+  cd "$current_dir"
+}
