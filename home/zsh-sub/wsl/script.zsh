@@ -124,30 +124,6 @@ function open() {
     return 1
   fi
 
-  # Convert path to display symlink path in Windows Explorer, unless disabled explicitly
-  if [[ $PROJECT_DIRS_IN_WSL_FS = 1 && -z "$2" ]]; then
-    local topath=$(realpath "$topath")
-    local origtopath="$topath"
-
-    if [[ $topath = "/home/$USER/Projets/Home" ]]; then
-      explorer.exe "C:\\Users\\${WINUSER}\\Projets"
-      return
-    fi
-
-    if [[ $topath = "/home/$USER/Projets/Work" ]]; then
-      explorer.exe "C:\\Users\\${WINUSER}\\Work"
-      return
-    fi
-
-    local topath="${topath/\/home\/$USER\/Projets\/Home\//C:\\Users\\${WINUSER}\\Projets\\}"
-    local topath="${topath/\/home\/$USER\/Projets\/Work\//C:\\Users\\${WINUSER}\\Work\\}"
-
-    if [[ "$topath" != "$origtopath" ]]; then
-      explorer.exe "${topath/\//\\}"
-      return
-    fi
-  fi
-
   local current_dir=$(pwd)
   local file_dir_path=$(dirname "$topath")
   local file_name=$(basename "$topath")
