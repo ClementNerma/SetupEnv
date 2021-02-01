@@ -45,9 +45,9 @@ export EDITOR="micro"
 # Allow to sign Git commits with GPG
 export GPG_TTY=$(tty)
 
-# Integration for Pueued
+# Integration for Pueue
 (nohup pueued >/dev/null 2>&1 &)
-alias pu="pueued"
+alias pu="pueue"
 
 # Integration for Rust (if installed)
 if [[ -f ~/.cargo/env ]]; then
