@@ -16,6 +16,3 @@ source $HOME/.cargo/env # Just for this session
 
 _step "Installing tools for Rust..."
 sudo apt install -yqqq llvm libclang-dev
-
-_step "Installing required tools for some Rust libraries..."
-sudo apt install -yqqq pkg-config libssl-dev

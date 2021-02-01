@@ -50,8 +50,7 @@ function install_components_from_var() {
     echo -e ""
 
     sudo apt update
-    sudo apt install -yqqq wget sed grep unzip jq apt-transport-https dos2unix
-
+    
     for component in $SETUPENV_TO_INSTALL
     do
         SETUPENV_INSTALL_STEP=$((SETUPENV_INSTALL_STEP + 1))
@@ -136,12 +135,36 @@ function _step() {
     echo -e ""
 }
 
+function _checkdir() {
+    if [[ -f "$1/_init.zsh" ]]; then
+        check_component "_init.zsh"
+    fi
+
+    for file in "$1/_"*.zsh
+    do
+        if [[ "$(basename "$file")" = "_init.zsh" ]]; then
+            continue
+        fi
+
+        check_component "$(basename "_init/$file")"
+    done
+
+    for file in "$1/"*.zsh
+    do
+        if [[ "$(basename "$file")" = "_"* ]]; then
+            continue
+        fi
+
+        check_component "$(basename "_init/$file")"
+    done
+}
+
 SETUPENV_TO_INSTALL=()
 
-for file in "$ZSH_INSTALLER_DIR/scripts/"{all,$ENV_NAME_STR}/*.zsh
-do
-    check_component "$(basename "$file")"
-done
+setopt null_glob
+
+_checkdir "$ZSH_INSTALLER_DIR/scripts/all"
+_checkdir "$ZSH_INSTALLER_DIR/scripts/$ENV_NAME_STR"
 
 SETUPENV_INSTALL_STEP=0
 
@@ -152,3 +175,4 @@ fi
 unset SETUPENV_TO_INSTALL
 unset SETUPENV_INSTALL_STEP
 unset INSTALLER_TMPDIR
+unset -f _checkdir

@@ -1,2 +1,1 @@
-
-sudo apt install httpie
+sudo apt install -yqqq httpie

@@ -91,7 +91,7 @@ _step "Updating repositories..."
 sudo apt update
 
 _step "Installing required packages..."
-sudo apt install -y zsh git curl
+sudo apt install -yqqq zsh git curl
 
 _step "Installing Oh-My-ZSH!..."
 
