@@ -40,6 +40,8 @@ alias adb="adbtool adb.exe"
 alias fastboot="adbtool fastboot.exe"
 
 # Provide Borg aliases with built-in passphrase
-alias borg="BORG_PASSPHRASE=\"\$(command cat \$PROJDIR/_Done/Backupy/BORG_PASSPHRASE.txt)\" borg"
-alias borgfs="BORG_PASSPHRASE=\"\$(command cat \$PROJDIR/_Done/Backupy/BORG_PASSPHRASE.txt)\" borgfs"
-alias borgmatic="BORG_PASSPHRASE=\"\$(command cat \$PROJDIR/_Done/Backupy/BORG_PASSPHRASE.txt)\" borgmatic"
+alias withborgpass="BORG_PASSPHRASE=\"\$(command cat \$PROJDIR/_Done/Backupy/BORG_PASSPHRASE.txt)\""
+
+alias borg="withborgpass borg"
+alias borgfs="withborgpass borgfs"
+alias borgmatic="withborgpass borgmatic"
