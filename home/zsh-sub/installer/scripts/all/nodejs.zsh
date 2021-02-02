@@ -17,7 +17,3 @@ volta install node@latest
 _step "Installing Yarn..."
 volta install yarn
 yarn -v # Just to be sure Yarn was installed correctly
-
-_step "Installing pnpm..."
-volta install pnpm
-pnpm -v # Just to be sure pnpm was installed correctly
