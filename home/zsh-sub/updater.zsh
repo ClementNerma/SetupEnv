@@ -59,6 +59,21 @@ function zerupdate() {
 	# Backup current environment
 	zerbackup
 
+	# Remove old files
+	echosuccess "Removing old environment..."
+	setopt globdots
+	for item in "$update_path/home/"*
+	do
+		# Security (should never happen, this check is here just in case)
+		if [[ -z "$(basename "$item")" ]]; then
+			echoerr "Empty item name in update path!"
+			continue
+		fi
+
+		command rm -rf "$HOME/$(basename "$item")"
+	done
+	unsetopt globdots
+
 	# Copy updated files
 	echosuccess "Updating environment..."
 	cp -R "$update_path/home/." ~/
