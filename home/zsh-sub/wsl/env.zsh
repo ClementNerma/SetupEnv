@@ -15,7 +15,7 @@ fi
 
 # Set up path to main directories
 export HOMEDIR="/mnt/c/Users/$WINUSER"
-export TEMPDIR="/mnt/c/Temp/__wsltemp"
+export TEMPDIR="/home/$USER/.tempdata"
 export DLDIR="$HOMEDIR/Downloads"
 export SOFTWAREDIR="$HOMEDIR/Logiciels"
 
