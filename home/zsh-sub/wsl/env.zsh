@@ -15,7 +15,7 @@ fi
 
 # Set up path to main directories
 export HOMEDIR="/mnt/c/Users/$WINUSER"
-export TEMPDIR="/home/$USER/.tempdata"
+export TEMPDIR="$HOME/.tempdata"
 export DLDIR="$HOMEDIR/Downloads"
 export SOFTWAREDIR="$HOMEDIR/Logiciels"
 
@@ -24,9 +24,9 @@ if [[ $PROJECT_DIRS_IN_WSL_FS != 1 ]]; then
   export WORKDIR="$HOMEDIR/Work"
   export TRASHDIR="$HOMEDIR/.trasher"
 else
-  export PROJDIR="/home/$USER/Projets"
-  export WORKDIR="/home/$USER/Work"
-  export TRASHDIR="/home/$USER/.trasher"
+  export PROJDIR="$HOME/Projets"
+  export WORKDIR="$HOME/Work"
+  export TRASHDIR="$HOME/.trasher"
 fi
 
 # Open a file or directory in Windows
