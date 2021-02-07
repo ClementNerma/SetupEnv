@@ -137,7 +137,7 @@ function wslport() {
 
 # Copy a file to clipboard
 function clip() {
-  cat "$1" | clip.exe
+  command cat "$1" | clip.exe
 }
 
 # Register handlers for Youtube-DL and its related utilities
