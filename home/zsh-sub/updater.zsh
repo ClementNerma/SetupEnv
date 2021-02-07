@@ -103,7 +103,7 @@ function zerupdate_online() {
 		echoinfo "Updating from provided URL: \e[95m$1"
 		local setupenv_url="$1"
 	else
-		local setupenv_url="https://codeload.github.com/ClementNerma/SetupEnv-Private/zip/master"
+		local setupenv_url="https://codeload.github.com/ClementNerma/SetupEnv/zip/master"
 	fi
 
 	# Download latest version
