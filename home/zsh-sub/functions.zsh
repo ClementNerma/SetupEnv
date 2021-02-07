@@ -182,7 +182,7 @@ function ghdl() {
 	fi
 
 	local filename="$reponame.zip"
-	echo -e "\e[34m> Fetching archive for branch \e[93m$branch\e[34m to \e[95m$filename\e[34m..."
+	echo -e "\e[34m> Fetching archive for branch \e[93m$branch\e[34m to \e[95m$filename\e[34m...\e[0m"
 	
 	local zipurl="https://codeload.github.com/$repoauthor/$reponame/zip/$branch"
 
@@ -191,7 +191,7 @@ function ghdl() {
 		return 1
 	fi
 
-	echo -e "\e[34m> Extracting archive to directory \e[93m$reponame\e[34m..."
+	echo -e "\e[34m> Extracting archive to directory \e[93m$reponame\e[34m...\e[0m"
 	unzip -q "$filename"
 	mv "$reponame-$branch" "$reponame"
 
