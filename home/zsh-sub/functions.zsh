@@ -195,6 +195,8 @@ function ghdl() {
 	unzip -q "$filename"
 	mv "$reponame-$branch" "$reponame"
 
+	cd "$reponame"
+
 	echosuccess "Done!"
 }
 
