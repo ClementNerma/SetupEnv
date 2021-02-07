@@ -19,10 +19,6 @@ alias bash="BASH_NO_ZSH=true bash"
 alias ls="exa --all --long --group-directories-first --color-scale"
 alias tree="ls --tree"
 
-# Software: Micro
-alias nano="micro"
-alias e="micro"
-
 # Software: Bat
 alias cat="bat --theme=base16"
 
@@ -41,6 +37,7 @@ alias gop="git reflog expire --expire=now --all && git gc --prune=now && git gc 
 
 # Set the default editor
 export EDITOR="micro"
+alias nano="$EDITOR"
 
 # Allow to sign Git commits with GPG
 export GPG_TTY=$(tty)
