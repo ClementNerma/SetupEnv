@@ -163,6 +163,8 @@ function ghdl() {
 
 	local repoauthor=$(echo "$1" | cut -d'/' -f4)
 	local reponame=$(echo "$1" | cut -d'/' -f5)
+	
+	reponame="${reponame%.git}"
 
 	echosuccess "Cloning from repository: \e[93m$repoauthor/$reponame\e[92m..."
 
