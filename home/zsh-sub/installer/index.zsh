@@ -151,7 +151,7 @@ function zercomponent_mark_installed() { zercomponent_mark_custom "$@" "1" }
 function zercomponent_mark_not_installed() { zercomponent_mark_custom "$@" "0" }
 
 function zercomponent_update() {
-    if [[ ! -f "$ZSH_INSTALLER_DIR/$1.zsh" ]]; then
+    if [[ ! -f "$ZSH_INSTALLER_SCRIPTS_DIR/$1.zsh" ]]; then
         echoerr "Provided component \e[96m$1\e[91m was not found."
         return 1
     fi
