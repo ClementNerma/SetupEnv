@@ -163,13 +163,18 @@ function ghdl() {
 
 	local repoauthor=$(echo "$1" | cut -d'/' -f4)
 	local reponame=$(echo "$1" | cut -d'/' -f5)
+	local outdir="$reponame"
+
+	if [[ ! -z "$3" ]]; then
+		outdir="$3"
+	fi
 	
 	reponame="${reponame%.git}"
 
 	echosuccess "Cloning from repository: \e[93m$repoauthor/$reponame\e[92m..."
 
-	if [[ -d "$reponame" ]]; then
-		echoerr "> Directory \e[95m$reponame\e[91m already exists!"
+	if [[ -d "$3" ]]; then
+		echoerr "> Directory \e[95m$3\e[91m already exists!"
 		return 1
 	fi
 
@@ -181,7 +186,7 @@ function ghdl() {
 		return 1
 	fi
 
-	local filename="$reponame.zip"
+	local filename="$reponame-$(date +%s).zip"
 	echo -e "\e[34m> Fetching archive for branch \e[93m$branch\e[34m to \e[95m$filename\e[34m...\e[0m"
 	
 	local zipurl="https://codeload.github.com/$repoauthor/$reponame/zip/$branch"
@@ -191,11 +196,11 @@ function ghdl() {
 		return 1
 	fi
 
-	echo -e "\e[34m> Extracting archive to directory \e[93m$reponame\e[34m...\e[0m"
+	echo -e "\e[34m> Extracting archive to directory \e[93m$3\e[34m...\e[0m"
 	unzip -q "$filename"
-	mv "$reponame-$branch" "$reponame"
+	mv "$reponame-$branch" "$3"
 
-	cd "$reponame"
+	cd "$3"
 
 	echosuccess "Done!"
 }
