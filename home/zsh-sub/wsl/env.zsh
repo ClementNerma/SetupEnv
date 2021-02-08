@@ -3,8 +3,15 @@
 # Its role is to configure all required environment variables and options
 #
 
-# Get Windows username
-export WINUSER=$(powershell.exe -command '$env:UserName' | tr -d "\r")
+# Get Windows username (cached for better performance)
+export WSL_USERNAME_CACHE_FILE="$ZSH_SUB_DIR/local/.wsl-username"
+
+if [[ ! -f "$WSL_USERNAME_CACHE_FILE" ]]; then
+  export WINUSER=$(powershell.exe -command '$env:UserName' | tr -d "\r")
+  printf "$WINUSER" > "$WSL_USERNAME_CACHE_FILE"
+else
+  export WINUSER=$(command cat "$WSL_USERNAME_CACHE_FILE")
+fi
 
 # Fail if username couldn't be get
 if [[ -z "$WINUSER" ]]
