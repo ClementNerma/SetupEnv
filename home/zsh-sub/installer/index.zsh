@@ -24,7 +24,24 @@ function install_components_from_var() {
     mkdir -p "$INSTALLER_TMPDIR"
 
     echoinfo "Detected \e[91m${#SETUPENV_TO_INSTALL[@]}\e[93m $1:"
-    echo -e "\e[96m    ${SETUPENV_TO_INSTALL[@]}"
+
+    local longest_component_name=0
+
+    for component in $SETUPENV_TO_INSTALL
+    do
+        local component_name=$(basename "$component")
+        if (( ${#component_name} > $longest_component_name )); then
+            longest_component_name=${#component_name}
+        fi
+    done
+
+    for component in $SETUPENV_TO_INSTALL
+    do
+        local component_name=$(basename "$component")
+        local component_dir="($(dirname "$component"))"
+        echo -e "\e[96m    $(basename "$component")\e[92m${(l($longest_component_name-${#component_name}+${#component_dir}+5)( ))component_dir}\e[0m"
+    done
+
     echo -e ""
     echoinfo "These components will now be installed."
     echoinfo "$2type \e[31mN\e[93m/\e[31mn\e[93m."
@@ -62,15 +79,11 @@ function install_components_from_var() {
         echosuccess ">"
         echo ""
 
-        local script_path="$ZSH_INSTALLER_DIR/scripts/all/$component.zsh"
+        local script_path="$ZSH_INSTALLER_SCRIPTS_DIR/$component.zsh"
 
         if [[ ! -f $script_path ]]; then
-            local script_path="$ZSH_INSTALLER_DIR/scripts/$ENV_NAME_STR/$component.zsh"
-
-            if [[ ! -f $script_path ]]; then
-                echoerr "> Failed to install component \e[96m$component\e[91m: installation script not found"
-                return 1
-            fi
+            echoerr "> Failed to install component \e[96m$component\e[91m: installation script not found at \e[92m$script_path\e[91m!"
+            return 1
         fi
 
         export ZER_UPDATING=$5
@@ -100,8 +113,9 @@ function install_components_from_var() {
 }
 
 function check_component() {
-    local script_name="${1/.zsh/}"
-    local var_name="SETUPENV_INSTALLED_${${script_name//-/_}:u}"
+    local file_name=$(realpath --relative-to="$ZSH_INSTALLER_SCRIPTS_DIR" "$1")
+    local script_name="${file_name/.zsh/}"
+    local var_name="SETUPENV_INSTALLED_${${${script_name//-/_}//\//_}:u}"
 
     if [[ -z "${(P)var_name}" ]]; then
         SETUPENV_TO_INSTALL+=("$script_name")
@@ -109,7 +123,7 @@ function check_component() {
 }
 
 function zerupdate_component() {
-    if [[ ! -f "$ZSH_INSTALLER_DIR/scripts/all/$1.zsh" && ! -f "$ZSH_INSTALLER_DIR/scripts/$ENV_NAME_STR/$1.zsh" ]]; then
+    if [[ ! -f "$ZSH_INSTALLER_DIR/$1.zsh" ]]; then
         echoerr "Provided component \e[96m$1\e[91m was not found."
         return 1
     fi
@@ -136,8 +150,12 @@ function _step() {
 }
 
 function _checkdir() {
+    if [[ ! -d "$1" ]]; then
+        return
+    fi
+
     if [[ -f "$1/_init.zsh" ]]; then
-        check_component "_init.zsh"
+        check_component "$1/_init.zsh"
     fi
 
     for file in "$1/_"*.zsh
@@ -146,7 +164,7 @@ function _checkdir() {
             continue
         fi
 
-        check_component "$(basename "_init/$file")"
+        check_component "$file"
     done
 
     for file in "$1/"*.zsh
@@ -155,7 +173,7 @@ function _checkdir() {
             continue
         fi
 
-        check_component "$(basename "_init/$file")"
+        check_component "$file"
     done
 }
 
@@ -163,8 +181,16 @@ SETUPENV_TO_INSTALL=()
 
 setopt null_glob
 
-_checkdir "$ZSH_INSTALLER_DIR/scripts/all"
-_checkdir "$ZSH_INSTALLER_DIR/scripts/$ENV_NAME_STR"
+export ZSH_INSTALLER_SCRIPTS_DIR="$ZSH_INSTALLER_DIR/scripts"
+
+_checkdir "$ZSH_INSTALLER_SCRIPTS_DIR/all/pre"
+_checkdir "$ZSH_INSTALLER_SCRIPTS_DIR/all"
+_checkdir "$ZSH_INSTALLER_SCRIPTS_DIR/$ENV_NAME_STR/pre"
+_checkdir "$ZSH_INSTALLER_SCRIPTS_DIR/$ENV_NAME_STR"
+_checkdir "$ZSH_INSTALLER_SCRIPTS_DIR/main-pc/all/pre"
+_checkdir "$ZSH_INSTALLER_SCRIPTS_DIR/main-pc/all"
+_checkdir "$ZSH_INSTALLER_SCRIPTS_DIR/main-pc/$ENV_NAME_STR/pre"
+_checkdir "$ZSH_INSTALLER_SCRIPTS_DIR/main-pc/$ENV_NAME_STR"
 
 SETUPENV_INSTALL_STEP=0
 
