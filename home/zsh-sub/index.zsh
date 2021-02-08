@@ -18,7 +18,7 @@ fi
 
 if [[ -f "$HOME/.setupenv-just-installed" ]]; then
 	export SETUPENV_JUST_INSTALLED=1
-	rm "$HOME/.setupenv-just-installed"
+	command rm "$HOME/.setupenv-just-installed"
 else
 	export SETUPENV_JUST_INSTALLED=0
 fi

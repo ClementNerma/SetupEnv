@@ -9,7 +9,7 @@ function create-project () {
   cp -R "$PROJDIR/_Done/Templates/$1" "$2"
   cd "$2"
   zsh TEMPLATE_INIT.zsh
-  rm TEMPLATE_INIT.zsh
+  command rm TEMPLATE_INIT.zsh
 }
 
 # Backup

@@ -185,7 +185,7 @@ function debir() {
 	local debpath="/tmp/$(date +%s).deb"
 	dl "$1" "$debpath"
 	debi "$debpath"
-	rm "$debpath"
+	command rm "$debpath"
 }
 
 # Open a file or directory on Windows from a 'fd' search
