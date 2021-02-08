@@ -17,7 +17,7 @@ fi
 
 source "$ZSH_INSTALLED_LIST_FILE"
 
-function install_components_from_var() {
+function zercomponent_install_from_list() {
     # Choose a temporary directory
     local AUTO_INSTALLER_STARTED_AT=$(date +%s%N)
     INSTALLER_TMPDIR="/tmp/_setupenv_autoinstaller_$AUTO_INSTALLER_STARTED_AT"
@@ -89,11 +89,7 @@ function install_components_from_var() {
         export ZER_UPDATING=$5
 
         if source "$script_path"; then
-            local var_name="SETUPENV_INSTALLED_${${component//-/_}:u}"
-
-            if [[ -z "${(P)var_name}" ]]; then
-                echo "export $var_name=1" >> "$ZSH_INSTALLED_LIST_FILE"
-            fi
+            zercomponent_mark_installed "$component"
         fi
     done
 
@@ -112,17 +108,33 @@ function install_components_from_var() {
     echo -e ""
 }
 
-function check_component() {
+function zercomponent_addtolist() {
     local file_name=$(realpath --relative-to="$ZSH_INSTALLER_SCRIPTS_DIR" "$1")
     local script_name="${file_name/.zsh/}"
     local var_name="SETUPENV_INSTALLED_${${${script_name//-/_}//\//_}:u}"
 
-    if [[ -z "${(P)var_name}" ]]; then
+    if [[ -z "${(P)var_name}" || "${(P)var_name}" = 0 ]]; then
         SETUPENV_TO_INSTALL+=("$script_name")
     fi
 }
 
-function zerupdate_component() {
+function zercomponent_mark_custom() {
+    if [[ ! -f "$ZSH_INSTALLER_SCRIPTS_DIR/$1.zsh" ]]; then
+        echoerr "Provided module not found!"
+        return 1
+    fi
+
+    local var_name="SETUPENV_INSTALLED_${${${1//-/_}//\//_}:u}"
+
+    if [[ "${(P)var_name}" != "$2" ]]; then
+        echo "export $var_name=$2" >> "$ZSH_INSTALLED_LIST_FILE"
+    fi
+}
+
+function zercomponent_mark_installed() { zercomponent_mark_custom "$1" "1" }
+function zercomponent_mark_not_installed() { zercomponent_mark_custom "$1" "0" }
+
+function zercomponent_update() {
     if [[ ! -f "$ZSH_INSTALLER_DIR/$1.zsh" ]]; then
         echoerr "Provided component \e[96m$1\e[91m was not found."
         return 1
@@ -137,7 +149,7 @@ function zerupdate_component() {
 
     SETUPENV_INSTALL_STEP=0
 
-    install_components_from_var "components to update" "To abort the update process, " 0 "updated" 1
+    zercomponent_install_from_list "components to update" "To abort the update process, " 0 "updated" 1
 
     unset SETUPENV_TO_INSTALL
     unset SETUPENV_INSTALL_STEP
@@ -155,7 +167,7 @@ function _checkdir() {
     fi
 
     if [[ -f "$1/_init.zsh" ]]; then
-        check_component "$1/_init.zsh"
+        zercomponent_addtolist "$1/_init.zsh"
     fi
 
     for file in "$1/_"*.zsh
@@ -164,7 +176,7 @@ function _checkdir() {
             continue
         fi
 
-        check_component "$file"
+        zercomponent_addtolist "$file"
     done
 
     for file in "$1/"*.zsh
@@ -173,7 +185,7 @@ function _checkdir() {
             continue
         fi
 
-        check_component "$file"
+        zercomponent_addtolist "$file"
     done
 }
 
@@ -195,7 +207,7 @@ _checkdir "$ZSH_INSTALLER_SCRIPTS_DIR/main-pc/$ENV_NAME_STR"
 SETUPENV_INSTALL_STEP=0
 
 if [[ ${#SETUPENV_TO_INSTALL[@]} != 0 ]]; then
-    install_components_from_var "missing components" "To skip the installation process for now and not load the environment, " 1 "installed" 0
+    zercomponent_install_from_list "missing components" "To skip the installation process for now and not load the environment, " 1 "installed" 0
 fi
 
 unset SETUPENV_TO_INSTALL
