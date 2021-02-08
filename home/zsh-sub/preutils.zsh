@@ -19,12 +19,35 @@ function echoinfo() {
 }
 
 # Arguments: "<url>" "<download location>"
-function dlren() { wget -q --show-progress -O "$2" "$1" }
-function sudodlren() { sudo wget -q --show-progress -O "$2" "$1" }
+function dl() {
+    local url="$1"
+    local outpath="$2"
+    shift
 
-# Arguments: "<url>"
-function dl() { wget -qi - --show-progress -O "$1" }
-function sudodl() { sudo wget -qi - --show-progress -O "$1" }
+    if [[ ! -z "$outpath" ]]; then
+        shift
+        wget -q --show-progress -O "$outpath" "$url" "$@"
+    else
+        wget -q --show-progress "$url" "$@"
+    fi
+}
+
+function sudodl() {
+    local url="$1"
+    local outpath="$2"
+    shift
+
+    if [[ ! -z "$outpath" ]]; then
+        shift
+        sudo wget -q --show-progress -O "$outpath" "$url" "$@"
+    else
+        sudo wget -q --show-progress "$url" "$@"
+    fi
+}
+
+# Arguments: "<download location>"
+function dli() { wget -qi - --show-progress -O "$1" }
+function sudodli() { sudo wget -qi - --show-progress -O "$1" }
 
 # Arguments: "<repo author>/<reponame>" "<file grep pattern>" "<download location>"
 function dlghrelease() {

@@ -1,8 +1,4 @@
 
-# Software: HTTPie
-alias ht="https -F --print=b"
-alias htdl="ht --download"
-
 # Shortcuts for main directories in paths
 alias gohome="cd $HOMEDIR"
 alias gotemp="cd $TEMPDIR"

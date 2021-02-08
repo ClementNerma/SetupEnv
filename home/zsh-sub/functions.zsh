@@ -201,7 +201,7 @@ function ghdl() {
 	
 	local zipurl="https://codeload.github.com/$repoauthor/$reponame/zip/$branch"
 
-	if ! dlren "$zipurl" "$filename"; then
+	if ! dl "$zipurl" "$filename"; then
 		echoerr "> Failed to fetch archive from URL: \e[93m$zipurl\e[91m!"
 		return 1
 	fi
@@ -246,7 +246,7 @@ function debi() {
 # Install a Debian package from the web
 function debir() {
 	local debpath="/tmp/$(date +%s).deb"
-	htdl "$1" -o "$debpath"
+	dl "$1" "$debpath"
 	debi "$debpath"
 	rm "$debpath"
 }
