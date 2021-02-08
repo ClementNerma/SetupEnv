@@ -114,6 +114,7 @@ cp -a "$SCRIPT_DIR/home/." ~/
 
 _step "Saving list of files..."
 ls -1A "$SCRIPT_DIR/home" > ~/.setupenv-files-list.txt
+touch ~/.setupenv-just-installed
 
 _step "Cleaning up temporary directory..."
 rm -rf "$TMPDIR"

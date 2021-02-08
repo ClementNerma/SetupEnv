@@ -16,6 +16,13 @@ else
 	export ENV_NAME_STR="linux"
 fi
 
+if [[ -f "$HOME/.setupenv-just-installed" ]]; then
+	export SETUPENV_JUST_INSTALLED=1
+	rm "$HOME/.setupenv-just-installed"
+else
+	export SETUPENV_JUST_INSTALLED=0
+fi
+
 # Set path to SetupEnv files
 export ZSH_SUB_DIR=$(dirname "${(%):-%x}")
 
@@ -41,7 +48,7 @@ source "$ZSH_SUB_DIR/preutils.zsh"
 source "$ZSH_SUB_DIR/updater.zsh"
 
 # Ensure the restoration script is in place
-if [[ ! -f "$SETUPENV_RESTORATION_SCRIPT" ]]; then
+if [[ ! -f "$SETUPENV_RESTORATION_SCRIPT" || $SETUPENV_JUST_INSTALLED = 1 ]]; then
 	zerupdate_restoration_script
 fi
 
