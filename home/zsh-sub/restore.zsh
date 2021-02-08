@@ -25,7 +25,13 @@ if [[ ! -d "$last_backup" ]]; then
     return 1
 fi
 
-setopt GLOB_DOTS
+glob_dots_was_enabled=0
+
+if [[ -o GLOB_DOTS ]]; then
+    glob_dots_was_enabled=1
+else
+    setopt GLOB_DOTS
+fi
 
 export SETUPENV_RESTORATION_OVERWRITTEN_FILES="$HOME/.setupenv-restoring-$(date +%s)"
 
@@ -45,7 +51,9 @@ for item in "$last_backup/"*; do
     command mv "$item" "$orig_item"
 done
 
-unsetopt GLOB_DOTS
+if [[ $glob_dots_was_enabled = 0 ]]; then
+    unsetopt GLOB_DOTS
+fi
 
 echo " "
 echo "INFO: Successfully restored SetupEnv!"
