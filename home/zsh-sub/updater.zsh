@@ -93,39 +93,15 @@ function zerupdate() {
 
 # Download latest version and update
 function zerupdate_online() {
-	# Create a temporary directory
-	local tmpdir="/tmp/_setupenv_updater_$(date +%s)"
-	command rm -rf "$tmpdir"
-	mkdir -p "$tmpdir"
+	local tmpdir="/tmp/setupenv-update-$(date +%s)"
 
-	# Determine URL for latest version
-	if [[ ! -z "$1" ]]; then
-		echoinfo "Updating from provided URL: \e[95m$1"
-		local setupenv_url="$1"
-	else
-		local setupenv_url="https://codeload.github.com/ClementNerma/SetupEnv/zip/main"
-	fi
-
-	# Download latest version
-	echoinfo "Downloading latest environment..."
-
-	local setupenv_zip_path="$tmpdir/setupenv.zip"
-
-	if ! dlren "$setupenv_url" "$setupenv_zip_path"; then
-		echoerr "Download failed."
-		return 1
-	fi
-
-	# Extract the downloaded archive
-	echoinfo "Extracting..."
-
-	if ! unzip -q "$setupenv_zip_path" -d "$tmpdir/setupenv"; then
-		echoerr "Archive extraction failed!"
+	# Download the update from GitHub
+	if ! ghdl "ClementNerma/SetupEnv" "$tmpdir"; then
 		return 1
 	fi
 
 	# Update the environment
-	zerupdate "$tmpdir/setupenv/setupenv-master"
+	zerupdate "$tmpdir"
 
 	# Clean up
 	echoinfo "Cleaning up temporary directory..."
