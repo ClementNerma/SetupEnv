@@ -186,7 +186,7 @@ function ghdl() {
 	
 	local zipurl="https://codeload.github.com/$repoauthor/$reponame/zip/$branch"
 
-	if ! dl "$zipurl" "$filename"; then
+	if ! dlren "$zipurl" "$filename"; then
 		echoerr "> Failed to fetch archive from URL: \e[93m$zipurl\e[91m!"
 		return 1
 	fi

@@ -2,12 +2,12 @@ mkdir -p "$YTDL_WSL_PATH"
 
 if [[ $ZER_UPDATING = 1 || ! -f "$YOUTUBEDL_BIN_PATH" ]]; then
     _step "Downloading Youtube-DL..."
-    sudodl https://yt-dl.org/downloads/latest/youtube-dl.exe "$YOUTUBEDL_BIN_PATH"
+    sudodlren https://yt-dl.org/downloads/latest/youtube-dl.exe "$YOUTUBEDL_BIN_PATH"
 fi
 
 if [[ $ZER_UPDATING = 1 || ! -f "$FFMPEG_BIN_PATH" || ! -f "$FFPLAY_BIN_PATH" || ! -f "$FFPROBE_BIN_PATH" ]]; then
     _step "Downloading FFMpeg..."
-    sudodl https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip "$YTDL_WSL_PATH/ffmpeg.zip"
+    sudodlren https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip "$YTDL_WSL_PATH/ffmpeg.zip"
     _step "Extracting FFMpeg..."
     sudo unzip -qq "$YTDL_WSL_PATH/ffmpeg.zip" -d "$YTDL_WSL_PATH/FFMpegExtracted"
     sudo rm "$YTDL_WSL_PATH/ffmpeg.zip"

@@ -111,7 +111,7 @@ function zerupdate_online() {
 
 	local setupenv_zip_path="$tmpdir/setupenv.zip"
 
-	if ! dl "$setupenv_url" "$setupenv_zip_path"; then
+	if ! dlren "$setupenv_url" "$setupenv_zip_path"; then
 		echoerr "Download failed."
 		return 1
 	fi
