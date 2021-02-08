@@ -210,10 +210,13 @@ _checkdir "$ZSH_INSTALLER_SCRIPTS_DIR/all/pre"
 _checkdir "$ZSH_INSTALLER_SCRIPTS_DIR/all"
 _checkdir "$ZSH_INSTALLER_SCRIPTS_DIR/$ENV_NAME_STR/pre"
 _checkdir "$ZSH_INSTALLER_SCRIPTS_DIR/$ENV_NAME_STR"
-_checkdir "$ZSH_INSTALLER_SCRIPTS_DIR/main-pc/all/pre"
-_checkdir "$ZSH_INSTALLER_SCRIPTS_DIR/main-pc/all"
-_checkdir "$ZSH_INSTALLER_SCRIPTS_DIR/main-pc/$ENV_NAME_STR/pre"
-_checkdir "$ZSH_INSTALLER_SCRIPTS_DIR/main-pc/$ENV_NAME_STR"
+
+if [[ $ZSH_MAIN_PERSONAL_COMPUTER = 1 ]]; then
+    _checkdir "$ZSH_INSTALLER_SCRIPTS_DIR/main-pc/all/pre"
+    _checkdir "$ZSH_INSTALLER_SCRIPTS_DIR/main-pc/all"
+    _checkdir "$ZSH_INSTALLER_SCRIPTS_DIR/main-pc/$ENV_NAME_STR/pre"
+    _checkdir "$ZSH_INSTALLER_SCRIPTS_DIR/main-pc/$ENV_NAME_STR"
+fi
 
 SETUPENV_INSTALL_STEP=0
 
