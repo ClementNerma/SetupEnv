@@ -181,7 +181,7 @@ function _checkdir() {
         zercomponent_addtolist "$1/_init.zsh"
     fi
 
-    for file in "$1/_"*.zsh
+    for file in "$1/_"*.zsh(N)
     do
         if [[ "$(basename "$file")" = "_init.zsh" ]]; then
             continue
@@ -190,7 +190,7 @@ function _checkdir() {
         zercomponent_addtolist "$file"
     done
 
-    for file in "$1/"*.zsh
+    for file in "$1/"*.zsh(N)
     do
         if [[ "$(basename "$file")" = "_"* ]]; then
             continue
