@@ -118,21 +118,32 @@ function zercomponent_addtolist() {
     fi
 }
 
+# Arguments:
+# * <dir>/<script_name> <value>
+# * <script_name> <dir> <value>
 function zercomponent_mark_custom() {
-    if [[ ! -f "$ZSH_INSTALLER_SCRIPTS_DIR/$1.zsh" ]]; then
+    local script_name="$1"
+    local value="$2"
+
+    if [[ ! -z "$3" ]]; then
+        script_name="$2/$1"
+        value="$3"
+    fi
+
+    if [[ ! -f "$ZSH_INSTALLER_SCRIPTS_DIR/$script_name.zsh" ]]; then
         echoerr "Provided module not found!"
         return 1
     fi
 
-    local var_name="SETUPENV_INSTALLED_${${${1//-/_}//\//_}:u}"
+    local var_name="SETUPENV_INSTALLED_${${${script_name//-/_}//\//_}:u}"
 
-    if [[ "${(P)var_name}" != "$2" ]]; then
-        echo "export $var_name=$2" >> "$ZSH_INSTALLED_LIST_FILE"
+    if [[ "${(P)var_name}" != "$value" ]]; then
+        echo "export $var_name=$value" >> "$ZSH_INSTALLED_LIST_FILE"
     fi
 }
 
-function zercomponent_mark_installed() { zercomponent_mark_custom "$1" "1" }
-function zercomponent_mark_not_installed() { zercomponent_mark_custom "$1" "0" }
+function zercomponent_mark_installed() { zercomponent_mark_custom "$@" "1" }
+function zercomponent_mark_not_installed() { zercomponent_mark_custom "$@" "0" }
 
 function zercomponent_update() {
     if [[ ! -f "$ZSH_INSTALLER_DIR/$1.zsh" ]]; then
