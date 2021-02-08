@@ -183,8 +183,8 @@ function ghdl() {
 
 	echosuccess "Cloning from repository: \e[93m$repoauthor/$reponame\e[92m..."
 
-	if [[ -d "$3" ]]; then
-		echoerr "> Directory \e[95m$3\e[91m already exists!"
+	if [[ -d "$outdir" ]]; then
+		echoerr "> Directory \e[95m$outdir\e[91m already exists!"
 		return 1
 	fi
 
@@ -206,11 +206,11 @@ function ghdl() {
 		return 1
 	fi
 
-	echo -e "\e[34m> Extracting archive to directory \e[93m$3\e[34m...\e[0m"
+	echo -e "\e[34m> Extracting archive to directory \e[93m$outdir\e[34m...\e[0m"
 	unzip -q "$filename"
-	mv "$reponame-$branch" "$3"
+	mv "$reponame-$branch" "$outdir"
 
-	cd "$3"
+	cd "$outdir"
 
 	echosuccess "Done!"
 }
