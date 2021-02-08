@@ -7,6 +7,9 @@
 # Set to '1' if it is
 export ZSH_MAIN_PERSONAL_COMPUTER=0
 
+# Path to the restoration script
+export SETUPENV_RESTORATION_SCRIPT="/usr/local/bin/zerrestore"
+
 # Disable automatic switching to directory if current path is home at startup
 export DISABLE_DIR_HOME_SWITCHING=0
 

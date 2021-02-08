@@ -83,6 +83,10 @@ function zerupdate() {
 		cp -R "$LAST_SETUPENV_BACKUP_DIR/zsh-sub/local" "$ZSH_SUB_DIR/"
 	fi
 
+	# Update the restoration script
+	echosuccess "Updating the restoration script..."
+	zerupdate_restoration_script
+
 	# Load new environment
 	echosuccess "Loading environment..."
 	source "$ZSH_SUB_DIR/index.zsh"
@@ -109,4 +113,25 @@ function zerupdate_online() {
 
 	# Done!
 	echosuccess "Done!"	
+}
+
+# Update the restoration script
+function zerupdate_restoration_script() {
+	sudo cp "$ZSH_SUB_DIR/restore.zsh" "$SETUPENV_RESTORATION_SCRIPT"
+	sudo chmod +x "$SETUPENV_RESTORATION_SCRIPT"
+}
+
+# Uninstall SetupEnv
+function zeruninstall() {
+	zerbackup
+	echo "$LAST_SETUPENV_BACKUP_DIR" > "$HOME/.uninstalled-setupenv.txt"
+	echosuccess "SetupEnv was successfully installed!"
+	echosuccess "To restore it, just type '\e[93mzerrestore\e[92m'."
+
+	command rm -rf "$ZSH_SUB_DIR"
+	command rm ~/.bashrc
+	command rm ~/.zshrc
+	command rm ~/.p10k.zsh
+
+	exit
 }

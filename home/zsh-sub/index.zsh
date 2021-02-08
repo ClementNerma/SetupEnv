@@ -34,27 +34,31 @@ source "$ZSH_SUB_DIR/local/config.zsh"
 # Load common utilities usable by the installer
 source "$ZSH_SUB_DIR/preutils.zsh"
 
+# Load the updater
+source "$ZSH_SUB_DIR/updater.zsh"
+
+# Ensure the restoration script is in place
+if [[ ! -f "$SETUPENV_RESTORATION_SCRIPT" ]]; then
+	zerupdate_restoration_script
+fi
+
 # Set path to the installer
 export ZSH_INSTALLER_DIR="$ZSH_SUB_DIR/installer"
 
-# Load the installer
+# Run the installer
 export ZSH_INSTALLER_ABORTED=0
-
 source "$ZSH_INSTALLER_DIR/index.zsh"
+
+# Exit if the installer aborted
+if [[ $ZSH_INSTALLER_ABORTED = 1 ]]; then
+	return
+fi
 
 # Load platform-specific configuration
 source "$ZSH_SUB_DIR/$ENV_NAME_STR/env.zsh"
 
 # Load the local configuration
 source "$ZSH_SUB_DIR/local/env.zsh"
-
-# Load the updater
-source "$ZSH_SUB_DIR/updater.zsh"
-
-# Exit if the installer aborted
-if [[ $ZSH_INSTALLER_ABORTED = 1 ]]; then
-	return
-fi
 
 # Allow fast reloading of this file after changes
 alias reload="source ${(%):-%x}"

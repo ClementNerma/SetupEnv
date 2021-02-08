@@ -1,13 +1,11 @@
 if [ -d ~/.rustup ]; then
-	echo -e "\e[33m\!/ A previous version of \e[32mRust\e[33m was detected ==> backing it up to \e[32m~/.rustup.bak\e[33m..."
-	command rm -rf ~/.rustup.bak
-	mv ~/.rustup ~/.rustup.bak
+	mvbak ~/.rustup
+	echo -e "\e[33m\!/ A previous version of \e[32mRust\e[33m was detected ==> backed it up to \e[32m$LAST_MVBAK_PATH\e[33m..."
 fi
 
 if [ -d ~/.cargo ]; then
-	echo -e "\e[33m\!/ A previous version of \e[32mCargo\e[33m was detected ==> backing it up to \e[32m~/.cargo.bak\e[33m..."
-	command rm -rf ~/.cargo.bak
-	mv ~/.cargo ~/.cargo.bak
+	mvbak ~/.cargo
+	echo -e "\e[33m\!/ A previous version of \e[32mCargo\e[33m was detected ==> backed it up to \e[32m$LAST_MVBAK_PATH\e[33m..."	
 fi
 
 curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y
