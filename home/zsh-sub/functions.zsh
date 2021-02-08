@@ -210,7 +210,9 @@ function ghdl() {
 	unzip -q "$filename"
 	mv "$reponame-$branch" "$outdir"
 
-	cd "$outdir"
+	if [[ -z "$3" ]]; then
+		cd "$outdir"
+	fi
 
 	echosuccess "Done!"
 }
