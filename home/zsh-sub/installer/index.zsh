@@ -202,8 +202,6 @@ function _checkdir() {
 
 SETUPENV_TO_INSTALL=()
 
-setopt null_glob
-
 export ZSH_INSTALLER_SCRIPTS_DIR="$ZSH_INSTALLER_DIR/scripts"
 
 _checkdir "$ZSH_INSTALLER_SCRIPTS_DIR/all/pre"
