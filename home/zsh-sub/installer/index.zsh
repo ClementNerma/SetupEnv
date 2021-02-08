@@ -60,6 +60,8 @@ function zercomponent_install_from_list() {
         return 1
     fi
 
+    SETUPENV_INSTALL_STEP=0
+
     echo -e ""
     echosuccess ">"
     echosuccess "> Preparing the environment for update..."
@@ -67,7 +69,7 @@ function zercomponent_install_from_list() {
     echo -e ""
 
     sudo apt update
-    
+
     for component in $SETUPENV_TO_INSTALL
     do
         SETUPENV_INSTALL_STEP=$((SETUPENV_INSTALL_STEP + 1))
@@ -106,6 +108,9 @@ function zercomponent_install_from_list() {
     echo -e ""
     echoinfo "=> Successfully $4 \e[91m${#SETUPENV_TO_INSTALL[@]}\e[93m component(s)!"
     echo -e ""
+
+    unset SETUPENV_INSTALL_STEP
+    unset SETUPENV_TO_INSTALL
 }
 
 function zercomponent_addtolist() {
@@ -158,12 +163,7 @@ function zercomponent_update() {
         SETUPENV_TO_INSTALL+=("$component")
     done
 
-    SETUPENV_INSTALL_STEP=0
-
     zercomponent_install_from_list "components to update" "To abort the update process, " 0 "updated" 1
-
-    unset SETUPENV_TO_INSTALL
-    unset SETUPENV_INSTALL_STEP
 }
 
 function _step() {
@@ -216,13 +216,9 @@ if [[ $ZSH_MAIN_PERSONAL_COMPUTER = 1 ]]; then
     _checkdir "$ZSH_INSTALLER_SCRIPTS_DIR/main-pc/$ENV_NAME_STR"
 fi
 
-SETUPENV_INSTALL_STEP=0
-
 if [[ ${#SETUPENV_TO_INSTALL[@]} != 0 ]]; then
     zercomponent_install_from_list "missing components" "To skip the installation process for now and not load the environment, " 1 "installed" 0
 fi
 
-unset SETUPENV_TO_INSTALL
-unset SETUPENV_INSTALL_STEP
 unset INSTALLER_TMPDIR
 unset -f _checkdir
