@@ -1,4 +1,3 @@
-
 if [[ $(dpkg --print-architecture) = "arm64" ]]; then
 	_ZOXIDE_GREPPER="zoxide-armv7-unknown-linux-musleabihf"
 else

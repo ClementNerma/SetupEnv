@@ -1,4 +1,3 @@
-
 if [[ $(dpkg --print-architecture) = "arm64" ]]; then
 	_TOKEI_GREPPER="tokei-aarch64-linux-android.tar.gz"
 else

@@ -1,4 +1,3 @@
-
 if [[ $(dpkg --print-architecture) = "arm64" ]]; then
 	_FD_GREPPER="fd-musl_.*_armhf.deb"
 else

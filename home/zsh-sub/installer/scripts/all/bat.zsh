@@ -1,4 +1,3 @@
-
 if [[ $(dpkg --print-architecture) = "arm64" ]]; then
     _BAT_GREPPER="bat_.*_arm64.deb"
 else

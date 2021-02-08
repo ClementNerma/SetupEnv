@@ -1,4 +1,3 @@
-
 if [[ $(dpkg --print-architecture) = "arm64" ]]; then
 	_FD_GREPPER="armv7"
 else

@@ -1,4 +1,3 @@
-
 if [ -d ~/.rustup ]; then
 	echo -e "\e[33m\!/ A previous version of \e[32mRust\e[33m was detected ==> backing it up to \e[32m~/.rustup.bak\e[33m..."
 	command rm -rf ~/.rustup.bak
