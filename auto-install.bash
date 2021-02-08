@@ -112,6 +112,9 @@ _step "Copying configuration files..."
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cp -a "$SCRIPT_DIR/home/." ~/
 
+_step "Saving list of files..."
+ls -1A "$SCRIPT_DIR/home" > ~/.setupenv-files-list.txt
+
 _step "Cleaning up temporary directory..."
 rm -rf "$TMPDIR"
 

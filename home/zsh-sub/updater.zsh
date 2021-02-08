@@ -10,20 +10,19 @@ function zerbackup() {
 	local old_env_backup_dir="$old_env_loc/_setupenv-update-backup/Backup $(date '+%Y.%m.%d - %Hh %Mm %Ss')"
 	mkdir -p "$old_env_backup_dir"
 
-	setopt GLOB_DOTS
-
-	for item_abs in "$update_path/home/"*
+	while read item
 	do
-		local item="$(basename "$item_abs")"
+		# Security (should never happen, this check is here just in case)
+		if [[ -z "$item" ]]; then
+			continue
+		fi
 
 		if [[ $item = ".config" ]]; then continue; fi
 
 		if [[ -f "$old_env_loc/$item" || -d "$old_env_loc/$item" ]]; then
 			cp -R "$old_env_loc/$item" "$old_env_backup_dir/$item"
 		fi
-	done
-
-	unsetopt GLOB_DOTS
+	done < "$ZSH_FILES_LIST"
 
 	# Done!
 	export LAST_SETUPENV_BACKUP_DIR="$old_env_backup_dir"
@@ -61,27 +60,28 @@ function zerupdate() {
 
 	# Remove old files
 	echosuccess "Removing old environment..."
-	setopt globdots
-	for item in "$update_path/home/"*
+
+	while read item
 	do
 		# Security (should never happen, this check is here just in case)
-		if [[ -z "$(basename "$item")" ]]; then
-			echoerr "Empty item name in update path!"
+		if [[ -z "$item" ]]; then
 			continue
 		fi
 
 		command rm -rf "$HOME/$(basename "$item")"
-	done
-	unsetopt globdots
+	done < "$ZSH_FILES_LIST"
 
 	# Copy updated files
 	echosuccess "Updating environment..."
 	cp -R "$update_path/home/." ~/
-	
-	# Restore it so it hasn't been overriden by the previous command
+
+	# Restore the local data scripts
 	if [[ $OVERWRITE_LOCAL_SCRIPTS != 1 ]]; then
 		cp -R "$LAST_SETUPENV_BACKUP_DIR/zsh-sub/local" "$ZSH_SUB_DIR/"
 	fi
+
+	# Save the new files list
+	command ls -1A "$update_path/home" > "$ZSH_FILES_LIST"
 
 	# Update the restoration script
 	echosuccess "Updating the restoration script..."

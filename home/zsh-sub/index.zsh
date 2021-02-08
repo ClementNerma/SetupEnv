@@ -22,6 +22,9 @@ export ZSH_SUB_DIR=$(dirname "${(%):-%x}")
 # Set path to data directory
 export ZSH_DATA_DIR="$ZSH_SUB_DIR/local/data"
 
+# Set path to the files list
+export ZSH_FILES_LIST="$HOME/.setupenv-files-list.txt"
+
 # Ensure this directory exists
 mkdir -p "$ZSH_DATA_DIR"
 
