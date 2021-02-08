@@ -175,8 +175,8 @@ function ghdl() {
 	local reponame=$(echo "$repo_url" | cut -d'/' -f5)
 	local outdir="$reponame"
 
-	if [[ ! -z "$3" ]]; then
-		outdir="$3"
+	if [[ ! -z "$2" ]]; then
+		outdir="$2"
 	fi
 	
 	reponame="${reponame%.git}"
@@ -210,7 +210,7 @@ function ghdl() {
 	unzip -q "$filename"
 	mv "$reponame-$branch" "$outdir"
 
-	if [[ -z "$3" ]]; then
+	if [[ -z "$2" ]]; then
 		cd "$outdir"
 	fi
 
