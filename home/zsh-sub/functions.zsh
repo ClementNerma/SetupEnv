@@ -157,12 +157,22 @@ function unrm() {
 
 # Software: Github
 function ghdl() {
-	if [[ $1 != "https://github.com/"* ]]; then
-		echoerr "Invalid GitHub repository URL: \e[93m$1"
+	local repo_url="$1"
+
+	if [[ $repo_url = "https://"* ]]; then
+		if [[ $repo_url != "https://github.com/"* ]]; then
+			echoerr "Invalid GitHub repository URL: \e[93m$repo_url"
+			return 1
+		fi
+	elif [[ $repo_url = "http://"* ]]; then
+		echoerr "Cannot get from HTTP link with GitHub"
+		return 1
+	else
+		repo_url="https://github.com/$repo_url"
 	fi
 
-	local repoauthor=$(echo "$1" | cut -d'/' -f4)
-	local reponame=$(echo "$1" | cut -d'/' -f5)
+	local repoauthor=$(echo "$repo_url" | cut -d'/' -f4)
+	local reponame=$(echo "$repo_url" | cut -d'/' -f5)
 	local outdir="$reponame"
 
 	if [[ ! -z "$3" ]]; then
