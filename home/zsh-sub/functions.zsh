@@ -208,6 +208,7 @@ function ghdl() {
 
 	echo -e "\e[34m> Extracting archive to directory \e[93m$outdir\e[34m...\e[0m"
 	unzip -q "$filename"
+	rm "$filename"
 	mv "$reponame-$branch" "$outdir"
 
 	if [[ -z "$2" ]]; then
