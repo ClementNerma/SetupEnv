@@ -75,7 +75,7 @@ function zercomponent_install_from_list() {
         echo ""
         echosuccess ">"
         echosuccess "> Installing component \e[94m$SETUPENV_INSTALL_STEP\e[32m /" \
-                "\e[91m${#SETUPENV_TO_INSTALL[@]}\e[32m: \e[96m$component\e[32m"
+                "\e[91m${#SETUPENV_TO_INSTALL[@]}\e[32m: \e[96m$(basename "$component") \e[92m($(dirname "$component"))\e[32m"
         echosuccess ">"
         echo ""
 
