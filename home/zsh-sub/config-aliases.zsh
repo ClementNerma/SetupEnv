@@ -72,7 +72,3 @@ fi
 
 # NOTE: Forced to "source" as a simple "eval" isn't enough to declare aliases
 source "$ZOXIDE_LOAD_FILE"
-
-# Integration for Deno
-export DENO_INSTALL="$HOME/.deno"
-export PATH="$DENO_INSTALL/bin:$PATH"
