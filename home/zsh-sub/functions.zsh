@@ -162,11 +162,12 @@ function ytdlbase() {
 	export YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS+1))
 	local is_using_tempdir=0
 
-	if (( YTDL_PARALLEL_DOWNLOADS >= YTDL_TEMP_DL_DIR_THRESOLD ))
+	local prev_cwd=$(pwd)
+
+	if (( YTDL_PARALLEL_DOWNLOADS >= YTDL_TEMP_DL_DIR_THRESOLD )) || [[ "$YTDL_FORCE_PARALLEL" = 1 ]]
 	then
 		is_using_tempdir=1
 		local tempdir="$YTDL_TEMP_DL_DIR_PATH/$(date +%s)"
-		local prev_cwd=$(pwd)
 		mkdir -p "$tempdir"
 
 		echoinfo "Downloading to temporary directory: \e[95m$tempdir"
@@ -210,6 +211,10 @@ function ytdl() {
 	else
 		ytdlbase --embed-thumbnail "$@"
 	fi
+}
+
+function ytdlpar() {
+	YTDL_FORCE_PARALLEL=1 ytdl "$@"
 }
 
 # Download a YouTube video with separate french and english subtitle files (if available)
