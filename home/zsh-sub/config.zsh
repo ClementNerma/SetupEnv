@@ -17,6 +17,9 @@ export DISABLE_DIR_HOME_SWITCHING=0
 # Set to '1' if yes
 export PROJECT_DIRS_IN_WSL_FS=0
 
+# Youtube-DL commands history with temporary directory
+export YTDL_HISTORY_FILE="$ZSH_DATA_DIR/youtube-dl.history"
+
 # Minimum parallel downloads that have to occur in parallel to enable the temporary path feature
 export YTDL_TEMP_DL_DIR_THRESOLD=0
 

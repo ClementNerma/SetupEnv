@@ -164,6 +164,8 @@ function ytdlbase() {
 	local is_using_tempdir=0
 
 	local prev_cwd=$(pwd)
+	local tempdir=""
+	local is_tempdir_cwd=0
 
 	# Check if download must be performed in a temporary directory
 	if (( YTDL_PARALLEL_DOWNLOADS >= YTDL_TEMP_DL_DIR_THRESOLD )) || [[ "$YTDL_FORCE_PARALLEL" = 1 ]] || [[ ! -z "$YTDL_RESUME_PATH" ]]
@@ -171,7 +173,7 @@ function ytdlbase() {
 		YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS-1))
 		decrease_counter_if_fail=0
 		is_using_tempdir=1
-		local tempdir="$YTDL_TEMP_DL_DIR_PATH/$(date +%s)"
+		tempdir="$YTDL_TEMP_DL_DIR_PATH/$(date +%s)"
 
 		if [[ -z "$YTDL_RESUME_PATH" ]]; then
 			mkdir -p "$tempdir"
@@ -182,10 +184,17 @@ function ytdlbase() {
 			tempdir="$YTDL_RESUME_PATH"
 		fi
 
-		echoinfo "Downloading to temporary directory: \e[95m$tempdir"
+		if [[ "$(realpath "$prev_cwd")" == "$(realpath "$tempdir")" ]]; then
+			is_tempdir_cwd=1
+		else
+			echoinfo "Downloading to temporary directory: \e[95m$tempdir"
+		fi
 
 		cd "$tempdir"
 	fi
+
+	# Store the command in an history
+	echo "YTDL_RESUME_PATH='$tempdir' ytdlbase $@" >> "$YTDL_HISTORY_FILE"
 
 	# Perform the download
 	if ! youtube-dl -f bestvideo+bestaudio/best --add-metadata "$@"
@@ -205,7 +214,7 @@ function ytdlbase() {
 	export YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS-1))
 
 	# Move ready files & clean up
-	if [[ "$is_using_tempdir" = 1 ]] && [[ "$(realpath "$prev_cwd")" != "$(realpath "$tempdir")" ]]
+	if [[ "$is_using_tempdir" = 1 ]] && [[ $is_tempdir_cwd = 0 ]]
 	then
 		cd "$prev_cwd"
 
@@ -257,6 +266,10 @@ function ytdlresume() {
 
 function ytdllocal() {
 	YTDL_RESUME_PATH="." ytdl "$@"
+}
+
+function ytdlhistory() {
+	command cat "$YTDL_HISTORY_FILE"
 }
 
 # Download a YouTube video with separate french and english subtitle files (if available)
