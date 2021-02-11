@@ -249,6 +249,10 @@ function ytdlresume() {
 	YTDL_RESUME_PATH="$resume_path" ytdl "$@"
 }
 
+function ytdllocal() {
+	YTDL_RESUME_PATH="." ytdl "$@"
+}
+
 # Download a YouTube video with separate french and english subtitle files (if available)
 function ytdlsubs() {
 	ytdl "$@" --write-sub --sub-lang "fr,en"
