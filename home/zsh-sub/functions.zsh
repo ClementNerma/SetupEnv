@@ -180,6 +180,8 @@ function ytdlbase() {
 	if [[ $is_using_tempdir = 1 ]]
 	then
 		cd "$prev_cwd"
+
+		echoinfo "Moving to output directory: \e[95m$(pwd)"
 		
 		if ! mv "$tempdir/"* .
 		then
