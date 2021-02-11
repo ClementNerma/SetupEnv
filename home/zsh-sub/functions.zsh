@@ -166,6 +166,7 @@ function ytdlbase() {
 
 	if (( YTDL_PARALLEL_DOWNLOADS >= YTDL_TEMP_DL_DIR_THRESOLD )) || [[ "$YTDL_FORCE_PARALLEL" = 1 ]]
 	then
+		YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS-1))
 		is_using_tempdir=1
 		local tempdir="$YTDL_TEMP_DL_DIR_PATH/$(date +%s)"
 		mkdir -p "$tempdir"
