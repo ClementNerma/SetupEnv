@@ -18,7 +18,7 @@ export DISABLE_DIR_HOME_SWITCHING=0
 export PROJECT_DIRS_IN_WSL_FS=0
 
 # Minimum parallel downloads that have to occur in parallel to enable the temporary path feature
-export YTDL_TEMP_DL_DIR_THRESOLD=3
+export YTDL_TEMP_DL_DIR_THRESOLD=0
 
 # Temporary path (must be on a VERY FAST storage) where Youtube-DL downloaded files are put
 # They are moved after the download has been finished, to avoid problems with parallel downloads
