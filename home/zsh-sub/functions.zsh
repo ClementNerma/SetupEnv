@@ -199,7 +199,7 @@ function ytdlbase() {
 	export YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS-1))
 
 	# Move ready files & clean up
-	if [[ $is_using_tempdir = 1 ]]
+	if [[ "$is_using_tempdir" = 1 ]] && [[ "$(realpath "$prev_cwd")" != "$(realpath "$tempdir")" ]]
 	then
 		cd "$prev_cwd"
 
