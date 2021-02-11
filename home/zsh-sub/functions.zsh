@@ -164,33 +164,47 @@ function ytdlbase() {
 
 	local prev_cwd=$(pwd)
 
-	if (( YTDL_PARALLEL_DOWNLOADS >= YTDL_TEMP_DL_DIR_THRESOLD )) || [[ "$YTDL_FORCE_PARALLEL" = 1 ]]
+	# Check if download must be performed in a temporary directory
+	if (( YTDL_PARALLEL_DOWNLOADS >= YTDL_TEMP_DL_DIR_THRESOLD )) || [[ "$YTDL_FORCE_PARALLEL" = 1 ]] || [[ ! -z "$YTDL_RESUME_PATH" ]]
 	then
 		YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS-1))
 		is_using_tempdir=1
 		local tempdir="$YTDL_TEMP_DL_DIR_PATH/$(date +%s)"
-		mkdir -p "$tempdir"
+
+		if [[ -z "$YTDL_RESUME_PATH" ]]; then
+			mkdir -p "$tempdir"
+		elif [[ ! -d "$YTDL_RESUME_PATH" ]]; then
+			echoerr "Resume path is not a directory!"
+			return 1
+		else
+			tempdir="$YTDL_RESUME_PATH"
+		fi
 
 		echoinfo "Downloading to temporary directory: \e[95m$tempdir"
 
 		cd "$tempdir"
 	fi
 
+	# Perform the download
 	if ! youtube-dl -f bestvideo+bestaudio/best --add-metadata "$@"
 	then
 		echoerr "Failed to download videos with Youtube-DL!"
+		echoerr "You can resume the download with:"
+		echoinfo "ytdlresume '$tempdir' $*"
 		cd "$prev_cwd"
 		return 1
 	fi
 
+	# Decrease the counter
 	export YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS-1))
 
+	# Move ready files & clean up
 	if [[ $is_using_tempdir = 1 ]]
 	then
 		cd "$prev_cwd"
 
 		echoinfo "Moving to output directory: \e[95m$(pwd)"
-		
+
 		if ! mv "$tempdir/"* .
 		then
 			echoerr "Failed to move Youtube-DL videos! Temporary download path is:"
@@ -216,6 +230,13 @@ function ytdl() {
 
 function ytdlpar() {
 	YTDL_FORCE_PARALLEL=1 ytdl "$@"
+}
+
+function ytdlresume() {
+	local resume_path="$1"
+	shift
+
+	YTDL_RESUME_PATH="$resume_path" ytdl "$@"
 }
 
 # Download a YouTube video with separate french and english subtitle files (if available)
