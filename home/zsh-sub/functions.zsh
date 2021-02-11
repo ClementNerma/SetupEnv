@@ -203,16 +203,26 @@ function ytdlbase() {
 	then
 		cd "$prev_cwd"
 
-		echoinfo "Moving to output directory: \e[95m$(pwd)"
+		local files_count="$(command ls "$tempdir" -1A | wc -l)"
+		local counter=0
 
-		if ! mv "$tempdir/"* .
-		then
-			echoerr "Failed to move Youtube-DL videos! Temporary download path is:"
-			echopath "$tempdir"
-			return 1
-		else
-			rmdir "$tempdir"
-		fi
+		echoinfo "Moving [$files_count] files to output directory: \e[95m$(pwd)"
+
+		for item in "$tempdir"/*(N)
+		do
+			counter=$((counter+1))
+			echoinfo "> Moving file $counter / $files_count: \e[95m$(basename "$item")\e[92m..."
+			
+			if ! mv "$item" .
+			then
+				echoerr "Failed to move Youtube-DL videos! Temporary download path is:"
+				echopath "$tempdir"
+				return 1
+			fi
+		done
+
+		echoinfo "Done!"
+		rmdir "$tempdir"
 	fi
 }
 
