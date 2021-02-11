@@ -199,6 +199,10 @@ function ytdlbase() {
 	fi
 }
 
+function ytdlclean() {
+	rm "$YTDL_TEMP_DL_DIR_PATH"
+}
+
 function ytdl() {
 	if [[ $1 == "https://www.youtube.com/"* ]]; then
 		ytdlbase "$@"
