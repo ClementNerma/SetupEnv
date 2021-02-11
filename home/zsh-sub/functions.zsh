@@ -162,7 +162,8 @@ function ytdlbase() {
 	export YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS+1))
 	local is_using_tempdir=0
 
-	if (( YTDL_PARALLEL_DOWNLOADS >= YTDL_TEMP_DL_DIR_THRESOLD )); then
+	if (( YTDL_PARALLEL_DOWNLOADS >= YTDL_TEMP_DL_DIR_THRESOLD ))
+	then
 		is_using_tempdir=1
 		local tempdir="$YTDL_TEMP_DL_DIR_PATH/$(date +%s)"
 		local prev_cwd=$(pwd)
@@ -173,7 +174,11 @@ function ytdlbase() {
 		cd "$tempdir"
 	fi
 
-	youtube-dl -f bestvideo+bestaudio/best --add-metadata "$@"
+	if ! youtube-dl -f bestvideo+bestaudio/best --add-metadata "$@"
+	then
+		echoerr "Failed to download videos with Youtube-DL!"
+		return 1
+	fi
 
 	export YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS-1))
 
@@ -187,6 +192,7 @@ function ytdlbase() {
 		then
 			echoerr "Failed to move Youtube-DL videos! Temporary download path is:"
 			echopath "$tempdir"
+			return 1
 		else
 			rmdir "$tempdir"
 		fi
