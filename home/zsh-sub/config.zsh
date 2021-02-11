@@ -24,3 +24,10 @@ export FFMPEG_BIN_PATH="$YTDL_WSL_PATH/ffmpeg.exe"
 export FFPLAY_BIN_PATH="$YTDL_WSL_PATH/ffplay.exe"
 export FFPROBE_BIN_PATH="$YTDL_WSL_PATH/ffprobe.exe"
 export ATOMICPARSLEY_BIN_PATH="$YTDL_WSL_PATH/AtomicParsley.exe"
+
+# Minimum parallel downloads that have to occur in parallel to enable the temporary path feature
+export YTDL_TEMP_DL_DIR_THRESOLD=0
+
+# Temporary path (must be on a VERY FAST storage) where Youtube-DL downloaded files are put
+# They are moved after the download has been finished, to avoid problems with parallel downloads
+export YTDL_TEMP_DL_DIR_PATH="/tmp/ytdl-videos"

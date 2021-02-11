@@ -18,6 +18,10 @@ function echoinfo() {
     echocolored "\e[93m" "$@"
 }
 
+function echopath() {
+	echocolored "\e[95m" "$@"
+}
+
 # Arguments: "<url>" "<download location>"
 function dl() {
     local url="$1"

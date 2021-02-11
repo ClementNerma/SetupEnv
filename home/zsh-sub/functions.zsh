@@ -156,8 +156,39 @@ function unrm() {
 }
 
 # Software: Youtube-DL
+export YTDL_PARALLEL_DOWNLOADS=0
+
 function ytdlbase() {
+	export YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS+1))
+	local is_using_tempdir=0
+
+	if (( YTDL_PARALLEL_DOWNLOADS >= YTDL_TEMP_DL_DIR_THRESOLD )); then
+		is_using_tempdir=1
+		local tempdir="$YTDL_TEMP_DL_DIR_PATH/$(date +%s)"
+		local prev_cwd=$(pwd)
+		mkdir -p "$tempdir"
+
+		echoinfo "Downloading to temporary directory: \e[95m$tempdir"
+
+		cd "$tempdir"
+	fi
+
 	youtube-dl -f bestvideo+bestaudio/best --add-metadata "$@"
+
+	export YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS-1))
+
+	if [[ $is_using_tempdir = 1 ]]
+	then
+		cd "$prev_cwd"
+		
+		if ! mv "$tempdir/"* .
+		then
+			echoerr "Failed to move Youtube-DL videos! Temporary download path is:"
+			echopath "$tempdir"
+		else
+			rmdir "$tempdir"
+		fi
+	fi
 }
 
 function ytdl() {
