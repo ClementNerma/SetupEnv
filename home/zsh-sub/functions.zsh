@@ -177,6 +177,7 @@ function ytdlbase() {
 	if ! youtube-dl -f bestvideo+bestaudio/best --add-metadata "$@"
 	then
 		echoerr "Failed to download videos with Youtube-DL!"
+		cd "$prev_cwd"
 		return 1
 	fi
 
