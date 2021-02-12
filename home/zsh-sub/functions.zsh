@@ -160,7 +160,7 @@ export YTDL_PARALLEL_DOWNLOADS=0
 
 function ytdlbase() {
 	export YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS+1))
-	local decrease_counter_if_fail=1
+	local decrease_counter=1
 	local is_using_tempdir=0
 
 	local prev_cwd=$(pwd)
@@ -170,8 +170,8 @@ function ytdlbase() {
 	# Check if download must be performed in a temporary directory
 	if (( YTDL_PARALLEL_DOWNLOADS >= YTDL_TEMP_DL_DIR_THRESOLD )) || [[ "$YTDL_FORCE_PARALLEL" = 1 ]] || [[ ! -z "$YTDL_RESUME_PATH" ]]
 	then
-		YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS-1))
-		decrease_counter_if_fail=0
+		export YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS-1))
+		decrease_counter=0
 		is_using_tempdir=1
 		tempdir="$YTDL_TEMP_DL_DIR_PATH/$(date +%s)"
 
@@ -199,7 +199,7 @@ function ytdlbase() {
 	# Perform the download
 	if ! youtube-dl -f bestvideo+bestaudio/best --add-metadata "$@"
 	then
-		if [[ $decrease_counter_if_fail = 1 ]]; then
+		if [[ $decrease_counter = 1 ]]; then
 			YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS-1))
 		fi
 
@@ -211,7 +211,9 @@ function ytdlbase() {
 	fi
 
 	# Decrease the counter
-	export YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS-1))
+	if [[ $decrease_counter = 1 ]]; then
+		export YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS-1))
+	fi
 
 	# Move ready files & clean up
 	if [[ "$is_using_tempdir" = 1 ]] && [[ $is_tempdir_cwd = 0 ]]
