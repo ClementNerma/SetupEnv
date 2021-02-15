@@ -165,6 +165,13 @@ function unrm() {
 # Software: Youtube-DL
 export YTDL_PARALLEL_DOWNLOADS=0
 
+# Overriding variables:
+# * BARE_YTDL=1           => don't add any of the default arguments to Youtube-DL
+# * CUSTOM_QUALITY=1      => don't add the default "-f bestvideo/..." argument
+# * NO_METADATA=1         => don't add the default "--add-metadata" argument
+# * YTDL_FORCE_PARALLEL=1 => force to download the video on parallel, ignoring the default thresold
+# * YTDL_RESUME_PATH=...  => download in the specified directory inside or a generated temporary one
+# * DEBUG_COMMAND=1       => show the used command
 function ytdlbase() {
 	export YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS+1))
 	local decrease_counter=1
@@ -203,8 +210,23 @@ function ytdlbase() {
 	# Store the command in an history
 	echo "YTDL_RESUME_PATH='$tempdir' ytdlbase $@" >> "$ADF_CONF_YTDL_HISTORY_FILE"
 
+	local bestquality_params="-f bestvideo+bestaudio/best"
+	local metadata_params="--add-metadata"
+
+	if [[ ! -z "$CUSTOM_QUALITY" && "$CUSTOM_QUALITY" != 0 ]] || [[ ! -z "$BARE_YTDL" && "$BARE_YTDL" != 0 ]]; then
+		bestquality_params=""
+	fi
+
+	if [[ ! -z "$NO_METADATA" && "$NO_METADATA" != 0 ]] || [[ ! -z "$BARE_YTDL" && "$BARE_YTDL" != 0 ]]; then
+		metadata_params=""
+	fi
+
+	if [[ ! -z "$DEBUG_COMMAND" ]]; then
+		echoinfo "Command >>" youtube-dl $bestquality_params $metadata "$@"
+	fi
+
 	# Perform the download
-	if ! youtube-dl -f bestvideo+bestaudio/best --add-metadata "$@"
+	if ! youtube-dl $bestquality_params $metadata "$@"
 	then
 		if [[ $decrease_counter = 1 ]]; then
 			YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS-1))
