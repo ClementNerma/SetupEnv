@@ -162,7 +162,7 @@ function ytdlalbum() {
         tagger_path=""
     fi
 
-    YTDL_AUDIO_ONLY=1 YTDL_OUTPUT_DIR="$YTDL_ALBUM_OUTPUT_DIR" ytdlcookies use "$YTDL_ALBUM_PRESET" "$@" -o "$format" --exec "$tagger_path"
+    YTDL_AUDIO_ONLY=1 YTDL_OUTPUT_DIR="$YTDL_ALBUM_OUTPUT_DIR" ytdlcookies use "$YTDL_ALBUM_PRESET" "$@" -o "$format" --exec "$tagger_path" -f "bestaudio[ext=m4a]"
 }
 
 export ADF_YTDL_COOKIES_PRESETS_DIR="$ADF_DATA_DIR/ytdl-cookies-presets"
