@@ -69,7 +69,7 @@ function ytdl() {
 	fi
 
 	if [[ ! -z "$YTDL_AUDIO_ONLY" && "$YTDL_AUDIO_ONLY" != 0 ]]; then
-		bestquality_params="-f 'bestaudio"
+		bestquality_params="-f bestaudio"
 	fi
 
 	if [[ ! -z "$YTDL_NO_METADATA" && "$YTDL_NO_METADATA" != 0 ]] || [[ ! -z "$YTDL_BARE" && "$YTDL_BARE" != 0 ]]; then
@@ -80,7 +80,7 @@ function ytdl() {
 		thumbnail_params=""
 	fi
 
-	local ytdl_debug_cmd="$bestquality_params $metadata $thumbnail_params "$@" $YTDL_APPEND"
+	local ytdl_debug_cmd="$bestquality_params $metadata_params $thumbnail_params "$@" $YTDL_APPEND"
 
 	if [[ ! -z "$YTDL_PRINT_CMD" || ! -z "$YTDL_DRY_RUN" ]]; then
 		echoinfo "Command >> youtube-dl $ytdl_debug_cmd"
@@ -90,7 +90,7 @@ function ytdl() {
 
 	# Perform the download
 	if [[ -z "$YTDL_DRY_RUN" || "$YTDL_DRY_RUN" = 0 ]]; then
-		if ! youtube-dl $bestquality_params $metadata $thumbnail_params "$@" $YTDL_APPEND
+		if ! youtube-dl $bestquality_params $metadata_params $thumbnail_params "$@" $YTDL_APPEND
 		then
 			if [[ $decrease_counter = 1 ]]; then
 				YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS-1))
