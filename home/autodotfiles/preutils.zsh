@@ -118,7 +118,7 @@ function ghdl() {
 }
 
 function _filebak() {
-	local itempath="$1"
+	local itempath="${1%/}"
 
 	if [[ ! -f "$itempath" && ! -d "$itempath" ]]; then
 		echoerr "Provided path was not found: \e[92m$itempath"
