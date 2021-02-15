@@ -128,7 +128,12 @@ function ytdl() {
 			counter=$((counter+1))
 			echoinfo "> Moving item $counter / $files_count: \e[95m$(basename "${item%/}")\e[93m..."
 
-			if ! mv "${item%/}/" "$download_to"
+			local tomove="${item%/}"
+			if [[ -d "$item" ]]; then
+				item="$item/"
+			fi
+
+			if ! mv "$item" "$download_to"
 			then
 				echoerr "Failed to move Youtube-DL videos! Temporary download path is:"
 				echopath "$tempdir"
