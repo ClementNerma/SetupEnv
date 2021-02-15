@@ -32,7 +32,7 @@ alias gpb="git push --set-upstream origin \$(git rev-parse --abbrev-ref HEAD)"
 alias gop="git reflog expire --expire=now --all && git gc --prune=now && git gc --aggressive --prune=now"
 
 # Set the default editor
-export EDITOR="micro"
+export EDITOR="nano"
 alias nano="$EDITOR"
 
 # Allow to sign Git commits with GPG
