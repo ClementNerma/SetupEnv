@@ -1,5 +1,5 @@
 #
-# This file is the main loader of SetupEnv
+# This file is the main loader of AutoDotFiles
 # It is loaded during the execution of ~/.zshrc
 # The goal is to use a separate file for custom definitions and thus be able to reload just that, instead of
 #  reloading the whole configuration each time ; as well as to keep the ~/.zshrc file as clean and simple as possible.
@@ -7,85 +7,85 @@
 
 # Determine if current environment is WSL
 if grep -q microsoft /proc/version; then
-	command rm -rf "$ZSH_SUB_DIR/linux"
+	command rm -rf "$ADF_SUB_DIR/linux"
 	export IS_WSL_ENV=1
 	export ENV_NAME_STR="wsl"
 else
-	command rm -rf "$ZSH_SUB_DIR/wsl"
+	command rm -rf "$ADF_SUB_DIR/wsl"
 	export IS_WSL_ENV=0
 	export ENV_NAME_STR="linux"
 fi
 
-if [[ -f "$HOME/.setupenv-just-installed" ]]; then
-	export SETUPENV_JUST_INSTALLED=1
-	command rm "$HOME/.setupenv-just-installed"
+if [[ -f "$HOME/.autodotfiles-just-installed" ]]; then
+	export ADF_JUST_INSTALLED=1
+	command rm "$HOME/.autodotfiles-just-installed"
 else
-	export SETUPENV_JUST_INSTALLED=0
+	export ADF_JUST_INSTALLED=0
 fi
 
-# Set path to SetupEnv files
-export ZSH_SUB_DIR=$(dirname "${(%):-%x}")
+# Set path to AutoDotFiles files
+export ADF_SUB_DIR=$(dirname "${(%):-%x}")
 
 # Set path to data directory
-export ZSH_DATA_DIR="$ZSH_SUB_DIR/local/data"
+export ADF_DATA_DIR="$ADF_SUB_DIR/local/data"
 
 # Set path to binaries directory
-export ZSH_BIN_DIR="$ZSH_DATA_DIR/binaries"
+export ADF_BIN_DIR="$ADF_DATA_DIR/binaries"
 
 # Create base directories
-if [[ ! -d "$ZSH_DATA_DIR" ]]; then mkdir "$ZSH_DATA_DIR"; fi
-if [[ ! -d "$ZSH_BIN_DIR" ]]; then mkdir "$ZSH_BIN_DIR"; fi
+if [[ ! -d "$ADF_DATA_DIR" ]]; then mkdir "$ADF_DATA_DIR"; fi
+if [[ ! -d "$ADF_BIN_DIR" ]]; then mkdir "$ADF_BIN_DIR"; fi
 
 # Set path to the files list
-export ZSH_FILES_LIST="$HOME/.setupenv-files-list.txt"
+export ADF_FILES_LIST="$HOME/.autodotfiles-files-list.txt"
 
 # Ensure this directory exists
-mkdir -p "$ZSH_DATA_DIR"
+mkdir -p "$ADF_DATA_DIR"
 
 # Load the default configuration file
-source "$ZSH_SUB_DIR/config.zsh"
+source "$ADF_SUB_DIR/config.zsh"
 
 # Load the local configuration file
-source "$ZSH_SUB_DIR/local/config.zsh"
+source "$ADF_SUB_DIR/local/config.zsh"
 
 # Load common utilities usable by the installer
-source "$ZSH_SUB_DIR/preutils.zsh"
+source "$ADF_SUB_DIR/preutils.zsh"
 
 # Load the updater
-source "$ZSH_SUB_DIR/updater.zsh"
+source "$ADF_SUB_DIR/updater.zsh"
 
 # Ensure the restoration script is in place
-if [[ ! -f "$SETUPENV_RESTORATION_SCRIPT" || $SETUPENV_JUST_INSTALLED = 1 ]]; then
+if [[ ! -f "$ADF_RESTORATION_SCRIPT" || $ADF_JUST_INSTALLED = 1 ]]; then
 	zerupdate_restoration_script
 fi
 
 # Set path to the installer
-export ZSH_INSTALLER_DIR="$ZSH_SUB_DIR/installer"
+export ADF_INSTALLER_DIR="$ADF_SUB_DIR/installer"
 
 # Run the installer
-export ZSH_INSTALLER_ABORTED=0
-source "$ZSH_INSTALLER_DIR/index.zsh"
+export ADF_INSTALLER_ABORTED=0
+source "$ADF_INSTALLER_DIR/index.zsh"
 
 # Exit if the installer aborted
-if [[ $ZSH_INSTALLER_ABORTED = 1 ]]; then
+if [[ $ADF_INSTALLER_ABORTED = 1 ]]; then
 	return
 fi
 
 # Register the local binaries directory in PATH
-export PATH="$ZSH_BIN_DIR:$PATH"
+export PATH="$ADF_BIN_DIR:$PATH"
 
 # Load platform-specific configuration
-source "$ZSH_SUB_DIR/$ENV_NAME_STR/env.zsh"
+source "$ADF_SUB_DIR/$ENV_NAME_STR/env.zsh"
 
 # Load the local configuration
-source "$ZSH_SUB_DIR/local/env.zsh"
+source "$ADF_SUB_DIR/local/env.zsh"
 
 # Allow fast reloading of this file after changes
 alias reload="source ${(%):-%x}"
 
 # Load the script for the main computer (if applies)
-if [ $ZSH_MAIN_PERSONAL_COMPUTER = 1 ]; then
-	source "$ZSH_SUB_DIR/main-pc.zsh"
+if [ $ADF_MAIN_PERSONAL_COMPUTER = 1 ]; then
+	source "$ADF_SUB_DIR/main-pc.zsh"
 fi
 
 # Ensure main directories are defined
@@ -100,7 +100,7 @@ if [[ -z $PROJDIR ]]; then echoerr "Directory variable \e[92m\$PROJDIR\e[91m is 
 if [[ -z $WORKDIR ]]; then echoerr "Directory variable \e[92m\$WORKDIR\e[91m is not defined!"; fi
 
 if [[ -z $HOMEDIR || ! -d $HOMEDIR || -z $DLDIR || -z $PROJDIR || -z $WORKDIR || -z $TEMPDIR || -z $SOFTWAREDIR || -z $TRASHDIR ]]; then
-	read "?Press <Enter> to exit, or <Ctrl+C> to get a without-setupenv ZSH prompt ('zerupdate' command will be available) "
+	read "?Press <Enter> to exit, or <Ctrl+C> to get a without-AutoDotFiles ZSH prompt ('zerupdate' command will be available) "
 	exit
 fi
 
@@ -116,10 +116,10 @@ if [[ ! -d $SOFTWAREDIR ]]; then mkdir -p "$SOFTWAREDIR"; fi
 if ! typeset -f open > /dev/null; then echoinfo "WARNING: 'open' command is not defined. 'open'-related functions won't work correctly."; fi
 
 # Load software configuration and aliases
-source "$ZSH_SUB_DIR/config-aliases.zsh"
+source "$ADF_SUB_DIR/config-aliases.zsh"
 
 # Load functions
-source "$ZSH_SUB_DIR/functions.zsh"
+source "$ADF_SUB_DIR/functions.zsh"
 
 # Dir hashes
 hash -d Home=$HOMEDIR
@@ -132,7 +132,7 @@ hash -d Software=$SOFTWAREDIR
 # Go to the a specific folder on startup, except if the shell has been started in a custom directory
 if [[ $DISABLE_DIR_HOME_SWITCHING != 1 ]]; then
 	if [[ "$(pwd)" = "$HOME" || "$(pwd)" = "$HOMEDIR" ]]; then
-		if [ $ZSH_MAIN_PERSONAL_COMPUTER = 1 ]; then
+		if [ $ADF_MAIN_PERSONAL_COMPUTER = 1 ]; then
 			goproj
 		else
 			godl
@@ -141,7 +141,7 @@ if [[ $DISABLE_DIR_HOME_SWITCHING != 1 ]]; then
 fi
 
 # Load platform-specific scripts
-source "$ZSH_SUB_DIR/$ENV_NAME_STR/script.zsh"
+source "$ADF_SUB_DIR/$ENV_NAME_STR/script.zsh"
 
 # Filter the commands to put in the history
 function zshaddhistory() {
@@ -155,4 +155,4 @@ function zshaddhistory() {
 }
 
 # Load the local script
-source "$ZSH_SUB_DIR/local/script.zsh"
+source "$ADF_SUB_DIR/local/script.zsh"

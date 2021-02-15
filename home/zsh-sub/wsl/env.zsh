@@ -4,7 +4,7 @@
 #
 
 # Get Windows username (cached for better performance)
-export WSL_USERNAME_CACHE_FILE="$ZSH_SUB_DIR/local/.wsl-username"
+export WSL_USERNAME_CACHE_FILE="$ADF_SUB_DIR/local/.wsl-username"
 
 if [[ ! -f "$WSL_USERNAME_CACHE_FILE" ]]; then
   export WINUSER=$(powershell.exe -command '$env:UserName' | tr -d "\r")

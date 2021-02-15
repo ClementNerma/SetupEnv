@@ -45,7 +45,7 @@ CURRENT_STEP=0
 AUTO_INSTALLER_STARTED_AT=$(date +%s)
 
 # Choose a temporary directory
-TMPDIR="/tmp/_setupenv_autoinstaller_$AUTO_INSTALLER_STARTED_AT"
+TMPDIR="/tmp/_autodotfiles_autoinstaller_$AUTO_INSTALLER_STARTED_AT"
 
 # Beginning of the installer!
 echo
@@ -113,8 +113,8 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cp -a "$SCRIPT_DIR/home/." ~/
 
 _step "Saving list of files..."
-ls -1A "$SCRIPT_DIR/home" > ~/.setupenv-files-list.txt
-touch ~/.setupenv-just-installed
+ls -1A "$SCRIPT_DIR/home" > ~/.autodotfiles-files-list.txt
+touch ~/.autodotfiles-just-installed
 
 _step "Cleaning up temporary directory..."
 rm -rf "$TMPDIR"

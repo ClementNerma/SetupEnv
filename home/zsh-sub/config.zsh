@@ -5,10 +5,10 @@
 
 # Is this my main computer?
 # Set to '1' if it is
-export ZSH_MAIN_PERSONAL_COMPUTER=0
+export ADF_MAIN_PERSONAL_COMPUTER=0
 
 # Path to the restoration script
-export SETUPENV_RESTORATION_SCRIPT="/usr/local/bin/zerrestore"
+export ADF_RESTORATION_SCRIPT="/usr/local/bin/zerrestore"
 
 # Disable automatic switching to directory if current path is home at startup
 export DISABLE_DIR_HOME_SWITCHING=0
@@ -18,7 +18,7 @@ export DISABLE_DIR_HOME_SWITCHING=0
 export PROJECT_DIRS_IN_WSL_FS=0
 
 # Youtube-DL commands history with temporary directory
-export YTDL_HISTORY_FILE="$ZSH_DATA_DIR/youtube-dl.history"
+export YTDL_HISTORY_FILE="$ADF_DATA_DIR/youtube-dl.history"
 
 # Minimum parallel downloads that have to occur in parallel to enable the temporary path feature
 export YTDL_TEMP_DL_DIR_THRESOLD=0

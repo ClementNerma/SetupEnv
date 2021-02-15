@@ -8,4 +8,4 @@ alias zerc="nano ${(%):-%x} && source ${(%):-%x}"
 
 # Is this my main computer?
 # Set to '1' if it is
-#export ZSH_MAIN_PERSONAL_COMPUTER=0
+#export ADF_MAIN_PERSONAL_COMPUTER=0

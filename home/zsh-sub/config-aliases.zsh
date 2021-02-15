@@ -64,7 +64,7 @@ export PATH="$VOLTA_HOME/bin:$PATH"
 source ~/.fzf.zsh
 
 # Integration for Zoxide
-ZOXIDE_LOAD_FILE="$(dirname "$ZSH_SUB_DIR")/zoxide.zsh"
+ZOXIDE_LOAD_FILE="$(dirname "$ADF_SUB_DIR")/zoxide.zsh"
 
 if [[ ! -f "$ZOXIDE_LOAD_FILE" ]]; then
 	zoxide init zsh > "$ZOXIDE_LOAD_FILE"
