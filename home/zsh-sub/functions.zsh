@@ -266,7 +266,7 @@ function ytdlresume() {
 	YTDL_RESUME_PATH="$resume_path" ytdl "$@"
 }
 
-function ytdllocal() {
+function ytdlhere() {
 	YTDL_RESUME_PATH="." ytdl "$@"
 }
 
