@@ -142,3 +142,6 @@ export ADF_YTDL_COOKIES_PRESETS_DIR="$ADF_DATA_DIR/ytdl-cookies-presets"
 if [[ ! -d "$ADF_YTDL_COOKIES_PRESETS_DIR" ]]; then
     mkdir -p "$ADF_YTDL_COOKIES_PRESETS_DIR"
 fi
+
+alias yr="ytdlcookies renew"
+alias yu="ytdlcookies use"
