@@ -35,11 +35,14 @@ function rsync_dir() {
 
 # Copy a project to another directory without its dependencies and temporary files
 function cp_proj_nodeps() {
-	if [[ -d "$2" ]]; then
-		if [[ $3 != "-f" && $3 != "--force" ]]; then
-			echo "Target directory exists. To overwrite it, provide '-f' or '--force' as a third argument."
-			return 1
-		fi
+	if [[ ! -d "$1" ]]; then
+		echo "Source does not exist!"
+		return 1
+	fi
+
+	if [[ -f "$2" || -d "$2" ]]; then
+		echo "Target already exists!"
+		return 1
 	fi
 
 	rsync --exclude '*.tmp' --exclude '.rustc_info.json' \
@@ -47,19 +50,12 @@ function cp_proj_nodeps() {
 		  --exclude 'build/' --exclude 'dist/' \
 		  --exclude 'target/debug/' --exclude 'target/release/' --exclude 'target/wasm32-unknown-unknown/' \
 		  --archive --partial --progress \
-		  --delete --delete-excluded "$1/" "$2" "${@:3}"
+		  --delete --delete-excluded "${@:3}" "$1/" "$2"
 }
 
 # Backup a project
 function bakproj() {
-	local itempath="${1%/}"
-
-	if [[ ! -f "$itempath" && ! -d "$itempath" ]]; then
-		echoerr "Provided path was not found: \e[92m$itempath"
-		return 1
-	fi
-
-	cp_proj_nodeps "$itempath" "$itempath.bak-$(date '+%Y_%m_%d-%H_%M_%S')"
+	_filebak "$1" cp_proj_nodeps "${@:2}"
 }
 
 # Run a Cargo project located in the projects directory
