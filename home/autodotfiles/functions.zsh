@@ -286,10 +286,7 @@ function ytdlpar() {
 }
 
 function ytdlresume() {
-	local resume_path="$1"
-	shift
-
-	YTDL_RESUME_PATH="$resume_path" ytdl "$@"
+	YTDL_RESUME_PATH="$1" ytdl "${@:2}"
 }
 
 function ytdlhere() {

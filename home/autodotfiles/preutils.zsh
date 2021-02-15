@@ -1,8 +1,7 @@
 
 function echocolored() {
     printf "$1"
-    shift
-    while IFS= read -r line ; do echo $line; done <<< "$@"
+    while IFS= read -r line ; do echo $line; done <<< "${@:2}"
     printf "\e[0m"
 }
 
@@ -24,28 +23,18 @@ function echopath() {
 
 # Arguments: "<url>" "<download location>"
 function dl() {
-    local url="$1"
-    local outpath="$2"
-    shift
-
-    if [[ ! -z "$outpath" ]]; then
-        shift
-        wget -q --show-progress -O "$outpath" "$url" "$@"
+    if [[ ! -z "$2" ]]; then
+        wget -q --show-progress -O "$2" "$1" "${@:3}"
     else
-        wget -q --show-progress "$url" "$@"
+        wget -q --show-progress "$@"
     fi
 }
 
 function sudodl() {
-    local url="$1"
-    local outpath="$2"
-    shift
-
-    if [[ ! -z "$outpath" ]]; then
-        shift
-        sudo wget -q --show-progress -O "$outpath" "$url" "$@"
+    if [[ ! -z "$2" ]]; then
+        sudo wget -q --show-progress -O "$2" "$1" "${@:3}"
     else
-        sudo wget -q --show-progress "$url" "$@"
+        sudo wget -q --show-progress "$@"
     fi
 }
 
@@ -130,7 +119,6 @@ function ghdl() {
 
 function _filebak() {
 	local itempath="$1"
-	shift
 
 	if [[ ! -f "$itempath" && ! -d "$itempath" ]]; then
 		echoerr "Provided path was not found: \e[92m$itempath"
@@ -139,7 +127,7 @@ function _filebak() {
 
 	local renpath="$itempath.bak-$(date '+%Y_%m_%d-%H_%M_%S')"
 
-	$* "$itempath" "$renpath"
+	${*:2} "$itempath" "$renpath"
 	export LAST_FILEBAK_PATH="$renpath"
 }
 
