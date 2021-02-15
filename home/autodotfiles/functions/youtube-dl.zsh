@@ -119,6 +119,10 @@ function ytdl() {
 
 		echoinfo "Moving [$files_count] files to output directory: \e[95m$download_to"
 
+		if [[ ! -d "$download_to" ]]; then
+			mkdir -p "$download_to"
+		fi
+
 		for item in "$tempdir"/*(N)
 		do
 			counter=$((counter+1))
