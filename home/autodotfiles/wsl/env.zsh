@@ -26,7 +26,7 @@ export TEMPDIR="$HOME/.tempdata"
 export DLDIR="$HOMEDIR/Downloads"
 export SOFTWAREDIR="$HOMEDIR/Logiciels"
 
-if [[ $PROJECT_DIRS_IN_WSL_FS != 1 ]]; then
+if [[ $ADF_CONF_PROJECT_DIRS_IN_WSL_FS != 1 ]]; then
   export PROJDIR="$HOMEDIR/Projets"
   export WORKDIR="$HOMEDIR/Work"
   export TRASHDIR="$HOMEDIR/.trasher"

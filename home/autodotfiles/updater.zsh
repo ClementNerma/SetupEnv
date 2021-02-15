@@ -35,7 +35,7 @@ function zerupdate() {
 		echosuccess "Updating from provided path: \e[95m$1"
 		local update_path="$1"
 	else
-		if [[ $ADF_MAIN_PERSONAL_COMPUTER = 1 ]]; then
+		if [[ $ADF_CONF_MAIN_PERSONAL_COMPUTER = 1 ]]; then
 			local update_path="$PROJDIR/_Done/AutoDotFiles"
 		else
 			echoerr "Please provide a path to update ZSH (default path is only available for main computer)"
@@ -117,8 +117,8 @@ function zerupdate_online() {
 
 # Update the restoration script
 function zerupdate_restoration_script() {
-	sudo cp "$ADF_SUB_DIR/restore.zsh" "$ADF_RESTORATION_SCRIPT"
-	sudo chmod +x "$ADF_RESTORATION_SCRIPT"
+	sudo cp "$ADF_SUB_DIR/restore.zsh" "$ADF_CONF_RESTORATION_SCRIPT"
+	sudo chmod +x "$ADF_CONF_RESTORATION_SCRIPT"
 }
 
 # Uninstall AutoDotFiles

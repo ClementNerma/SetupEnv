@@ -55,7 +55,7 @@ source "$ADF_SUB_DIR/preutils.zsh"
 source "$ADF_SUB_DIR/updater.zsh"
 
 # Ensure the restoration script is in place
-if [[ ! -f "$ADF_RESTORATION_SCRIPT" || $ADF_JUST_INSTALLED = 1 ]]; then
+if [[ ! -f "$ADF_CONF_RESTORATION_SCRIPT" || $ADF_JUST_INSTALLED = 1 ]]; then
 	zerupdate_restoration_script
 fi
 
@@ -84,7 +84,7 @@ source "$ADF_SUB_DIR/local/env.zsh"
 alias reload="source ${(%):-%x}"
 
 # Load the script for the main computer (if applies)
-if [ $ADF_MAIN_PERSONAL_COMPUTER = 1 ]; then
+if [ $ADF_CONF_MAIN_PERSONAL_COMPUTER = 1 ]; then
 	source "$ADF_SUB_DIR/main-pc.zsh"
 fi
 
@@ -130,9 +130,9 @@ hash -d Temp=$TEMPDIR
 hash -d Software=$SOFTWAREDIR
 
 # Go to the a specific folder on startup, except if the shell has been started in a custom directory
-if [[ $DISABLE_DIR_HOME_SWITCHING != 1 ]]; then
+if [[ $ADF_CONF_DISABLE_DIR_HOME_SWITCHING != 1 ]]; then
 	if [[ "$(pwd)" = "$HOME" || "$(pwd)" = "$HOMEDIR" ]]; then
-		if [ $ADF_MAIN_PERSONAL_COMPUTER = 1 ]; then
+		if [ $ADF_CONF_MAIN_PERSONAL_COMPUTER = 1 ]; then
 			goproj
 		else
 			godl

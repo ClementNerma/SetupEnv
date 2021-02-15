@@ -203,7 +203,7 @@ _checkdir "$ADF_INSTALLER_SCRIPTS_DIR/all"
 _checkdir "$ADF_INSTALLER_SCRIPTS_DIR/$ENV_NAME_STR/pre"
 _checkdir "$ADF_INSTALLER_SCRIPTS_DIR/$ENV_NAME_STR"
 
-if [[ $ADF_MAIN_PERSONAL_COMPUTER = 1 ]]; then
+if [[ $ADF_CONF_MAIN_PERSONAL_COMPUTER = 1 ]]; then
     _checkdir "$ADF_INSTALLER_SCRIPTS_DIR/main-pc/all/pre"
     _checkdir "$ADF_INSTALLER_SCRIPTS_DIR/main-pc/all"
     _checkdir "$ADF_INSTALLER_SCRIPTS_DIR/main-pc/$ENV_NAME_STR/pre"

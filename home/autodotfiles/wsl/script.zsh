@@ -55,7 +55,7 @@ function remount() {
 export WSL_HOST_IP=$(awk '/nameserver/ { print $2 }' /etc/resolv.conf)
 
 # Integration of some Windows tools
-if [[ $PROJECT_DIRS_IN_WSL_FS = 0 ]]; then
+if [[ $ADF_CONF_PROJECT_DIRS_IN_WSL_FS = 0 ]]; then
   function code() {
     if [[ -z "$1" ]]; then
       command code
@@ -141,7 +141,7 @@ function clip() {
 }
 
 # Run Git commands from Windows if the project directories are not stored inside WSL's own filesystem
-if [[ $PROJECT_DIRS_IN_WSL_FS = 0 ]]; then
+if [[ $ADF_CONF_PROJECT_DIRS_IN_WSL_FS = 0 ]]; then
   alias git="git.exe" 
   alias gms="command git commit -m" # For signing commits, from WSL
 
