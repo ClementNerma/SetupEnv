@@ -77,7 +77,7 @@ function zerupdate() {
 
 	# Restore the local data scripts
 	if [[ $OVERWRITE_LOCAL_SCRIPTS != 1 ]]; then
-		cp -R "$ADF_LAST_BACKUP_DIR/zsh-sub/local" "$ADF_SUB_DIR/"
+		cp -R "$ADF_LAST_BACKUP_DIR/autodotfiles/local" "$ADF_SUB_DIR/"
 	fi
 
 	# Save the new files list

@@ -30,7 +30,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 source $ZSH/oh-my-zsh.sh
 
 # ZSH custom library
-source $HOME/zsh-sub/index.zsh
+source $HOME/autodotfiles/index.zsh
 
 # .zshrc profiling
 if (( ${+ZSH_PROFILING} )); then
