@@ -32,6 +32,10 @@ export ZSH_DATA_DIR="$ZSH_SUB_DIR/local/data"
 # Set path to binaries directory
 export ZSH_BIN_DIR="$ZSH_DATA_DIR/binaries"
 
+# Create base directories
+if [[ ! -d "$ZSH_DATA_DIR" ]]; then mkdir "$ZSH_DATA_DIR"; fi
+if [[ ! -d "$ZSH_BIN_DIR" ]]; then mkdir "$ZSH_BIN_DIR"; fi
+
 # Set path to the files list
 export ZSH_FILES_LIST="$HOME/.setupenv-files-list.txt"
 
