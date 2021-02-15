@@ -34,14 +34,6 @@ This project is mainly tailored for Debian in WSL 2, but should work fine on any
 This repository contains an automatic setup program I've made to setup my whole environment on any computer.  
 It is meant for personal usage only, but as it's a relatively complex setup I make it public so anyone can check how it works.
 
-## Features
-
-* Auto-installation and update of softwares
-* Auto-installation and configuration of aliases, functions, configuration for softwares
-* Auto-backup of current environment during update process
-* Remote installer to setup the environment on a distant server
-* Works both on WSL (Debian) and Debian-based distributions
-
 ## Usage
 
 ### Installation
