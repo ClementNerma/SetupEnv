@@ -150,13 +150,19 @@ function ytdlalbum() {
         return 1
     fi
 
-    if [[ "$1" != "https://music.youtube.com/"* ]]; then
-        echoerr "This is not a valid YouTube Music URL!"
+    if [[ "$1" != "https://music.youtube.com/playlist?list="* ]]; then
+        echoerr "This is not a valid YouTube Music Album/Playlist URL!"
         return 1
     fi
 
     local format='%(artist)s - %(release_year)s - %(album)s/%(playlist_index)s. %(track)s.%(ext)s'
-    YTDL_AUDIO_ONLY=1 YTDL_OUTPUT_DIR="$YTDL_ALBUM_OUTPUT_DIR" ytdlcookies use "$YTDL_ALBUM_PRESET" "$@" -o "$format"
+    local tagger_path="zsh $ADF_FUNCTIONS_DIR/youtube-dl.tag.zsh"
+
+    if [[ ! -z "$YTDL_NO_TAGGING" ]]; then
+        tagger_path=""
+    fi
+
+    YTDL_AUDIO_ONLY=1 YTDL_OUTPUT_DIR="$YTDL_ALBUM_OUTPUT_DIR" ytdlcookies use "$YTDL_ALBUM_PRESET" "$@" -o "$format" --exec "$tagger_path"
 }
 
 export ADF_YTDL_COOKIES_PRESETS_DIR="$ADF_DATA_DIR/ytdl-cookies-presets"
