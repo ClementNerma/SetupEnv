@@ -8,14 +8,8 @@ if [[ -z "$ADF_INSTALLER_DIR" ]]; then
     return 1
 fi
 
-export ADF_INSTALLED_LIST_FILE=$(realpath "$ADF_INSTALLER_DIR/../local/.installed.auto.zsh")
-
-if [[ ! -f "$ADF_INSTALLED_LIST_FILE" ]]; then
-    echoerr "Installation list was not found at path \e[95m$ADF_INSTALLED_LIST_FILE\e[91m. Aborting installation."
-    return 1
-fi
-
-source "$ADF_INSTALLED_LIST_FILE"
+export ADF_INSTALLED_DIR=$(realpath "$ADF_DATA_DIR/.installer.auto")
+mkdir -p "$ADF_INSTALLED_DIR"
 
 function zercomponent_install_from_list() {
     # Choose a temporary directory
@@ -116,9 +110,8 @@ function zercomponent_install_from_list() {
 function zercomponent_addtolist() {
     local file_name=$(realpath --relative-to="$ADF_INSTALLER_SCRIPTS_DIR" "$1")
     local script_name="${file_name/.zsh/}"
-    local var_name="ADF_INSTALLED_${${${script_name//-/_}//\//_}:u}"
 
-    if [[ -z "${(P)var_name}" || "${(P)var_name}" = 0 ]]; then
+    if [[ ! -f "$ADF_INSTALLED_DIR/$script_name" ]]; then
         ADF_TO_INSTALL+=("$script_name")
     fi
 }
@@ -140,10 +133,11 @@ function zercomponent_mark_custom() {
         return 1
     fi
 
-    local var_name="ADF_INSTALLED_${${${script_name//-/_}//\//_}:u}"
-
-    if [[ "${(P)var_name}" != "$value" ]]; then
-        echo "export $var_name=$value" >> "$ADF_INSTALLED_LIST_FILE"
+    if [[ $value = 1 ]]; then
+        mkdir -p "$(dirname "$ADF_INSTALLED_DIR/$script_name")"
+        touch "$ADF_INSTALLED_DIR/$script_name"
+    else
+        rm "$ADF_INSTALLED_DIR/$script_name"
     fi
 }
 
