@@ -121,8 +121,11 @@ if ! typeset -f open > /dev/null; then echoinfo "WARNING: 'open' command is not 
 # Load software configuration and aliases
 source "$ADF_SUB_DIR/config-aliases.zsh"
 
+# Set path to the functions directory
+export ADF_FUNCTIONS_DIR="$ADF_SUB_DIR/functions"
+
 # Load functions
-source "$ADF_SUB_DIR/functions.zsh"
+source "$ADF_FUNCTIONS_DIR/main.zsh"
 
 # Dir hashes
 hash -d Home=$HOMEDIR
