@@ -5,12 +5,13 @@ export YTDL_PARALLEL_DOWNLOADS=0
 # * YTDL_BARE=1           => don't add any of the default arguments to Youtube-DL
 # * YTDL_CUSTOM_QUALITY=1 => don't add the default "-f bestvideo/..." argument
 # * YTDL_NO_METADATA=1    => don't add the default "--add-metadata" argument
+# * YTDL_NO_THUMBNAIL=1   => don't add the thumbnail to the downloaded video file
+# * YTDL_AUDIO_ONLY=1     => only download the audio track
 # * YTDL_FORCE_PARALLEL=1 => force to download the video on parallel, ignoring the default thresold
 # * YTDL_RESUME_PATH=...  => download in the specified directory inside or a generated temporary one
 # * YTDL_APPEND=...       => append arguments to the final youtube-dl command
 # * YTDL_PRINT_CMD=1      => show the used command
-# * YTDL_AUDIO_ONLY=1     => only download the audio part
-function ytdlbase() {
+function ytdl() {
 	export YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS+1))
 	local decrease_counter=1
 	local is_using_tempdir=0
@@ -47,29 +48,39 @@ function ytdlbase() {
 
 	# Store the command in an history
 	local bestquality_params="-f bestvideo+bestaudio/best"
-
-	if [[ ! -z "$YTDL_AUDIO_ONLY" && "$YTDL_AUDIO_ONLY" != 0 ]]; then
-		bestquality_params="--audio-format best --extract-audio"
-	fi
-
 	local metadata_params="--add-metadata"
+	local thumbnail_params="--embed-thumbnail"
+
+	if [[ $1 == "https://www.youtube.com/"* || $1 == "https://music.youtube.com/"* ]]; then
+		thumbnail_params=""
+	fi
 
 	if [[ ! -z "$YTDL_CUSTOM_QUALITY" && "$YTDL_CUSTOM_QUALITY" != 0 ]] || [[ ! -z "$YTDL_BARE" && "$YTDL_BARE" != 0 ]]; then
 		bestquality_params=""
+	fi
+
+	if [[ ! -z "$YTDL_AUDIO_ONLY" && "$YTDL_AUDIO_ONLY" != 0 ]]; then
+		bestquality_params="-f 'bestaudio"
 	fi
 
 	if [[ ! -z "$YTDL_NO_METADATA" && "$YTDL_NO_METADATA" != 0 ]] || [[ ! -z "$YTDL_BARE" && "$YTDL_BARE" != 0 ]]; then
 		metadata_params=""
 	fi
 
-	if [[ ! -z "$YTDL_PRINT_CMD" ]]; then
-		echoinfo "Command >>" youtube-dl $bestquality_params $metadata "$@" $YTDL_APPEND
+	if [[ ! -z "$YTDL_NO_THUMBNAIL" && "$YTDL_NO_THUMBNAIL" != 0 ]] || [[ ! -z "$YTDL_BARE" && "$YTDL_BARE" != 0 ]]; then
+		thumbnail_params=""
 	fi
 
-	echo "YTDL_RESUME_PATH='$tempdir' ytdlbase $bestquality_params $metadata "$@" $YTDL_APPEND" >> "$ADF_CONF_YTDL_HISTORY_FILE"
+	local ytdl_debug_cmd="$bestquality_params $metadata $thumbnail_params "$@" $YTDL_APPEND"
+
+	if [[ ! -z "$YTDL_PRINT_CMD" ]]; then
+		echoinfo "Command >> youtube-dl $ytdl_debug_cmd"
+	fi
+
+	echo "YTDL_RESUME_PATH='$tempdir' ytdl $ytdl_debug_cmd" >> "$ADF_CONF_YTDL_HISTORY_FILE"
 
 	# Perform the download
-	if ! youtube-dl $bestquality_params $metadata "$@" $YTDL_APPEND
+	if ! youtube-dl $bestquality_params $metadata $thumbnail_params "$@" $YTDL_APPEND
 	then
 		if [[ $decrease_counter = 1 ]]; then
 			YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS-1))
@@ -117,14 +128,6 @@ function ytdlbase() {
 
 function ytdlclean() {
 	rm "$ADF_YTDL_TEMP_DL_DIR_PATH"
-}
-
-function ytdl() {
-	if [[ $1 == "https://www.youtube.com/"* ]]; then
-		ytdlbase "$@"
-	else
-		ytdlbase --embed-thumbnail "$@"
-	fi
 }
 
 function ytdlpar() {
