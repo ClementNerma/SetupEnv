@@ -141,3 +141,6 @@ function ytdlhistory() {
 function ytdlsubs() {
 	ytdl "$@" --write-sub --sub-lang "fr,en"
 }
+
+# Load the cookies function
+source "$ADF_FUNCTIONS_DIR/youtube-dl.cookies.zsh"
