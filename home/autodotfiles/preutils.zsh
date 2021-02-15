@@ -128,9 +128,9 @@ function ghdl() {
 	echosuccess "Done!"
 }
 
-# Move an item called <something> to <something>.bak-<timestamp>
-function mvbak() {
+function _filebak() {
 	local itempath="${1%/}"
+	shift
 
 	if [[ ! -f "$itempath" && ! -d "$itempath" ]]; then
 		echoerr "Provided path was not found: \e[92m$itempath"
@@ -139,6 +139,16 @@ function mvbak() {
 
 	local renpath="$itempath.bak-$(date +%s)"
 
-	mv "$itempath" "$renpath"
-	export LAST_MVBAK_PATH="$renpath"
+	$* "$itempath" "$renpath"
+	export LAST_FILEBAK_PATH="$renpath"
+}
+
+# Copy an item called <something> to <something>.bak-<timestamp>
+function cpbak() {
+	_filebak "$@" cp -r
+}
+
+# Move an item called <something> to <something>.bak-<timestamp>
+function mvbak() {
+	_filebak "$@" mv
 }
