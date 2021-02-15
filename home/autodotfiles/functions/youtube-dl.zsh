@@ -117,7 +117,7 @@ function ytdl() {
 		local files_count="$(command ls "$tempdir" -1A | wc -l)"
 		local counter=0
 
-		echoinfo "Moving [$files_count] files to output directory: \e[95m$download_to"
+		echoinfo "Moving [$files_count] files to output directory: \e[95m$download_to\e[93m..."
 
 		if [[ ! -d "$download_to" ]]; then
 			mkdir -p "$download_to"
@@ -126,7 +126,7 @@ function ytdl() {
 		for item in "$tempdir"/*(N)
 		do
 			counter=$((counter+1))
-			echoinfo "> Moving item $counter / $files_count: \e[95m$(basename "${item%/}")\e[92m..."
+			echoinfo "> Moving item $counter / $files_count: \e[95m$(basename "${item%/}")\e[93m..."
 
 			if ! mv "${item%/}/" "$download_to"
 			then
