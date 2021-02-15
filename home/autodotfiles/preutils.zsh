@@ -130,13 +130,15 @@ function ghdl() {
 
 # Move an item called <something> to <something>.bak-<timestamp>
 function mvbak() {
-	if [[ ! -f "$1" && ! -d "$1" ]]; then
-		echoerr "Provided path was not found: \e[92m$1"
+	local itempath="${1%/}"
+
+	if [[ ! -f "$itempath" && ! -d "$itempath" ]]; then
+		echoerr "Provided path was not found: \e[92m$itempath"
 		return 1
 	fi
 
-	local renpath="$1.bak-$(date +%s)"
+	local renpath="$itempath.bak-$(date +%s)"
 
-	mv "$1" "$renpath"
+	mv "$itempath" "$renpath"
 	export LAST_MVBAK_PATH="$renpath"
 }

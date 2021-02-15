@@ -52,7 +52,14 @@ function cp_proj_nodeps() {
 
 # Backup a project
 function bakproj() {
-	cp_proj_nodeps "$1" "$1.bak-$(date '+%Y_%m_%d-%H_%M_%S')"
+	local itempath="${1%/}"
+
+	if [[ ! -f "$itempath" && ! -d "$itempath" ]]; then
+		echoerr "Provided path was not found: \e[92m$itempath"
+		return 1
+	fi
+
+	cp_proj_nodeps "$itempath" "$itempath.bak-$(date '+%Y_%m_%d-%H_%M_%S')"
 }
 
 # Run a Cargo project located in the projects directory
