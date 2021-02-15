@@ -137,7 +137,7 @@ function _filebak() {
 		return 1
 	fi
 
-	local renpath="$itempath.bak-$(date +%s)"
+	local renpath="$itempath.bak-$(date '+%Y_%m_%d-%H_%M_%S')"
 
 	$* "$itempath" "$renpath"
 	export LAST_FILEBAK_PATH="$renpath"
