@@ -137,6 +137,27 @@ END
     esac
 }
 
+# Download a full album from Youtube Music
+function ytdlalbum() {
+    if [[ -z "$YTDL_ALBUM_PRESET" ]]; then
+        echoerr "Please provide a cookies preset in variable \$YTDL_ALBUM_PRESET. To list them, type: \e[95mytdlcookies list"
+        return 1
+    fi
+
+    if [[ -z "$1" ]]; then
+        echoerr "Please provide an album URL to download."
+        return 1
+    fi
+
+    if [[ "$1" != "https://music.youtube.com/"* ]]; then
+        echoerr "This is not a valid YouTube Music URL!"
+        return 1
+    fi
+
+    local format='%(artist)s - %(release_year)s - %(album)s/%(playlist_index)s. %(track)s.%(ext)s'
+    YTDL_AUDIO_ONLY=1 ytdlcookies use "$YTDL_ALBUM_PRESET" "$@" -o "$format"
+}
+
 export ADF_YTDL_COOKIES_PRESETS_DIR="$ADF_DATA_DIR/ytdl-cookies-presets"
 
 if [[ ! -d "$ADF_YTDL_COOKIES_PRESETS_DIR" ]]; then

@@ -2,6 +2,7 @@
 export YTDL_PARALLEL_DOWNLOADS=0
 
 # Overriding variables:
+# * YTDL_DRY_RUN=1        => just display the command without running it
 # * YTDL_BARE=1           => don't add any of the default arguments to Youtube-DL
 # * YTDL_CUSTOM_QUALITY=1 => don't add the default "-f bestvideo/..." argument
 # * YTDL_NO_METADATA=1    => don't add the default "--add-metadata" argument
@@ -73,24 +74,26 @@ function ytdl() {
 
 	local ytdl_debug_cmd="$bestquality_params $metadata $thumbnail_params "$@" $YTDL_APPEND"
 
-	if [[ ! -z "$YTDL_PRINT_CMD" ]]; then
+	if [[ ! -z "$YTDL_PRINT_CMD" || ! -z "$YTDL_DRY_RUN" ]]; then
 		echoinfo "Command >> youtube-dl $ytdl_debug_cmd"
 	fi
 
 	echo "YTDL_RESUME_PATH='$tempdir' ytdl $ytdl_debug_cmd" >> "$ADF_CONF_YTDL_HISTORY_FILE"
 
 	# Perform the download
-	if ! youtube-dl $bestquality_params $metadata $thumbnail_params "$@" $YTDL_APPEND
-	then
-		if [[ $decrease_counter = 1 ]]; then
-			YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS-1))
-		fi
+	if [[ -z "$YTDL_DRY_RUN" || "$YTDL_DRY_RUN" = 0 ]]; then
+		if ! youtube-dl $bestquality_params $metadata $thumbnail_params "$@" $YTDL_APPEND
+		then
+			if [[ $decrease_counter = 1 ]]; then
+				YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS-1))
+			fi
 
-		echoerr "Failed to download videos with Youtube-DL!"
-		echoerr "You can resume the download with:"
-		echoinfo "ytdlresume '$tempdir' $*"
-		cd "$prev_cwd"
-		return 1
+			echoerr "Failed to download videos with Youtube-DL!"
+			echoerr "You can resume the download with:"
+			echoinfo "ytdlresume '$tempdir' $*"
+			cd "$prev_cwd"
+			return 1
+		fi
 	fi
 
 	# Decrease the counter
