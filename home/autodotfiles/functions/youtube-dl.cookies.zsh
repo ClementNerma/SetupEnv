@@ -138,7 +138,8 @@ END
 }
 
 # Download a full album from Youtube Music
-# Ability to download to a custom output directory using the "$YTDL_ALBUM_OUTPUT_DIR" command
+# Ability to download to a custom output directory using the "$YTDL_ALBUM_OUTPUT_DIR"
+# You can also run a custom command on each album directory by providing a command in "$YTDL_ALBUM_ITEM_CMD"
 function ytdlalbum() {
     if [[ -z "$YTDL_ALBUM_PRESET" ]]; then
         echoerr "Please provide a cookies preset in variable \$YTDL_ALBUM_PRESET. To list them, type: \e[95mytdlcookies list"
@@ -162,7 +163,9 @@ function ytdlalbum() {
         tagger_path=""
     fi
 
-    YTDL_AUDIO_ONLY=1 YTDL_OUTPUT_DIR="$YTDL_ALBUM_OUTPUT_DIR" ytdlcookies use "$YTDL_ALBUM_PRESET" "$@" -o "$format" --exec "$tagger_path" -f "bestaudio[ext=m4a]"
+    YTDL_AUDIO_ONLY=1 YTDL_OUTPUT_DIR="$YTDL_ALBUM_OUTPUT_DIR" YTDL_ITEM_CMD="$YTDL_ALBUM_ITEM_CMD" \
+        ytdlcookies use "$YTDL_ALBUM_PRESET" "$@" -o "$format" \
+        --exec "$tagger_path" -f "bestaudio[ext=m4a]"
 }
 
 export ADF_YTDL_COOKIES_PRESETS_DIR="$ADF_DATA_DIR/ytdl-cookies-presets"

@@ -13,6 +13,7 @@ export YTDL_PARALLEL_DOWNLOADS=0
 # * YTDL_OUTPUT_DIR=...   => download to the specified directory (default: the current working directory)
 # * YTDL_APPEND=...       => append arguments to the final youtube-dl command
 # * YTDL_PRINT_CMD=1      => show the used command
+# * YTDL_ITEM_CMD=...     => run a command for each root item when download is finished
 function ytdl() {
 	export YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS+1))
 	local decrease_counter=1
@@ -123,12 +124,20 @@ function ytdl() {
 			mkdir -p "$download_to"
 		fi
 
+		if [[ ! -z "$YTDL_ITEM_CMD" ]]; then
+			for item in "$tempdir"/*(N)
+			do
+				"$YTDL_ITEM_CMD" "$item"
+			done
+		fi
+
 		for item in "$tempdir"/*(N)
 		do
 			counter=$((counter+1))
 			echoinfo "> Moving item $counter / $files_count: \e[95m$(basename "${item%/}")\e[93m..."
 
 			local tomove="${item%/}"
+
 			if [[ -d "$item" ]]; then
 				item="$item/"
 			fi
