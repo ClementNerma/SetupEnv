@@ -171,6 +171,7 @@ export YTDL_PARALLEL_DOWNLOADS=0
 # * NO_METADATA=1         => don't add the default "--add-metadata" argument
 # * YTDL_FORCE_PARALLEL=1 => force to download the video on parallel, ignoring the default thresold
 # * YTDL_RESUME_PATH=...  => download in the specified directory inside or a generated temporary one
+# * YTDL_APPEND=...       => append arguments to the final youtube-dl command
 # * DEBUG_COMMAND=1       => show the used command
 function ytdlbase() {
 	export YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS+1))
@@ -222,11 +223,11 @@ function ytdlbase() {
 	fi
 
 	if [[ ! -z "$DEBUG_COMMAND" ]]; then
-		echoinfo "Command >>" youtube-dl $bestquality_params $metadata "$@"
+		echoinfo "Command >>" youtube-dl $bestquality_params $metadata "$@" $YTDL_APPEND
 	fi
 
 	# Perform the download
-	if ! youtube-dl $bestquality_params $metadata "$@"
+	if ! youtube-dl $bestquality_params $metadata "$@" $YTDL_APPEND
 	then
 		if [[ $decrease_counter = 1 ]]; then
 			YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS-1))
