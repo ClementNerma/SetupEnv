@@ -9,7 +9,8 @@ export YTDL_PARALLEL_DOWNLOADS=0
 # * YTDL_NO_THUMBNAIL=1   => don't add the thumbnail to the downloaded video file
 # * YTDL_AUDIO_ONLY=1     => only download the audio track
 # * YTDL_FORCE_PARALLEL=1 => force to download the video on parallel, ignoring the default thresold
-# * YTDL_RESUME_PATH=...  => download in the specified directory inside or a generated temporary one
+# * YTDL_TEMP_DIR=...     => download in the specified temporary directory before moving it to the final one
+# * YTDL_OUTPUT_DIR=...   => download to the specified directory (default: the current working directory)
 # * YTDL_APPEND=...       => append arguments to the final youtube-dl command
 # * YTDL_PRINT_CMD=1      => show the used command
 function ytdl() {
@@ -20,28 +21,35 @@ function ytdl() {
 	local prev_cwd=$(pwd)
 	local tempdir=""
 	local is_tempdir_cwd=0
+	
+	local download_to=$(pwd)
+
+	if [[ ! -z "$YTDL_OUTPUT_DIR" ]]; then
+		download_to="${YTDL_OUTPUT_DIR%/}"
+		echoinfo "Downloading to custom directory: \e[95m$download_to"
+	fi
 
 	# Check if download must be performed in a temporary directory
-	if (( YTDL_PARALLEL_DOWNLOADS >= ADF_CONF_YTDL_TEMP_DL_DIR_THRESOLD )) || [[ "$YTDL_FORCE_PARALLEL" = 1 ]] || [[ ! -z "$YTDL_RESUME_PATH" ]]
+	if (( YTDL_PARALLEL_DOWNLOADS >= ADF_CONF_YTDL_TEMP_DL_DIR_THRESOLD )) || [[ "$YTDL_FORCE_PARALLEL" = 1 ]] || [[ ! -z "$YTDL_TEMP_DIR" ]]
 	then
 		export YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS-1))
 		decrease_counter=0
 		is_using_tempdir=1
 		tempdir="$ADF_YTDL_TEMP_DL_DIR_PATH/$(date +%s)"
 
-		if [[ -z "$YTDL_RESUME_PATH" ]]; then
+		if [[ -z "$YTDL_TEMP_DIR" ]]; then
 			mkdir -p "$tempdir"
-		elif [[ ! -d "$YTDL_RESUME_PATH" ]]; then
+		elif [[ ! -d "$YTDL_TEMP_DIR" ]]; then
 			echoerr "Resume path is not a directory!"
 			return 1
 		else
-			tempdir="$YTDL_RESUME_PATH"
+			tempdir="${YTDL_TEMP_DIR%/}"
 		fi
 
 		if [[ "$(realpath "$prev_cwd")" == "$(realpath "$tempdir")" ]]; then
 			is_tempdir_cwd=1
 		else
-			echoinfo "Downloading to temporary directory: \e[95m$tempdir"
+			echoinfo "> Downloading first to temporary directory: \e[95m$tempdir"
 		fi
 
 		cd "$tempdir"
@@ -78,7 +86,7 @@ function ytdl() {
 		echoinfo "Command >> youtube-dl $ytdl_debug_cmd"
 	fi
 
-	echo "YTDL_RESUME_PATH='$tempdir' ytdl $ytdl_debug_cmd" >> "$ADF_CONF_YTDL_HISTORY_FILE"
+	echo "YTDL_TEMP_DIR='$tempdir' ytdl $ytdl_debug_cmd" >> "$ADF_CONF_YTDL_HISTORY_FILE"
 
 	# Perform the download
 	if [[ -z "$YTDL_DRY_RUN" || "$YTDL_DRY_RUN" = 0 ]]; then
@@ -109,14 +117,14 @@ function ytdl() {
 		local files_count="$(command ls "$tempdir" -1A | wc -l)"
 		local counter=0
 
-		echoinfo "Moving [$files_count] files to output directory: \e[95m$(pwd)"
+		echoinfo "Moving [$files_count] files to output directory: \e[95m$download_to"
 
 		for item in "$tempdir"/*(N)
 		do
 			counter=$((counter+1))
-			echoinfo "> Moving file $counter / $files_count: \e[95m$(basename "$item")\e[92m..."
-			
-			if ! mv "$item" .
+			echoinfo "> Moving item $counter / $files_count: \e[95m$(basename "${item%/}")\e[92m..."
+
+			if ! mv "${item%/}/" "$download_to"
 			then
 				echoerr "Failed to move Youtube-DL videos! Temporary download path is:"
 				echopath "$tempdir"
@@ -138,11 +146,11 @@ function ytdlpar() {
 }
 
 function ytdlresume() {
-	YTDL_RESUME_PATH="$1" ytdl "${@:2}"
+	YTDL_TEMP_DIR="$1" ytdl "${@:2}"
 }
 
 function ytdlhere() {
-	YTDL_RESUME_PATH="." ytdl "$@"
+	YTDL_TEMP_DIR="." ytdl "$@"
 }
 
 function ytdlhistory() {
