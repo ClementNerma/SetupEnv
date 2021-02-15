@@ -17,8 +17,6 @@ function zerbackup() {
 			continue
 		fi
 
-		if [[ $item = ".config" ]]; then continue; fi
-
 		if [[ -f "$old_env_loc/$item" || -d "$old_env_loc/$item" ]]; then
 			cp -R "$old_env_loc/$item" "$old_env_backup_dir/$item"
 		fi
@@ -75,13 +73,11 @@ function zerupdate() {
 	echosuccess "Updating environment..."
 	cp -R "$update_path/home/." ~/
 
-	# Restore the local data scripts
-	if [[ $OVERWRITE_LOCAL_SCRIPTS != 1 ]]; then
-		cp -R "$ADF_LAST_BACKUP_DIR/autodotfiles/local" "$ADF_SUB_DIR/"
-	fi
-
 	# Save the new files list
 	command ls -1A "$update_path/home" > "$ADF_FILES_LIST"
+
+	# Restore local items
+	cp -R "$ADF_LAST_BACKUP_DIR/autodotfiles-local" ~/
 
 	# Update the restoration script
 	echosuccess "Updating the restoration script..."

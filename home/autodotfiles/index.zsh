@@ -26,8 +26,11 @@ fi
 # Set path to AutoDotFiles files
 export ADF_SUB_DIR=$(dirname "${(%):-%x}")
 
+# Set path to local directory
+export ADF_LOCAL_DIR="$ADF_SUB_DIR-local"
+
 # Set path to data directory
-export ADF_DATA_DIR="$ADF_SUB_DIR/local/data"
+export ADF_DATA_DIR="$ADF_LOCAL_DIR/data"
 
 # Set path to binaries directory
 export ADF_BIN_DIR="$ADF_DATA_DIR/binaries"
@@ -46,7 +49,7 @@ mkdir -p "$ADF_DATA_DIR"
 source "$ADF_SUB_DIR/config.zsh"
 
 # Load the local configuration file
-source "$ADF_SUB_DIR/local/config.zsh"
+source "$ADF_LOCAL_DIR/config.zsh"
 
 # Load common utilities usable by the installer
 source "$ADF_SUB_DIR/preutils.zsh"
@@ -78,7 +81,7 @@ export PATH="$ADF_BIN_DIR:$PATH"
 source "$ADF_SUB_DIR/$ENV_NAME_STR/env.zsh"
 
 # Load the local configuration
-source "$ADF_SUB_DIR/local/env.zsh"
+source "$ADF_LOCAL_DIR/env.zsh"
 
 # Allow fast reloading of this file after changes
 alias reload="source ${(%):-%x}"
@@ -155,4 +158,4 @@ function zshaddhistory() {
 }
 
 # Load the local script
-source "$ADF_SUB_DIR/local/script.zsh"
+source "$ADF_LOCAL_DIR/script.zsh"
