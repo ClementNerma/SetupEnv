@@ -4,13 +4,13 @@
 #
 
 # Get Windows username (cached for better performance)
-export WSL_USERNAME_CACHE_FILE="$ADF_SUB_DIR/local/.wsl-username"
+export ADF_WSL_USERNAME_CACHE_FILE="$ADF_DATA_DIR/.wsl-username"
 
-if [[ ! -f "$WSL_USERNAME_CACHE_FILE" ]]; then
+if [[ ! -f "$ADF_WSL_USERNAME_CACHE_FILE" ]]; then
   export WINUSER=$(powershell.exe -command '$env:UserName' | tr -d "\r")
-  printf "$WINUSER" > "$WSL_USERNAME_CACHE_FILE"
+  printf "$WINUSER" > "$ADF_WSL_USERNAME_CACHE_FILE"
 else
-  export WINUSER=$(command cat "$WSL_USERNAME_CACHE_FILE")
+  export WINUSER=$(command cat "$ADF_WSL_USERNAME_CACHE_FILE")
 fi
 
 # Fail if username couldn't be get
