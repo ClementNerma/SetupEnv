@@ -9,6 +9,7 @@ export YTDL_PARALLEL_DOWNLOADS=0
 # * YTDL_RESUME_PATH=...  => download in the specified directory inside or a generated temporary one
 # * YTDL_APPEND=...       => append arguments to the final youtube-dl command
 # * DEBUG_COMMAND=1       => show the used command
+# * AUDIO_ONLY=1          => only download the audio part
 function ytdlbase() {
 	export YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS+1))
 	local decrease_counter=1
@@ -46,6 +47,11 @@ function ytdlbase() {
 
 	# Store the command in an history
 	local bestquality_params="-f bestvideo+bestaudio/best"
+
+	if [[ ! -z "$AUDIO_ONLY" && "$AUDIO_ONLY" != 0 ]]; then
+		bestquality_params="--audio-format best --extract-audio"
+	fi
+
 	local metadata_params="--add-metadata"
 
 	if [[ ! -z "$CUSTOM_QUALITY" && "$CUSTOM_QUALITY" != 0 ]] || [[ ! -z "$BARE_YTDL" && "$BARE_YTDL" != 0 ]]; then
