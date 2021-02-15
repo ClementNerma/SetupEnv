@@ -29,6 +29,9 @@ export ZSH_SUB_DIR=$(dirname "${(%):-%x}")
 # Set path to data directory
 export ZSH_DATA_DIR="$ZSH_SUB_DIR/local/data"
 
+# Set path to binaries directory
+export ZSH_BIN_DIR="$ZSH_DATA_DIR/binaries"
+
 # Set path to the files list
 export ZSH_FILES_LIST="$HOME/.setupenv-files-list.txt"
 
@@ -63,6 +66,9 @@ source "$ZSH_INSTALLER_DIR/index.zsh"
 if [[ $ZSH_INSTALLER_ABORTED = 1 ]]; then
 	return
 fi
+
+# Register the local binaries directory in PATH
+export PATH="$ZSH_BIN_DIR:$PATH"
 
 # Load platform-specific configuration
 source "$ZSH_SUB_DIR/$ENV_NAME_STR/env.zsh"
