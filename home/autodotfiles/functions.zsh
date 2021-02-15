@@ -209,8 +209,6 @@ function ytdlbase() {
 	fi
 
 	# Store the command in an history
-	echo "YTDL_RESUME_PATH='$tempdir' ytdlbase $@" >> "$ADF_CONF_YTDL_HISTORY_FILE"
-
 	local bestquality_params="-f bestvideo+bestaudio/best"
 	local metadata_params="--add-metadata"
 
@@ -225,6 +223,8 @@ function ytdlbase() {
 	if [[ ! -z "$DEBUG_COMMAND" ]]; then
 		echoinfo "Command >>" youtube-dl $bestquality_params $metadata "$@" $YTDL_APPEND
 	fi
+
+	echo "YTDL_RESUME_PATH='$tempdir' ytdlbase $bestquality_params $metadata "$@" $YTDL_APPEND" >> "$ADF_CONF_YTDL_HISTORY_FILE"
 
 	# Perform the download
 	if ! youtube-dl $bestquality_params $metadata "$@" $YTDL_APPEND
