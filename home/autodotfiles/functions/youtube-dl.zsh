@@ -65,19 +65,19 @@ function ytdl() {
 		thumbnail_params=""
 	fi
 
-	if [[ ! -z "$YTDL_CUSTOM_QUALITY" && "$YTDL_CUSTOM_QUALITY" != 0 ]] || [[ ! -z "$YTDL_BARE" && "$YTDL_BARE" != 0 ]]; then
+	if [[ ! -z "$YTDL_CUSTOM_QUALITY" ]] || [[ ! -z "$YTDL_BARE" ]]; then
 		bestquality_params=""
 	fi
 
-	if [[ ! -z "$YTDL_AUDIO_ONLY" && "$YTDL_AUDIO_ONLY" != 0 ]]; then
+	if [[ ! -z "$YTDL_AUDIO_ONLY" ]]; then
 		bestquality_params="-f bestaudio"
 	fi
 
-	if [[ ! -z "$YTDL_NO_METADATA" && "$YTDL_NO_METADATA" != 0 ]] || [[ ! -z "$YTDL_BARE" && "$YTDL_BARE" != 0 ]]; then
+	if [[ ! -z "$YTDL_NO_METADATA" ]] || [[ ! -z "$YTDL_BARE" ]]; then
 		metadata_params=""
 	fi
 
-	if [[ ! -z "$YTDL_NO_THUMBNAIL" && "$YTDL_NO_THUMBNAIL" != 0 ]] || [[ ! -z "$YTDL_BARE" && "$YTDL_BARE" != 0 ]]; then
+	if [[ ! -z "$YTDL_NO_THUMBNAIL" ]] || [[ ! -z "$YTDL_BARE" ]]; then
 		thumbnail_params=""
 	fi
 
@@ -90,7 +90,7 @@ function ytdl() {
 	echo "YTDL_TEMP_DIR='$tempdir' ytdl $ytdl_debug_cmd" >> "$ADF_CONF_YTDL_HISTORY_FILE"
 
 	# Perform the download
-	if [[ -z "$YTDL_DRY_RUN" || "$YTDL_DRY_RUN" = 0 ]]; then
+	if [[ -z "$YTDL_DRY_RUN" ]]; then
 		if ! youtube-dl $bestquality_params $metadata_params $thumbnail_params "$@" $YTDL_APPEND
 		then
 			if [[ $decrease_counter = 1 ]]; then
