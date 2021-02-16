@@ -140,3 +140,12 @@ function cpbak() {
 function mvbak() {
 	_filebak "$@" mv
 }
+
+# Inversed 'mv' (can be useful in situations where the source's name is automatically added to the command)
+export invmv="/usr/local/bin/invmv"
+
+if [[ ! -f "$invmv" ]]; then
+	sudo sh -c "echo '#!/bin/bash' > '$invmv'"
+	sudo sh -c "echo 'mv \"\$2\" \"\$1\"' >> '$invmv'"
+	sudo sh -c "chmod +x '$invmv'"
+fi
