@@ -4,7 +4,7 @@
 
 # Backup current environment
 function zerbackup() {
-	echo -e "\e[94mBackuping environment..."
+	echoc "\z[blue]°Backuping environment...\z[]°"
 
 	local old_env_loc=$(dirname "$ADF_SUB_DIR")
 	local old_env_backup_dir="$old_env_loc/_adf-backup/Backup $(date '+%Y.%m.%d - %Hh %Mm %Ss')"
@@ -24,13 +24,13 @@ function zerbackup() {
 
 	# Done!
 	export ADF_LAST_BACKUP_DIR="$old_env_backup_dir"
-	echo -e "\e[94mBackup completed at \e[95m$old_env_backup_dir"
+	echoc "\z[blue]°Backup completed at \z[magenta]°$old_env_backup_dir\z[]°\z[]°"
 }
 
 # Update to latest version
 function zerupdate() {
 	if [[ ! -z "$1" ]]; then
-		echosuccess "Updating from provided path: \e[95m$1"
+		echosuccess "Updating from provided path: \z[magenta]°$1\z[]°"
 		local update_path="$1"
 	else
 		if [[ $ADF_CONF_MAIN_PERSONAL_COMPUTER = 1 ]]; then
@@ -42,7 +42,7 @@ function zerupdate() {
 	fi
 
 	if [[ ! -d "$update_path" ]] || [[ ! -f "$update_path/auto-install.bash" ]] || [[ ! -f "$update_path/home/.zshrc" ]]; then
-		echoerr "Could not find \e[92mSetup Environment\e[91m files at path \e[95m$update_path"
+		echoerr "Could not find \z[yellow]°Setup Environment\z[]° files at path \z[magenta]°$update_path\z[]°"
 		return 1
 	fi
 
@@ -122,7 +122,7 @@ function zeruninstall() {
 	zerbackup
 	echo "$ADF_LAST_BACKUP_DIR" > "$HOME/.uninstalled-autodotfiles.txt"
 	echosuccess "AutoDotFiles was successfully installed!"
-	echosuccess "To restore it, just type '\e[93mzerrestore\e[92m'."
+	echosuccess "To restore it, just type '\z[yellow]°zerrestore\z[]°'."
 
 	command rm -rf "$ADF_SUB_DIR"
 	command rm ~/.bashrc

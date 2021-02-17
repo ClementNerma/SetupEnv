@@ -6,16 +6,16 @@ function ytdlcookies() {
 
     case "$1" in
         help)
-            echoinfo "1. Go to: \e[95mChrome's Application -> Storage -> Cookies -> [domain] table"
+            echoinfo "1. Go to: \z[magenta]°Chrome's Application -> Storage -> Cookies -> [domain] table\z[]°"
             echoinfo "2. Copy it (Ctrl+C)"
             echoinfo "3. Run 'ytdlcookies create <your preset name>'"
             echoinfo "4. Paste the copied table (Ctrl+V) in the editor"
             echoinfo "5. Save and exit (Ctrl+S & Ctrl+X)"
             echoinfo "6. Use it with 'ytdlcookies use <your preset name> <ytdl arguments>"
             echoinfo
-            echopath "A. Renew expired cookies with 'ytdlcookies renew <your preset name>' (then steps from 4.)"
-            echopath "B. Delete a preset with 'ytdlcookies rm <your preset name>"
-            echopath "C. List all existing presets with 'ytdlcookies list'"
+            echodata "A. Renew expired cookies with 'ytdlcookies renew <your preset name>' (then steps from 4.)"
+            echodata "B. Delete a preset with 'ytdlcookies rm <your preset name>"
+            echodata "C. List all existing presets with 'ytdlcookies list'"
             return 99
             ;;
 
@@ -79,7 +79,7 @@ END
                 return 3
             fi
 
-            echosuccess "Successfully created preset: \e[95m$preset_name"
+            echosuccess "Successfully created preset: \z[magenta]°$preset_name\z[]°"
             ;;
 
 
@@ -106,7 +106,7 @@ END
                 return 3
             fi
 
-            echosuccess "Successfully renewed preset: \e[95m$preset_name"
+            echosuccess "Successfully renewed preset: \z[magenta]°$preset_name\z[]°"
             ;;
 
         rm)
@@ -116,7 +116,7 @@ END
             fi
 
             rm "$preset_path"
-            echosuccess "Successfully removed preset: \e[95m$preset_name"
+            echosuccess "Successfully removed preset: \z[magenta]°$preset_name\z[]°"
             return
             ;;
 
@@ -131,7 +131,7 @@ END
 
 
         *)
-            echoerr "Unknown action: \e[95m$1"
+            echoerr "Unknown action: \z[magenta]°$1\z[]°"
             return 1
             ;;
     esac
@@ -142,7 +142,7 @@ END
 # You can also run a custom command on each album directory by providing a command in "$YTDL_ALBUM_ITEM_CMD"
 function ytdlalbum() {
     if [[ -z "$YTDL_ALBUM_PRESET" ]]; then
-        echoerr "Please provide a cookies preset in variable \$YTDL_ALBUM_PRESET. To list them, type: \e[95mytdlcookies list"
+        echoerr "Please provide a cookies preset in variable \$YTDL_ALBUM_PRESET. To list them, type: \z[magenta]°ytdlcookies list\z[]°"
         return 1
     fi
 

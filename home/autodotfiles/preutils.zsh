@@ -1,26 +1,4 @@
 
-function echocolored() {
-    printf "$1"
-    while IFS= read -r line ; do echo $line; done <<< "${@:2}"
-    printf "\e[0m"
-}
-
-function echoerr() {
-    echocolored "\e[91mERROR: " "$@"
-}
-
-function echosuccess() {
-    echocolored "\e[92m" "$@"
-}
-
-function echoinfo() {
-    echocolored "\e[93m" "$@"
-}
-
-function echopath() {
-	echocolored "\e[95m" "$@"
-}
-
 # Arguments: "<url>" "<download location>"
 function dl() {
     if [[ ! -z "$2" ]]; then
@@ -60,7 +38,7 @@ function ghdl() {
 
 	if [[ $repo_url = "https://"* ]]; then
 		if [[ $repo_url != "https://github.com/"* ]]; then
-			echoerr "Invalid GitHub repository URL: \e[93m$repo_url"
+			echoerr "Invalid GitHub repository URL: \z[yellow]°$repo_url\z[]°"
 			return 1
 		fi
 	elif [[ $repo_url = "http://"* ]]; then
@@ -80,14 +58,14 @@ function ghdl() {
 	
 	reponame="${reponame%.git}"
 
-	echosuccess "Cloning from repository: \e[93m$repoauthor/$reponame\e[92m..."
+	echosuccess "Cloning from repository: \z[yellow]°$repoauthor/$reponame\z[]°..."
 
 	if [[ -d "$outdir" ]]; then
-		echoerr "> Directory \e[95m$outdir\e[91m already exists!"
+		echoerr "> Directory \z[magenta]°$outdir\z[]° already exists!"
 		return 1
 	fi
 
-	echo -e "\e[34m> Fetching default branch..."
+	echoc "\z[blue]°> Fetching default branch...\z[]°"
 	local branch=$(curl -s "https://api.github.com/repos/$repoauthor/$reponame" | jq -r ".default_branch")
 
 	if [[ $branch == "null" ]]; then
@@ -96,16 +74,16 @@ function ghdl() {
 	fi
 
 	local filename="$reponame-$(date +%s).zip"
-	echo -e "\e[34m> Fetching archive for branch \e[93m$branch\e[34m to \e[95m$filename\e[34m...\e[0m"
+	echoc "\z[blue]°> Fetching archive for branch \z[yellow]°$branch\z[]° to \z[magenta]°$filename\z[]°...\z[]°"
 	
 	local zipurl="https://codeload.github.com/$repoauthor/$reponame/zip/$branch"
 
 	if ! dl "$zipurl" "$filename"; then
-		echoerr "> Failed to fetch archive from URL: \e[93m$zipurl\e[91m!"
+		echoerr "> Failed to fetch archive from URL: \z[yellow]°$zipurl\z[]°!"
 		return 1
 	fi
 
-	echo -e "\e[34m> Extracting archive to directory \e[93m$outdir\e[34m...\e[0m"
+	echoc "\z[blue]°> Extracting archive to directory \z[yellow]°$outdir\z[]°...\z[]°"
 	unzip -q "$filename"
 	command rm "$filename"
 	mv "$reponame-$branch" "$outdir"
@@ -121,7 +99,7 @@ function _filebak() {
 	local itempath="${1%/}"
 
 	if [[ ! -f "$itempath" && ! -d "$itempath" ]]; then
-		echoerr "Provided path was not found: \e[92m$itempath"
+		echoerr "Provided path was not found: \z[green]°$itempath\z[]°"
 		return 1
 	fi
 

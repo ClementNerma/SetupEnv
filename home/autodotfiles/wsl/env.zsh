@@ -45,7 +45,7 @@ function open() {
   fi
 
   if [[ ! -f "$topath" && ! -d "$topath" && ! -L "$topath" ]]; then
-    echoerr "target path \e[93m$topath\e[91m was not found!"
+    echoerr "target path \z[yellow]°$topath\z[]° was not found!"
     return 1
   fi
 

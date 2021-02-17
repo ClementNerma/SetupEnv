@@ -3,7 +3,7 @@
 #
 
 if [[ -z "$ADF_INSTALLER_DIR" ]]; then
-    echoerr "Environment variable \e[93m\$ADF_INSTALLER_DIR\e[91m is not defined."
+    echoerr "Environment variable \z[yellow]°\$ADF_INSTALLER_DIR\z[]° is not defined."
     echoerr "       Please make sure the current script is run from Setup Env."
     return 1
 fi
@@ -17,7 +17,7 @@ function zercomponent_install_from_list() {
     INSTALLER_TMPDIR="/tmp/autodotfiles_autoinstaller_$AUTO_INSTALLER_STARTED_AT"
     mkdir -p "$INSTALLER_TMPDIR"
 
-    echoinfo "Detected \e[91m${#ADF_TO_INSTALL[@]}\e[93m $1:"
+    echowarn "Detected \z[red]°${#ADF_TO_INSTALL[@]}\z[]° $1:"
 
     local longest_component_name=0
 
@@ -33,19 +33,19 @@ function zercomponent_install_from_list() {
     do
         local component_name=$(basename "$component")
         local component_dir="($(dirname "$component"))"
-        echo -e "\e[96m    $(basename "$component")\e[92m${(l($longest_component_name-${#component_name}+${#component_dir}+5)( ))component_dir}\e[0m"
+        echoc "\z[cyan]°    $(basename "$component")\z[green]°${(l($longest_component_name-${#component_name}+${#component_dir}+5)( ))component_dir}\z[]°\z[]°"
     done
 
-    echo -e ""
-    echoinfo "These components will now be installed."
-    echoinfo "$2type \e[31mN\e[93m/\e[31mn\e[93m."
+    echoc ""
+    echowarn "These components will now be installed."
+    echowarn "$2type \z[red]°N\z[]°\z[yellow]°/\z[]°\z[red]°n\z[]°."
 
     local install_choice
     read "install_choice?"
 
     if [[ $install_choice =~ ^[Nn]$ ]]; then
-        echoinfo "Installation has been aborted."
-        echo -e ""
+        echowarn "Installation has been aborted."
+        echoc ""
 
         if [[ $3 = 1 ]]; then
             export ADF_INSTALLER_ABORTED=1
@@ -56,11 +56,11 @@ function zercomponent_install_from_list() {
 
     ADF_INSTALL_STEP=0
 
-    echo -e ""
+    echoc ""
     echosuccess ">"
     echosuccess "> Preparing the environment for update..."
     echosuccess ">"
-    echo -e ""
+    echoc ""
 
     sudo apt update
 
@@ -68,17 +68,17 @@ function zercomponent_install_from_list() {
     do
         ADF_INSTALL_STEP=$((ADF_INSTALL_STEP + 1))
 
-        echo ""
+        echoc ""
         echosuccess ">"
-        echosuccess "> Installing component \e[94m$ADF_INSTALL_STEP\e[32m /" \
-                "\e[91m${#ADF_TO_INSTALL[@]}\e[32m: \e[96m$(basename "$component") \e[92m($(dirname "$component"))\e[32m"
+        echosuccess "> Installing component \z[blue]°$ADF_INSTALL_STEP\z[]° /" \
+                "\z[red]°${#ADF_TO_INSTALL[@]}\z[]°: \z[cyan]°$(basename "$component")\z[]° \z[green]°($(dirname "$component"))\z[]°"
         echosuccess ">"
-        echo ""
+        echoc ""
 
         local script_path="$ADF_INSTALLER_SCRIPTS_DIR/$component.zsh"
 
         if [[ ! -f $script_path ]]; then
-            echoerr "> Failed to install component \e[96m$component\e[91m: installation script not found at \e[92m$script_path\e[91m!"
+            echoerr "> Failed to install component \z[cyan]°$component\z[]°: installation script not found at \z[green]°$script_path\z[]°!"
             return 1
         fi
 
@@ -91,17 +91,17 @@ function zercomponent_install_from_list() {
 
     unset ZER_UPDATING
 
-    echo -e ""
+    echoc ""
     echosuccess ">"
     echosuccess "> Cleaning the temporary directory..."
     echosuccess ">"
-    echo -e ""
+    echoc ""
 
     command rm -rf "$INSTALLER_TMPDIR"
 
-    echo -e ""
-    echoinfo "=> Successfully $4 \e[91m${#ADF_TO_INSTALL[@]}\e[93m component(s)!"
-    echo -e ""
+    echoc ""
+    echoinfo "=> Successfully $4 \z[red]°${#ADF_TO_INSTALL[@]}\z[]° component(s)!"
+    echoc ""
 
     unset ADF_INSTALL_STEP
     unset ADF_TO_INSTALL
@@ -146,7 +146,7 @@ function zercomponent_mark_not_installed() { zercomponent_mark_custom "$@" "0" }
 
 function zercomponent_update() {
     if [[ ! -f "$ADF_INSTALLER_SCRIPTS_DIR/$1.zsh" ]]; then
-        echoerr "Provided component \e[96m$1\e[91m was not found."
+        echoerr "Provided component \z[cyan]°$1\z[]° was not found."
         return 1
     fi
 
@@ -161,9 +161,9 @@ function zercomponent_update() {
 }
 
 function _step() {
-    echo -e ""
-    echoinfo ">>> Sub-step: $1"
-    echo -e ""
+    echoc ""
+    echowarn ">>> Sub-step: $1"
+    echoc ""
 }
 
 function _checkdir() {

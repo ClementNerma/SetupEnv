@@ -5,13 +5,13 @@
 # Synchronize a directory
 function rsync_dir() {
 	if [[ $SUDO_RSYNC = "true" ]]; then
-		echo WARNING: Using rsync in SUDO mode.
+		echoc "WARNING: Using rsync in SUDO mode."
 	fi
 
 	local started=0
 	local failed=0
 
-	echo Starting transfer...
+	echoc "Starting transfer..."
 	while [[ $started -eq 0 || $failed -eq 1 ]]
 	do
 	    started=1
@@ -25,23 +25,24 @@ function rsync_dir() {
 	
 		if [[ $? -ne 0 ]]
 		then
-			echo Transfer failed. Retrying in 5 seconds...
+			echoc "Transfer failed. Retrying in 5 seconds..."
 			sleep 5s
 			failed=1
 		fi
 	done
-	echo Done.
+
+	echoc "Done."
 }
 
 # Copy a project to another directory without its dependencies and temporary files
 function cp_proj_nodeps() {
 	if [[ ! -d "$1" ]]; then
-		echo "Source does not exist!"
+		echoerr "Source does not exist!"
 		return 1
 	fi
 
 	if [[ -f "$2" || -d "$2" ]]; then
-		echo "Target already exists!"
+		echoerr "Target already exists!"
 		return 1
 	fi
 
@@ -71,7 +72,7 @@ function cargextr() {
 # Rename a Git branch
 function gitrename() {
     local old_branch=$(git rev-parse --abbrev-ref HEAD)
-	echo Renaming branch "$old_branch" to "$1"...
+	echoinfo "Renaming branch '$old_branch' to '$1'..."
 	git branch -m "$1"
 	git push origin -u "$1"
 	git push origin --delete "$old_branch"
@@ -126,7 +127,8 @@ function howlong() {
 # Go to a directory located in the projects directory
 function p() {
 	if [[ -z "$1" ]]; then
-		echo Please provide a project to go to.
+		echoerr "Please provide a project to go to."
+		return 1
 	else
 		cd "$PROJDIR/$1"
 	fi

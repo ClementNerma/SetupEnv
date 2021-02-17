@@ -1,6 +1,6 @@
 if [[ -d ~/.volta ]]; then
 	mvbak ~/.volta
-	echo -e "\e[33m\!/ A previous version of \e[32mVolta\e[33m was detected ==> backed it up to \e[32m$LAST_FILEBAK_PATH\e[33m..."
+	echoc "\z[yellow]°\!/ A previous version of \z[green]°Volta\z[]° was detected ==> backed it up to \z[magenta]°$LAST_FILEBAK_PATH\z[]°..."
 fi
 
 _step "Installing Volta..."

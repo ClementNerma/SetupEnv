@@ -14,6 +14,6 @@ export WORKDIR="$HOMEDIR/Work"
 
 # Set up opening function
 function open() {
-    echo "Opening is not currently supported"
+    echoc "Opening is not currently supported"
     false
 }

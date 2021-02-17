@@ -27,7 +27,7 @@ function ytdl() {
 
 	if [[ ! -z "$YTDL_OUTPUT_DIR" ]]; then
 		download_to="${YTDL_OUTPUT_DIR%/}"
-		echoinfo "Downloading to custom directory: \e[95m$download_to"
+		echoinfo "Downloading to custom directory: \z[magenta]°$download_to\z[]°"
 	fi
 
 	# Check if download must be performed in a temporary directory
@@ -50,7 +50,7 @@ function ytdl() {
 		if [[ "$(realpath "$prev_cwd")" == "$(realpath "$tempdir")" ]]; then
 			is_tempdir_cwd=1
 		else
-			echoinfo "> Downloading first to temporary directory: \e[95m$tempdir"
+			echoinfo "> Downloading first to temporary directory: \z[magenta]°$tempdir\z[]°"
 		fi
 
 		cd "$tempdir"
@@ -118,7 +118,7 @@ function ytdl() {
 		local files_count="$(command ls "$tempdir" -1A | wc -l)"
 		local counter=0
 
-		echoinfo "Moving [$files_count] files to output directory: \e[95m$download_to\e[93m..."
+		echoinfo "Moving [$files_count] files to output directory: \z[magenta]°$download_to\z[]°..."
 
 		if [[ ! -d "$download_to" ]]; then
 			mkdir -p "$download_to"
@@ -134,7 +134,7 @@ function ytdl() {
 		for item in "$tempdir"/*(N)
 		do
 			counter=$((counter+1))
-			echoinfo "> Moving item $counter / $files_count: \e[95m$(basename "${item%/}")\e[93m..."
+			echoinfo "> Moving item $counter / $files_count: \z[magenta]°$(basename "${item%/}")\z[]°..."
 
 			local tomove="${item%/}"
 
@@ -145,7 +145,7 @@ function ytdl() {
 			if ! mv "$item" "$download_to"
 			then
 				echoerr "Failed to move Youtube-DL videos! Temporary download path is:"
-				echopath "$tempdir"
+				echodata "$tempdir"
 				return 1
 			fi
 		done

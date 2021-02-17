@@ -51,6 +51,9 @@ source "$ADF_SUB_DIR/config.zsh"
 # Load the local configuration file
 source "$ADF_LOCAL_DIR/config.zsh"
 
+# Load display functions
+source "$ADF_SUB_DIR/display.zsh"
+
 # Load common utilities usable by the installer
 source "$ADF_SUB_DIR/preutils.zsh"
 
@@ -92,15 +95,14 @@ if [ $ADF_CONF_MAIN_PERSONAL_COMPUTER = 1 ]; then
 fi
 
 # Ensure main directories are defined
-if [[ -z $HOMEDIR ]]; then echoerr "Directory variable \e[92m\$HOMEDIR\e[91m is not defined!"; fi
-if [[ ! -z "$HOMEDIR" && ! -d "$HOMEDIR" ]]; then echoerr "Home directory at location \e[93m$HOMEDIR\e[91m does not exist!"; fi
-
-if [[ -z $TEMPDIR ]]; then echoerr "Directory variable \e[92m\$TEMPDIR\e[91m is not defined!"; fi
-if [[ -z $TRASHDIR ]]; then echoerr "Directory variable \e[92m\$TRASHDIR\e[91m is not defined!"; fi
-if [[ -z $DLDIR ]]; then echoerr "Directory variable \e[92m\$DLDIR\e[91m is not defined!"; fi
-if [[ -z $SOFTWAREDIR ]]; then echoerr "Directory variable \e[92m\$SOFTWAREDIR\e[91m is not defined!"; fi
-if [[ -z $PROJDIR ]]; then echoerr "Directory variable \e[92m\$PROJDIR\e[91m is not defined!"; fi
-if [[ -z $WORKDIR ]]; then echoerr "Directory variable \e[92m\$WORKDIR\e[91m is not defined!"; fi
+if [[ -z $HOMEDIR ]]; then echoerr "Directory variable \z[green]°\$HOMEDIR\z[]° is not defined!"; fi
+if [[ ! -z "$HOMEDIR" && ! -d "$HOMEDIR" ]]; then echoerr "Home directory at location \z[yellow]°$HOMEDIR\z[]° does not exist!"; fi
+if [[ -z $TEMPDIR ]]; then echoerr "Directory variable \z[green]°\$TEMPDIR\z[]° is not defined!"; fi
+if [[ -z $TRASHDIR ]]; then echoerr "Directory variable \z[green]°\$TRASHDIR\z[]° is not defined!"; fi
+if [[ -z $DLDIR ]]; then echoerr "Directory variable \z[green]°\$DLDIR\z[]° is not defined!"; fi
+if [[ -z $SOFTWAREDIR ]]; then echoerr "Directory variable \z[green]°\$SOFTWAREDIR\z[]° is not defined!"; fi
+if [[ -z $PROJDIR ]]; then echoerr "Directory variable \z[green]°\$PROJDIR\z[]° is not defined!"; fi
+if [[ -z $WORKDIR ]]; then echoerr "Directory variable \z[green]°\$WORKDIR\z[]° is not defined!"; fi
 
 if [[ -z $HOMEDIR || ! -d $HOMEDIR || -z $DLDIR || -z $PROJDIR || -z $WORKDIR || -z $TEMPDIR || -z $SOFTWAREDIR || -z $TRASHDIR ]]; then
 	read "?Press <Enter> to exit, or <Ctrl+C> to get a without-AutoDotFiles ZSH prompt ('zerupdate' command will be available) "

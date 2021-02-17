@@ -88,24 +88,24 @@ function mount_wsl_drives() {
         found_c=1
       elif mountpoint -q "/mnt/$letter"; then
         if [[ $1 == "--debug" ]]; then
-          echo Already mounted: $letter
+          echoc "Already mounted: $letter"
         fi
       elif [[ $drive_status == "OK" ]]; then
         if [[ $1 == "--debug" ]]; then
-          echo Mounting: $letter
+          echoc "Mounting: $letter"
         fi
 
         remount "$letter"
       elif [[ $drive_status != "NOPE" ]]; then
-        echoerr "Assertion error: drive status command for \e[95m${letter:u}: \e[91mdrive returned an invalid content: \e[95m$drive_status\e[91m (${#drive_status} characters)"
+        echoerr "Assertion error: drive status command for \z[magenta]°${letter:u}\z[]°: drive returned an invalid content: \z[magenta]°$drive_status\z[]° (${#drive_status} characters)"
       elif [[ $1 == "--debug" ]]; then
-        echo Ignoring: $letter
+        echoc "Ignoring: $letter"
       fi
     fi
   done
 
   if [[ $c == 0 ]]; then
-    echoerr "Assertion error: \e[95mC:\e[91m drive was not found while mounting WSL drives!"
+    echoerr "Assertion error: \z[magenta]°C:\z[]° drive was not found while mounting WSL drives!"
   fi
 
   cd "$init_cwd"
