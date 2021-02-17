@@ -6,7 +6,7 @@
 # Run a Windows command through PowerShell
 # e.g. "win echo Hello!" will display "Hello!" by running PowerShell transparently
 function win() {
-  powershell.exe -command "$@"
+  powershell.exe -command $(echo "${@:q}" | perl -pe 's/(?<!\\)\\\s/` /g')
 }
 
 # Run a Windows command through CMD.EXE
