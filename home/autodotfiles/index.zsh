@@ -152,7 +152,7 @@ source "$ADF_SUB_DIR/$ENV_NAME_STR/script.zsh"
 # Filter the commands to put in the history
 function zshaddhistory() {
   emulate -L zsh
-  if ! [[ "$1" == "open"* ]] ; then
+  if ! [[ "$1" == "open"* || "$1" == "z "* ]] ; then
       print -sr -- "${1%%$'\n'}"
       fc -p
   else
