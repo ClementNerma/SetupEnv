@@ -140,6 +140,11 @@ function clip() {
   command cat "$1" | clip.exe
 }
 
+# Copy a string to clipboard
+function clipstr() {
+  echo "$*" | clip.exe
+}
+
 # Run Git commands from Windows if the project directories are not stored inside WSL's own filesystem
 if [[ $ADF_CONF_PROJECT_DIRS_IN_WSL_FS = 0 ]]; then
   alias git="git.exe" 
