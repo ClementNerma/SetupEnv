@@ -8,7 +8,7 @@ if [[ ! -f "$1" ]]; then
     return 1
 fi
 
-if [[ ! "$(basename "$1")" =~ ^([0-9]+)\.([0-9]+)\.(.*)$ ]]; then
+if [[ ! "$(basename "$1")" =~ ^([0-9]+)\.([0-9]+)\.([a-zA-Z0-9]+)\.(.*)$ ]]; then
     echo "\e[91mInvalid filename format: \e[95m$1"
     return 1
 fi
@@ -20,7 +20,7 @@ if [[ ${1:t:e} = "webm" ]]; then
     out_ext="opus"
 fi
 
-out="$dir/${match[1]}.${match[3]:t:r}.$out_ext"
+out="$dir/${match[1]}.${match[4]:t:r}.$out_ext"
 
 echo "[ADF-Tagger] Tagging \e[95m$out\e[0m..."
 
@@ -37,5 +37,9 @@ ffmpeg -hide_banner -loglevel error \
     -metadata date="$((match[2]))" \
     -metadata DATE="$((match[2]))" \
     "$out"
+
+if [[ ! -f "$dir/__id4cover.txt" ]]; then
+    echo "${match[3]}" > "$dir/__id4cover.txt"
+fi
 
 command rm "$1"

@@ -129,6 +129,35 @@ END
             ytdl "${@:3}" --cookies "$converted_cookies_path"
             ;;
 
+        use-raw)
+            if [[ ! -f "$converted_cookies_path" ]]; then
+                echoerr "Preset was not found (provide ':list' to see them all)"
+                return 1
+            fi
+
+            youtube-dl "${@:3}" --cookies "$converted_cookies_path"
+            ;;
+
+
+        get-path)
+            if [[ ! -f "$converted_cookies_path" ]]; then
+                echoerr "Preset was not found (provide ':list' to see them all)"
+                return 1
+            fi
+
+            echo "$converted_cookies_path"
+            ;;
+
+
+        display)
+            if [[ ! -f "$converted_cookies_path" ]]; then
+                echoerr "Preset was not found (provide ':list' to see them all)"
+                return 1
+            fi
+
+            cat "$converted_cookies_path"
+            ;;
+
 
         *)
             echoerr "Unknown action: \z[magenta]°$1\z[]°"
@@ -156,16 +185,55 @@ function ytdlalbum() {
         return 1
     fi
 
-    local format='%(artist)s - %(release_year)s - %(album)s/%(playlist_index)s.%(release_year)s. %(track)s.%(ext)s'
-    local tagger_path="zsh $ADF_FUNCTIONS_DIR/youtube-dl.tag.zsh"
+    YTDL_AUDIO_ONLY=1 YTDL_OUTPUT_DIR="$YTDL_ALBUM_OUTPUT_DIR" YTDL_ITEM_CMD=("__ytdlalbumthumbnail" "${YTDL_ALBUM_ITEM_CMD[@]}") \
+    ytdlcookies use "$YTDL_ALBUM_PRESET" "$@" \
+        -o "%(artist)s - %(release_year)s - %(album)s/%(playlist_index)s.%(release_year)s.%(id)s. %(track)s.%(ext)s" \
+        --exec "zsh $ADF_FUNCTIONS_DIR/youtube-dl.tag.zsh"
+}
 
-    if [[ ! -z "$YTDL_NO_TAGGING" ]]; then
-        tagger_path=""
+# (Internal) Download a thumbnail (requires tagging)
+function __ytdlalbumthumbnail() {
+    if [[ -z "$1" || -z "$YTDL_ALBUM_PRESET" ]]; then
+        echoerr "Either preset, directory or both were not provided."
+        return 1
     fi
 
-    YTDL_AUDIO_ONLY=1 YTDL_OUTPUT_DIR="$YTDL_ALBUM_OUTPUT_DIR" YTDL_ITEM_CMD=$YTDL_ALBUM_ITEM_CMD \
-        ytdlcookies use "$YTDL_ALBUM_PRESET" "$@" -o "$format" \
-        --exec "$tagger_path" --write-thumbnail
+    if [[ ! -d "$1" ]]; then
+        echoerr "Input directory \z[magenta]°$1\z[]° does not exist."
+        return 1
+    fi
+
+    local id4cover_file="$1/__id4cover.txt"
+
+    if [[ ! -f "$id4cover_file" ]]; then
+        echoerr "Cannot download thumbnail (missing identification file \z[magenta]°$id4cover_file\z[]°)"
+        return 1
+    fi
+
+    local id=$(cat "$id4cover_file")
+    local thumbnail_url=$(ytdlcookies use-raw "$YTDL_ALBUM_PRESET" --get-thumbnail "https://music.youtube.com/watch?v=$id")
+
+    if [[ $? != 0 ]]; then
+        echoerr "Failed to get thumbnail's URL."
+        return 1
+    fi
+
+    local thumbnail_ext=${thumbnail_url:t:e}
+    local thumbnail_tmp="$1/cover.tmp.$thumbnail_ext"
+
+    echoinfo ">> Downloading thumbnail for album \z[magenta]°$(basename "$1")\z[]° at \z[yellow]°$thumbnail_url\z[]°..."
+
+    if ! dl "$thumbnail_url" "$thumbnail_tmp"; then
+        echoerr "Failed to download thumbnail."
+        return 1
+    fi
+
+    if ! ffmpeg -hide_banner -loglevel error -i "$thumbnail_tmp" -filter:v "crop=720:720:280:1000" "$1/cover.$thumbnail_ext"; then
+        echoerr "Failed to crop thumbnail with FFMPEG."
+        return 1
+    fi
+
+    rm "$thumbnail_tmp"
 }
 
 export ADF_YTDL_COOKIES_PRESETS_DIR="$ADF_DATA_DIR/ytdl-cookies-presets"

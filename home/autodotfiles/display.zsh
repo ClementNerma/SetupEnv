@@ -13,6 +13,10 @@ export ADF_FORMAT_CYAN="\e[96m"
 export ADF_FORMAT_WHITE="\e[97m"
 
 function echoc() {
+    if [[ ! -z "$ADF_FULLY_SILENT" && "$ADF_FULLY_SILENT" != "0" ]]; then
+        return
+    fi
+
     local text="$@"
     local output=""
     local colors_history=()
@@ -72,10 +76,18 @@ function echoerr() {
 }
 
 function echosuccess() {
+    if [[ ! -z "$ADF_SILENT" && "$ADF_SILENT" != "0" ]]; then
+        return
+    fi
+
     echoc "\z[green]°$@\z[]°"
 }
 
 function echoinfo() {
+    if [[ ! -z "$ADF_SILENT" && "$ADF_SILENT" != "0" ]]; then
+        return
+    fi
+
     echoc "\z[blue]°$@\z[]°"
 }
 
@@ -84,5 +96,9 @@ function echowarn() {
 }
 
 function echodata() {
+    if [[ ! -z "$ADF_SILENT" && "$ADF_SILENT" != "0" ]]; then
+        return
+    fi
+
 	echoc "\z[cyan]°$@\z[]°"
 }
