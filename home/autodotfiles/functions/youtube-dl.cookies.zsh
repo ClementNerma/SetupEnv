@@ -156,7 +156,7 @@ function ytdlalbum() {
         return 1
     fi
 
-    local format='%(artist)s - %(release_year)s - %(album)s/%(playlist_index)s. %(track)s.%(ext)s'
+    local format='%(artist)s - %(release_year)s - %(album)s/%(playlist_index)s.%(release_year)s. %(track)s.%(ext)s'
     local tagger_path="zsh $ADF_FUNCTIONS_DIR/youtube-dl.tag.zsh"
 
     if [[ ! -z "$YTDL_NO_TAGGING" ]]; then

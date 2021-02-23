@@ -8,26 +8,34 @@ if [[ ! -f "$1" ]]; then
     return 1
 fi
 
-if [[ ! "$(basename "$1")" =~ ^([0-9]+)\. ]]; then
+if [[ ! "$(basename "$1")" =~ ^([0-9]+)\.([0-9]+)\.(.*)$ ]]; then
     echo "\e[91mInvalid filename format: \e[95m$1"
     return 1
 fi
 
-audio_file="$1"
+dir=$(dirname "$1")
+out_ext="${1:t:e}"
 
 if [[ ${1:t:e} = "webm" ]]; then
-    audio_file="$(dirname "$1")/${1:t:r}.oga"
-    ffmpeg -hide_banner -loglevel warning -i "$1" -vn -c:a copy "$audio_file"
-    rm "$1"
+    out_ext="opus"
 fi
 
-tmp_file="${1:t:r}.tmp.${audio_file:t:e}"
+out="$dir/${match[1]}.${match[3]:t:r}.$out_ext"
 
-echo "[ADF-Tagger] Tagging \e[95m$(basename "$audio_file")\e[0m..."
-ffmpeg -i "$audio_file" -c copy -metadata TRACK="${match[1]}" "$tmp_file" -hide_banner -loglevel error
+echo "[ADF-Tagger] Tagging \e[95m$out\e[0m..."
 
-command rm "$audio_file"
-mv "$tmp_file" "$audio_file"
+ffmpeg -hide_banner -loglevel error \
+    -i "$1" \
+    -c:a copy \
+    -metadata COMMENT="" \
+    -metadata comment="" \
+    -metadata DESCRIPTION="" \
+    -metadata description="" \
+    -metadata TRACK="$((match[1]))" \
+    -metadata year="$((match[2]))" \
+    -metadata YEAR="$((match[2]))" \
+    -metadata date="$((match[2]))" \
+    -metadata DATE="$((match[2]))" \
+    "$out"
 
-unset audio_file
-unset tmp_file
+command rm "$1"
