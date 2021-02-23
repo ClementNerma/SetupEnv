@@ -13,6 +13,7 @@ export YTDL_PARALLEL_DOWNLOADS=0
 # * YTDL_OUTPUT_DIR=...   => download to the specified directory (default: the current working directory)
 # * YTDL_APPEND=...       => append arguments to the final youtube-dl command
 # * YTDL_PRINT_CMD=1      => show the used command
+# * YTDL_JUST_ITEM_CMD=1  => just run the provided commands on each item (don't run 'youtube-dl')
 # * YTDL_ITEM_CMD=...     => run a command for each root item when download is finished
 function ytdl() {
 	export YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS+1))
@@ -90,7 +91,7 @@ function ytdl() {
 	echo "YTDL_TEMP_DIR='$tempdir' ytdl $ytdl_debug_cmd" >> "$ADF_CONF_YTDL_HISTORY_FILE"
 
 	# Perform the download
-	if [[ -z "$YTDL_DRY_RUN" ]]; then
+	if [[ -z "$YTDL_DRY_RUN" && -z "$YTDL_JUST_ITEM_CMD" ]]; then
 		if ! youtube-dl $bestquality_params $metadata_params $thumbnail_params "$@" $YTDL_APPEND
 		then
 			if [[ $decrease_counter = 1 ]]; then
