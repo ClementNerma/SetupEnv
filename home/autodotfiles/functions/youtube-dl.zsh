@@ -118,23 +118,34 @@ function ytdl() {
 		local files_count="$(command ls "$tempdir" -1A | wc -l)"
 		local counter=0
 
-		echoinfo "Moving [$files_count] files to output directory: \z[magenta]°$download_to\z[]°..."
+		if [[ ! -z "$YTDL_ITEM_CMD" ]]; then
+			echoinfo "> Running custom commands (${#YTDL_ITEM_CMD}) on downloaded items..."
+
+			for cmd in ${YTDL_ITEM_CMD[@]}; do
+				if [[ -z "$cmd" ]]; then
+					continue
+				fi
+
+				for item in "$tempdir"/*(N)
+				do
+					if ! "$cmd" "$item"; then
+						echoerr "Custom command failed"
+						echoerr "You can resume the download with:"
+						echoinfo "ytdlresume '$tempdir' $*"
+						cd "$prev_cwd"
+						return 1
+					fi
+
+					# Prevent scripts from changing the current working directory and causing a bug
+					cd "$prev_cwd"
+				done
+			done
+		fi
+
+		echoinfo "> Moving [$files_count] files to output directory: \z[magenta]°$download_to\z[]°..."
 
 		if [[ ! -d "$download_to" ]]; then
 			mkdir -p "$download_to"
-		fi
-
-		if [[ ! -z "$YTDL_ITEM_CMD" ]]; then
-			for item in "$tempdir"/*(N)
-			do
-				if ! "$YTDL_ITEM_CMD" "$item"; then
-					echoerr "Custom command failed"
-					echoerr "You can resume the download with:"
-					echoinfo "ytdlresume '$tempdir' $*"
-					cd "$prev_cwd"
-					return 1
-				fi
-			done
 		fi
 
 		for item in "$tempdir"/*(N)

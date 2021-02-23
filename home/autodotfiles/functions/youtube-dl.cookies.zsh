@@ -163,9 +163,9 @@ function ytdlalbum() {
         tagger_path=""
     fi
 
-    YTDL_AUDIO_ONLY=1 YTDL_OUTPUT_DIR="$YTDL_ALBUM_OUTPUT_DIR" YTDL_ITEM_CMD="$YTDL_ALBUM_ITEM_CMD" \
+    YTDL_AUDIO_ONLY=1 YTDL_OUTPUT_DIR="$YTDL_ALBUM_OUTPUT_DIR" YTDL_ITEM_CMD=$YTDL_ALBUM_ITEM_CMD \
         ytdlcookies use "$YTDL_ALBUM_PRESET" "$@" -o "$format" \
-        --exec "$tagger_path"
+        --exec "$tagger_path" --write-thumbnail
 }
 
 export ADF_YTDL_COOKIES_PRESETS_DIR="$ADF_DATA_DIR/ytdl-cookies-presets"
