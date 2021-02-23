@@ -169,6 +169,7 @@ END
 # Download a full album from Youtube Music
 # Ability to download to a custom output directory using the "$YTDL_ALBUM_OUTPUT_DIR"
 # You can also run a custom command on each album directory by providing a command in "$YTDL_ALBUM_ITEM_CMD"
+# It's also possible to suffix the downloaded items with their playlist ID by setting "$YTDL_ALBUM_ID_SUFFIX"
 function ytdlalbum() {
     if [[ -z "$YTDL_ALBUM_PRESET" ]]; then
         echoerr "Please provide a cookies preset in variable \$YTDL_ALBUM_PRESET. To list them, type: \z[magenta]°ytdlcookies list\z[]°"
@@ -185,9 +186,15 @@ function ytdlalbum() {
         return 1
     fi
 
+    local id_suffix=""
+
+    if [[ ! -z "$YTDL_ALBUM_ID_SUFFIX" ]]; then
+        id_suffix=" [%(playlist_id)s]"
+    fi
+
     YTDL_AUDIO_ONLY=1 YTDL_OUTPUT_DIR="$YTDL_ALBUM_OUTPUT_DIR" YTDL_ITEM_CMD=("__ytdlalbumthumbnail" "${YTDL_ALBUM_ITEM_CMD[@]}") \
     ytdlcookies use "$YTDL_ALBUM_PRESET" "$@" \
-        -o "%(artist)s - %(release_year)s - %(album)s/%(playlist_index)s.%(release_year)s.%(id)s. %(track)s.%(ext)s" \
+        -o "%(artist)s - %(release_year)s - %(album)s$id_suffix/%(playlist_index)s.%(release_year)s.%(id)s. %(track)s.%(ext)s" \
         --exec "zsh $ADF_FUNCTIONS_DIR/youtube-dl.tag.zsh"
 }
 
