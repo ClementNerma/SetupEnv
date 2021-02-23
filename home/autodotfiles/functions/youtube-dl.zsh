@@ -127,7 +127,13 @@ function ytdl() {
 		if [[ ! -z "$YTDL_ITEM_CMD" ]]; then
 			for item in "$tempdir"/*(N)
 			do
-				"$YTDL_ITEM_CMD" "$item"
+				if ! "$YTDL_ITEM_CMD" "$item"; then
+					echoerr "Custom command failed"
+					echoerr "You can resume the download with:"
+					echoinfo "ytdlresume '$tempdir' $*"
+					cd "$prev_cwd"
+					return 1
+				fi
 			done
 		fi
 
