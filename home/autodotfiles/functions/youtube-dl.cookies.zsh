@@ -218,15 +218,22 @@ function __ytdlalbumthumbnail() {
     fi
 
     local id=$(cat "$id4cover_file")
+
+    if [[ -z "$id" ]]; then
+        echoerr "Cannot download thumbnail (identifier is empty)"
+        return 1
+    fi
+
     local thumbnail_url=$(ytdlcookies use-raw "$YTDL_ALBUM_PRESET" --get-thumbnail "https://music.youtube.com/watch?v=$id")
+    thumbnail_url="${thumbnail_url%%\?*}"
+    thumbnail_url="${thumbnail_url/hqdefault/maxresdefault}"
 
     if [[ $? != 0 ]]; then
         echoerr "Failed to get thumbnail's URL."
         return 1
     fi
-
-    local thumbnail_ext=${thumbnail_url:t:e}
-    local thumbnail_tmp="$1/cover.tmp.$thumbnail_ext"
+    
+    local thumbnail_tmp="$1/cover.tmp.${thumbnail_url:t:e}"
 
     echoinfo ">> Downloading thumbnail for album \z[magenta]°$(basename "$1")\z[]° at \z[yellow]°$thumbnail_url\z[]°..."
 
@@ -235,12 +242,13 @@ function __ytdlalbumthumbnail() {
         return 1
     fi
 
-    if ! ffmpeg -hide_banner -loglevel error -i "$thumbnail_tmp" -filter:v "crop=720:720:280:1000" "$1/cover.$thumbnail_ext"; then
+    if ! ffmpeg -hide_banner -loglevel error -i "$thumbnail_tmp" -filter:v "crop=720:720:280:1000" "$1/cover.jpg"; then
         echoerr "Failed to crop thumbnail with FFMPEG."
         return 1
     fi
 
     rm "$thumbnail_tmp"
+    rm "$id4cover_file"
 }
 
 export ADF_YTDL_COOKIES_PRESETS_DIR="$ADF_DATA_DIR/ytdl-cookies-presets"

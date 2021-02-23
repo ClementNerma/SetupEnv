@@ -8,7 +8,7 @@ if [[ ! -f "$1" ]]; then
     return 1
 fi
 
-if [[ ! "$(basename "$1")" =~ ^([0-9]+)\.([0-9]+)\.([a-zA-Z0-9]+)\.(.*)$ ]]; then
+if [[ ! "$(basename "$1")" =~ ^([0-9]+)\.([0-9]+)\.([a-zA-Z0-9_\-]+)\.(.*)$ ]]; then
     echo "\e[91mInvalid filename format: \e[95m$1"
     return 1
 fi
