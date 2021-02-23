@@ -32,7 +32,7 @@ function ytdl() {
 	fi
 
 	# Check if download must be performed in a temporary directory
-	if (( YTDL_PARALLEL_DOWNLOADS >= ADF_CONF_YTDL_TEMP_DL_DIR_THRESOLD )) || [[ "$YTDL_FORCE_PARALLEL" = 1 ]] || [[ ! -z "$YTDL_TEMP_DIR" ]]
+	if (( YTDL_PARALLEL_DOWNLOADS >= ADF_CONF_YTDL_TEMP_DL_DIR_THRESOLD )) || (( $YTDL_FORCE_PARALLEL )) || [[ ! -z "$YTDL_TEMP_DIR" ]]
 	then
 		export YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS-1))
 		decrease_counter=0
@@ -66,32 +66,32 @@ function ytdl() {
 		thumbnail_params=""
 	fi
 
-	if [[ ! -z "$YTDL_CUSTOM_QUALITY" ]] || [[ ! -z "$YTDL_BARE" ]]; then
+	if (( $YTDL_CUSTOM_QUALITY )) || (( $YTDL_BARE )); then
 		bestquality_params=""
 	fi
 
-	if [[ ! -z "$YTDL_AUDIO_ONLY" ]]; then
+	if (( $YTDL_AUDIO_ONLY )); then
 		bestquality_params="-f bestaudio"
 	fi
 
-	if [[ ! -z "$YTDL_NO_METADATA" ]] || [[ ! -z "$YTDL_BARE" ]]; then
+	if (( $YTDL_NO_METADATA )) || (( $YTDL_BARE )); then
 		metadata_params=""
 	fi
 
-	if [[ ! -z "$YTDL_NO_THUMBNAIL" ]] || [[ ! -z "$YTDL_BARE" ]]; then
+	if (( $YTDL_NO_THUMBNAIL )) || (( $YTDL_BARE )); then
 		thumbnail_params=""
 	fi
 
 	local ytdl_debug_cmd="$bestquality_params $metadata_params $thumbnail_params "$@" $YTDL_APPEND"
 
-	if [[ ! -z "$YTDL_PRINT_CMD" || ! -z "$YTDL_DRY_RUN" ]]; then
+	if (( $YTDL_PRINT_CMD )) || (( $YTDL_DRY_RUN )); then
 		echoinfo "Command >> youtube-dl $ytdl_debug_cmd"
 	fi
 
 	echo "YTDL_TEMP_DIR='$tempdir' ytdl $ytdl_debug_cmd" >> "$ADF_CONF_YTDL_HISTORY_FILE"
 
 	# Perform the download
-	if [[ -z "$YTDL_DRY_RUN" && -z "$YTDL_JUST_ITEM_CMD" ]]; then
+	if [[ "$YTDL_DRY_RUN" != 1 ]] && [[ -z "$YTDL_JUST_ITEM_CMD" ]]; then
 		if ! youtube-dl $bestquality_params $metadata_params $thumbnail_params "$@" $YTDL_APPEND
 		then
 			if [[ $decrease_counter = 1 ]]; then

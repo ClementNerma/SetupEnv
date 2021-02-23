@@ -80,11 +80,12 @@ function gitrename() {
 
 # A simple 'rm' with progress
 function rmprogress() {
-	if [ -z "$1" ]; then
+	if [[ -z "$1" ]]; then
+		echoerr "Missing operand for 'rmprogress'"
 		return 1
 	fi
 	
-	command rm -rv "$1" | pv -l -s $( du -a "$1" | wc -l ) > /dev/null
+	rm -rv "$1" | pv -l -s $( du -a "$1" | wc -l ) > /dev/null
 }
 
 # Archive a directory into a .tar file

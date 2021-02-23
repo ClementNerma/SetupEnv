@@ -13,7 +13,7 @@ export ADF_FORMAT_CYAN="\e[96m"
 export ADF_FORMAT_WHITE="\e[97m"
 
 function echoc() {
-    if [[ ! -z "$ADF_FULLY_SILENT" && "$ADF_FULLY_SILENT" != "0" ]]; then
+    if (( $ADF_FULLY_SILENT )); then
         return
     fi
 
@@ -76,7 +76,7 @@ function echoerr() {
 }
 
 function echosuccess() {
-    if [[ ! -z "$ADF_SILENT" && "$ADF_SILENT" != "0" ]]; then
+    if (( $ADF_SILENT )); then
         return
     fi
 
@@ -84,7 +84,7 @@ function echosuccess() {
 }
 
 function echoinfo() {
-    if [[ ! -z "$ADF_SILENT" && "$ADF_SILENT" != "0" ]]; then
+    if (( $ADF_SILENT )); then
         return
     fi
 
@@ -96,7 +96,7 @@ function echowarn() {
 }
 
 function echodata() {
-    if [[ ! -z "$ADF_SILENT" && "$ADF_SILENT" != "0" ]]; then
+    if (( $ADF_SILENT )); then
         return
     fi
 

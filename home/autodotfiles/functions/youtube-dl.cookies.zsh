@@ -188,7 +188,7 @@ function ytdlalbum() {
 
     local id_suffix=""
 
-    if [[ ! -z "$YTDL_ALBUM_ID_SUFFIX" ]]; then
+    if (( $YTDL_ALBUM_ID_SUFFIX )); then
         id_suffix=" [%(playlist_id)s]"
     fi
 
