@@ -15,6 +15,7 @@ export YTDL_PARALLEL_DOWNLOADS=0
 # * YTDL_PRINT_CMD=1      => show the used command
 # * YTDL_JUST_ITEM_CMD=1  => just run the provided commands on each item (don't run 'youtube-dl')
 # * YTDL_ITEM_CMD=...     => run a command for each root item when download is finished
+# * YTDL_IGNORE_ERR=1     => consider download a success even if a non-zero exit code was returned
 function ytdl() {
 	export YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS+1))
 	local decrease_counter=1
@@ -94,15 +95,17 @@ function ytdl() {
 	if [[ "$YTDL_DRY_RUN" != 1 ]] && [[ -z "$YTDL_JUST_ITEM_CMD" ]]; then
 		if ! youtube-dl $bestquality_params $metadata_params $thumbnail_params "$@" $YTDL_APPEND
 		then
-			if [[ $decrease_counter = 1 ]]; then
-				YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS-1))
-			fi
+			if (( $YTDL_IGNORE_ERR = 0 )); then
+				if [[ $decrease_counter = 1 ]]; then
+					YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS-1))
+				fi
 
-			echoerr "Failed to download videos with Youtube-DL!"
-			echoerr "You can resume the download with:"
-			echoinfo "ytdlresume '$tempdir' $*"
-			cd "$prev_cwd"
-			return 1
+				echoerr "Failed to download videos with Youtube-DL!"
+				echoerr "You can resume the download with:"
+				echoinfo "ytdlresume '$tempdir' $*"
+				cd "$prev_cwd"
+				return 1
+			fi
 		fi
 	fi
 
@@ -120,12 +123,22 @@ function ytdl() {
 		local counter=0
 
 		if [[ ! -z "$YTDL_ITEM_CMD" ]]; then
-			echoinfo "> Running custom commands (${#YTDL_ITEM_CMD}) on downloaded items..."
+			local command_count=0
+			
+			for cmd in ${YTDL_ITEM_CMD[@]}; do
+				if [[ ! -z "$cmd" ]]; then
+					command_count=$((command_count + 1))
+				fi
+			done
+
+			echoinfo "> Running custom commands ($command_count) on downloaded items..."
 
 			for cmd in ${YTDL_ITEM_CMD[@]}; do
 				if [[ -z "$cmd" ]]; then
 					continue
 				fi
+
+				echoinfo ">> Running custom command: \z[magenta]°$cmd\z[]°..."
 
 				for item in "$tempdir"/*(N)
 				do
