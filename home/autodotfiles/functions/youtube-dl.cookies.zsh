@@ -170,6 +170,8 @@ END
 # Ability to download to a custom output directory using the "$YTDL_ALBUM_OUTPUT_DIR"
 # You can also run a custom command on each album directory by providing a command in "$YTDL_ALBUM_ITEM_CMD"
 # It's also possible to suffix the downloaded items with their playlist ID by setting "$YTDL_ALBUM_ID_SUFFIX"
+# Thumbnails downloading can be skipped by setting "$YTDL_SKIP_THUMBNAIL"
+# Custom Youtube-DL folder can be set with "$YTDL_DIR_FORMAT"
 function ytdlalbum() {
     if [[ -z "$YTDL_ALBUM_PRESET" ]]; then
         echoerr "Please provide a cookies preset in variable \$YTDL_ALBUM_PRESET. To list them, type: \z[magenta]°ytdlcookies list\z[]°"
@@ -192,10 +194,29 @@ function ytdlalbum() {
         id_suffix=" [%(playlist_id)s]"
     fi
 
-    YTDL_AUDIO_ONLY=1 YTDL_OUTPUT_DIR="$YTDL_ALBUM_OUTPUT_DIR" YTDL_ITEM_CMD=("__ytdlalbumthumbnail" "${YTDL_ALBUM_ITEM_CMD[@]}") \
+    local dir_format="%(artist)s - %(release_year)s - %(album)s$id_suffix"
+
+    if [[ ! -z "$YTDL_DIR_FORMAT" ]]; then
+        dir_format="$YTDL_DIR_FORMAT"
+    fi
+
+    local thumbnail_cmd="__ytdlalbumthumbnail"
+    local thumbnail_args=""
+
+    if (( $YTDL_SKIP_THUMBNAIL )); then
+        thumbnail_cmd=""
+        thumbnail_args=" --no-id4cover"
+    fi
+
+    YTDL_AUDIO_ONLY=1 YTDL_OUTPUT_DIR="$YTDL_ALBUM_OUTPUT_DIR" YTDL_ITEM_CMD=("$thumbnail_cmd" "${YTDL_ALBUM_ITEM_CMD[@]}") \
     ytdlcookies use "$YTDL_ALBUM_PRESET" "$@" \
-        -o "%(artist)s - %(release_year)s - %(album)s$id_suffix/%(playlist_index)s.%(release_year)s.%(id)s. %(track)s.%(ext)s" \
-        --exec "zsh $ADF_FUNCTIONS_DIR/youtube-dl.tag.zsh"
+        -o "$dir_format/%(playlist_index)s.%(release_year)s.%(id)s. %(track)s.%(ext)s" \
+        --exec "zsh $ADF_FUNCTIONS_DIR/youtube-dl.tag.zsh$thumbnail_args"
+}
+
+# Download a playlist from Youtube Music
+function ytdlplaylist() {
+    YTDL_DIR_FORMAT="%(playlist_title)s" YTDL_SKIP_THUMBNAIL=1 ytdlalbum "$@"
 }
 
 # (Internal) Download a thumbnail (requires tagging)
