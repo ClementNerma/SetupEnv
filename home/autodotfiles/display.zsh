@@ -12,6 +12,29 @@ export ADF_FORMAT_MAGENTA="\e[95m"
 export ADF_FORMAT_CYAN="\e[96m"
 export ADF_FORMAT_WHITE="\e[97m"
 
+function _report_echoc_error() {
+    local cursor=""
+
+    for i in {1..$(($3-1))}; do
+        cursor="$cursor "
+    done
+
+    local carets=""
+
+    for i in {1..$4}; do
+        carets="$carets^"
+    done
+
+    cursor="$cursor${ADF_FORMAT_BLUE}$carets${ADF_FORMAT_RESET}"
+
+    echo "${ADF_FORMAT_RED}====================== echoc error ======================${ADF_FORMAT_RESET}"
+    echo "${ADF_FORMAT_RED}| $1${ADF_FORMAT_RESET}"
+    echo "${ADF_FORMAT_RED}|${ADF_FORMAT_RESET}"
+    echo "${ADF_FORMAT_RED}| In: ${ADF_FORMAT_YELLOW}${2:0:$3-1}${ADF_FORMAT_BLUE}${2:$3:$4}${ADF_FORMAT_YELLOW}${2:$3+$4}${ADF_FORMAT_RESET}"
+    echo "${ADF_FORMAT_RED}|     $cursor"
+    echo "${ADF_FORMAT_RED}=========================================================${ADF_FORMAT_RESET}"
+}
+
 function echoc() {
     if (( $ADF_FULLY_SILENT )); then
         return
@@ -36,17 +59,23 @@ function echoc() {
         local color="${substr%%$look*}"
 
         local format_test_varname="$ADF_PREFIX_FORMAT${color:u}"
-        if [[ $color = $substr ]] || [[ ! -z $color && -z ${(P)format_test_varname} ]]; then
+        if [[ $color = $substr ]]; then
             output="${output}${text[$i]}"
             continue
+        fi
+
+        local segment_len=$((${#color}+5))
+
+        if [[ ! -z $color && -z ${(P)format_test_varname} ]]; then
+            _report_echoc_error "Unknown color ${ADF_FORMAT_YELLOW}$color" "$text" $((i-1)) $segment_len
+            return 1
         fi
 
         local add_color=""
 
         if [[ -z $color ]]; then
             if [[ ${#colors_history[@]} = 0 ]]; then
-                echo "${ADF_FORMAT_RED}echoc: Cannot close a color as no one is opened!${ADF_FORMAT_RESET}"
-                echo "${ADF_FORMAT_RED}> In: $text${ADF_FORMAT_RESET}"
+                _report_echoc_error "Cannot close a color as no one is opened" "$text" $((i-1)) $segment_len
                 return 1
             fi
 
