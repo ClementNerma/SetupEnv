@@ -95,7 +95,7 @@ function ytdl() {
 	if [[ "$YTDL_DRY_RUN" != 1 ]] && [[ -z "$YTDL_JUST_ITEM_CMD" ]]; then
 		if ! youtube-dl $bestquality_params $metadata_params $thumbnail_params "$@" $YTDL_APPEND
 		then
-			if (( $YTDL_IGNORE_ERR = 0 )); then
+			if ! (( $YTDL_IGNORE_ERR )); then
 				if [[ $decrease_counter = 1 ]]; then
 					YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS-1))
 				fi
