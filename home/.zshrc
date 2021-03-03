@@ -1,5 +1,8 @@
 ZSH_DISABLE_COMPFIX=true 
 
+# Disable OhMyZSH!'s magic functions (e.g. safe pasting)
+DISABLE_MAGIC_FUNCTIONS=true
+
 # .zshrc profiling (closes at the end of the file)
 if (( ${+ZSH_PROFILING} )); then
 	zmodload zsh/zprof
