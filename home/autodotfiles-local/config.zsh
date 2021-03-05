@@ -9,5 +9,7 @@ alias zerc="nano ${(%):-%x} && source ${(%):-%x}"
 # NOTE: All configuration variables start with 'ADF_CONF_'
 
 # Is this my main computer?
-# Set to '1' if it is
-#export ADF_CONF_MAIN_PERSONAL_COMPUTER=0
+#export ADF_CONF_MAIN_PERSONAL_COMPUTER=1
+
+# Should WSL projects be put in WSL's filesystem?
+#export ADF_CONF_PROJECT_DIRS_IN_WSL_FS=1
