@@ -93,7 +93,7 @@ function echoc() {
     done
 
     if [[ ${#colors_history[@]} != 0 ]]; then
-        echo "${ADF_FORMAT_RED}echoc: Unterminated color groups: $colors_history${ADF_FORMAT_RESET}"
+        _report_echoc_error "Unterminated color groups: $colors_history" "$text" ${#text} 1
         return 1
     fi
 
