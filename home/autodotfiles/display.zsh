@@ -131,3 +131,11 @@ function echodata() {
 
 	echoc "\z[cyan]°$@\z[]°"
 }
+
+function echoverb() {
+    if ! (( $ADF_VERBOSE )); then
+        return
+    fi
+
+	echoc "\z[gray]°[Verbose]\z[]° \z[magenta]°$@\z[]°"
+}
