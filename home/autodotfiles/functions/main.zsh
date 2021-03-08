@@ -50,6 +50,7 @@ function cp_proj_nodeps() {
 		  --exclude 'node_modules/' --exclude 'pnpm-store/' --exclude 'common/temp/' --exclude '.rush/temp/' \
 		  --exclude 'build/' --exclude 'dist/' \
 		  --exclude 'target/debug/' --exclude 'target/release/' --exclude 'target/wasm32-unknown-unknown/' --exclude 'target/doc/' \
+		  --exclude 'target/.rustc_info.json' --exclude 'target/.rustdoc_fingerprint.json' \
 		  --archive --partial --progress \
 		  --delete --delete-excluded "${@:3}" "$1/" "$2"
 }
