@@ -49,7 +49,7 @@ function cp_proj_nodeps() {
 	rsync --exclude '*.tmp' --exclude '.rustc_info.json' \
 		  --exclude 'node_modules/' --exclude 'pnpm-store/' --exclude 'common/temp/' --exclude '.rush/temp/' \
 		  --exclude 'build/' --exclude 'dist/' \
-		  --exclude 'target/debug/' --exclude 'target/release/' --exclude 'target/wasm32-unknown-unknown/' \
+		  --exclude 'target/debug/' --exclude 'target/release/' --exclude 'target/wasm32-unknown-unknown/' --exclude 'target/doc/' \
 		  --archive --partial --progress \
 		  --delete --delete-excluded "${@:3}" "$1/" "$2"
 }
