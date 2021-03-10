@@ -27,12 +27,12 @@ function _report_echoc_error() {
 
     cursor="$cursor${ADF_FORMAT_BLUE}$carets${ADF_FORMAT_RESET}"
 
-    echo "${ADF_FORMAT_RED}====================== echoc error ======================${ADF_FORMAT_RESET}"
-    echo "${ADF_FORMAT_RED}| $1${ADF_FORMAT_RESET}"
-    echo "${ADF_FORMAT_RED}|${ADF_FORMAT_RESET}"
-    echo "${ADF_FORMAT_RED}| In: ${ADF_FORMAT_YELLOW}${2:0:$3-1}${ADF_FORMAT_BLUE}${2:$3:$4}${ADF_FORMAT_YELLOW}${2:$3+$4}${ADF_FORMAT_RESET}"
-    echo "${ADF_FORMAT_RED}|     $cursor"
-    echo "${ADF_FORMAT_RED}=========================================================${ADF_FORMAT_RESET}"
+    >&2 echo "${ADF_FORMAT_RED}====================== echoc error ======================${ADF_FORMAT_RESET}"
+    >&2 echo "${ADF_FORMAT_RED}| $1${ADF_FORMAT_RESET}"
+    >&2 echo "${ADF_FORMAT_RED}|${ADF_FORMAT_RESET}"
+    >&2 echo "${ADF_FORMAT_RED}| In: ${ADF_FORMAT_YELLOW}${2:0:$3-1}${ADF_FORMAT_BLUE}${2:$3:$4}${ADF_FORMAT_YELLOW}${2:$3+$4}${ADF_FORMAT_RESET}"
+    >&2 echo "${ADF_FORMAT_RED}|     $cursor"
+    >&2 echo "${ADF_FORMAT_RED}=========================================================${ADF_FORMAT_RESET}"
 }
 
 function echoc() {
@@ -97,11 +97,19 @@ function echoc() {
         return 1
     fi
 
-    echo "$output"
+    if (( $ADF_DISPLAY_TO_STDERR )); then
+        >&2 echo "$output"
+    else
+        echo "$output"
+    fi
 }
 
 function echoerr() {
-    echoc "\z[red]°ERROR: $@\z[]°"
+    ADF_DISPLAY_TO_STDERR=1 echoc "\z[red]°ERROR: $@\z[]°"
+}
+
+function echowarn() {
+	ADF_DISPLAY_TO_STDERR=1 echoc "\z[yellow]°$@\z[]°"
 }
 
 function echosuccess() {
@@ -118,10 +126,6 @@ function echoinfo() {
     fi
 
     echoc "\z[blue]°$@\z[]°"
-}
-
-function echowarn() {
-	echoc "\z[yellow]°$@\z[]°"
 }
 
 function echodata() {
