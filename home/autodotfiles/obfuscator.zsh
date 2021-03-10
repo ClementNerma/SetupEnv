@@ -140,7 +140,7 @@ function adf_obf_transform() {
 
     if [[ -z "$1" ]]; then
         echoinfo "Please input your message:"
-        read input
+        IFS=$'\n' read input
     else
         if (( $is_encoding )) && ! (( $OBF_ARG_SAFE )); then
             echowarn "ENSURE TO NOT PROVIDE ANY SENSITIVE DATA AS AN ARGUMENT!"
@@ -172,17 +172,21 @@ function adf_obf_transform() {
         out+=("${converted_alphabet[$index]}")
     done
 
-    local decoded=${(j::)out}
+    local output=${(j::)out}
+
+    if [[ ${#input} != ${#output} ]]; then
+        echoerr "Internal: output (\z[yellow]°${#output}\z[]° characters) has not the same length than input (\z[yellow]°${#input}\z[]°)"
+    fi
 
     if [[ $is_encoding = 0 && -z $OBF_NO_CHECKSUM ]]; then
-        decoded=$(adf_obf_validate_checksum "$decoded")
+        output=$(adf_obf_validate_checksum "$output")
 
         if [[ $? != 0 ]]; then
             return 3
         fi
     fi
 
-    echo $decoded
+    printf "%s\n" "$output"
 }
 
 # Obfuscate a string
@@ -205,22 +209,22 @@ function adf_obf_decode() {
 function adf_obf_test() {
     if ! ADF_SILENT=1 adf_obf_init_alphabets; then return 1; fi
 
-    echoinfo "Please write your message here:"
-    read input
+    echoinfo "Please write your test message:"
+    IFS=$'\n' read input
 
-    echoinfo "Plain   (inp) = \z[yellow]°$input\z[]°"
+    echoinfo "Plain   (inp) = \z[yellow]°%s\z[]°" "$input"
 
     echoverb "Encoding the message..."
     local encoded=$(OBF_ARG_SAFE=1 adf_obf_encode "$input")
     if [[ $? != 0 ]]; then return $?; fi
 
-    echoinfo "Encoded (obf) = \z[yellow]°$encoded\z[]°"
+    echoinfo "Encoded (obf) = \z[yellow]°%s\z[]°" "$encoded"
 
     echoverb "Decoding the encoded message..."
     local decoded=$(adf_obf_decode "$encoded")
     if [[ $? != 0 ]]; then return $?; fi
 
-    echoinfo "Decoded (out) = \z[yellow]°$decoded\z[]°"
+    echoinfo "Decoded (out) = \z[yellow]°%s\z[]°" "$decoded"
 
     echoverb "Comparing..."
     if [[ $input != $decoded ]]; then
@@ -229,4 +233,13 @@ function adf_obf_test() {
     fi
 
     echosuccess "Message was successfully encoded and decoded."
+}
+
+# Run a test with the full current alphabets,
+# to test if all characters can be encoded and decoded correctly
+function adf_obf_test_current_alphabets() {
+    if ! ADF_SILENT=1 adf_obf_init_alphabets; then return 1; fi
+
+    adf_obf_current_input_alphabet | adf_obf_test
+    adf_obf_current_output_alphabet | adf_obf_test
 }
