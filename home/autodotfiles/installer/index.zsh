@@ -33,10 +33,10 @@ function zercomponent_install_from_list() {
     do
         local component_name=$(basename "$component")
         local component_dir="($(dirname "$component"))"
-        echoc "\z[cyan]°    $(basename "$component")\z[green]°${(l($longest_component_name-${#component_name}+${#component_dir}+5)( ))component_dir}\z[]°\z[]°"
+        echodata "\z[cyan]°    $(basename "$component")\z[green]°${(l($longest_component_name-${#component_name}+${#component_dir}+5)( ))component_dir}\z[]°\z[]°"
     done
 
-    echoc ""
+    echowarn ""
     echowarn "These components will now be installed."
     echowarn "$2type \z[red]°N\z[]°\z[yellow]°/\z[]°\z[red]°n\z[]°."
 
@@ -45,7 +45,7 @@ function zercomponent_install_from_list() {
 
     if [[ $install_choice =~ ^[Nn]$ ]]; then
         echowarn "Installation has been aborted."
-        echoc ""
+        echowarn ""
 
         if [[ $3 = 1 ]]; then
             export ADF_INSTALLER_ABORTED=1
@@ -56,11 +56,11 @@ function zercomponent_install_from_list() {
 
     ADF_INSTALL_STEP=0
 
-    echoc ""
+    echosuccess ""
     echosuccess ">"
     echosuccess "> Preparing the environment for update..."
     echosuccess ">"
-    echoc ""
+    echosuccess ""
 
     sudo apt update
 
@@ -68,12 +68,12 @@ function zercomponent_install_from_list() {
     do
         ADF_INSTALL_STEP=$((ADF_INSTALL_STEP + 1))
 
-        echoc ""
+        echosuccess ""
         echosuccess ">"
         echosuccess "> Installing component \z[blue]°$ADF_INSTALL_STEP\z[]° /" \
                 "\z[red]°${#ADF_TO_INSTALL[@]}\z[]°: \z[cyan]°$(basename "$component")\z[]° \z[green]°($(dirname "$component"))\z[]°"
         echosuccess ">"
-        echoc ""
+        echosuccess ""
 
         local script_path="$ADF_INSTALLER_SCRIPTS_DIR/$component.zsh"
 
@@ -91,17 +91,17 @@ function zercomponent_install_from_list() {
 
     unset ZER_UPDATING
 
-    echoc ""
+    echosuccess ""
     echosuccess ">"
     echosuccess "> Cleaning the temporary directory..."
     echosuccess ">"
-    echoc ""
+    echosuccess ""
 
     command rm -rf "$INSTALLER_TMPDIR"
 
-    echoc ""
+    echoinfo ""
     echoinfo "=> Successfully $4 \z[red]°${#ADF_TO_INSTALL[@]}\z[]° component(s)!"
-    echoc ""
+    echoinfo ""
 
     unset ADF_INSTALL_STEP
     unset ADF_TO_INSTALL
@@ -161,9 +161,9 @@ function zercomponent_update() {
 }
 
 function _step() {
-    echoc ""
+    echowarn ""
     echowarn ">>> Sub-step: $1"
-    echoc ""
+    echowarn ""
 }
 
 function _checkdir() {

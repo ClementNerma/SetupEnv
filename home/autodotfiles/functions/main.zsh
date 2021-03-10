@@ -5,13 +5,13 @@
 # Synchronize a directory
 function rsync_dir() {
 	if [[ $SUDO_RSYNC = "true" ]]; then
-		echoc "WARNING: Using rsync in SUDO mode."
+		echowarn "WARNING: Using rsync in SUDO mode."
 	fi
 
 	local started=0
 	local failed=0
 
-	echoc "Starting transfer..."
+	echoinfo "Starting transfer..."
 	while [[ $started -eq 0 || $failed -eq 1 ]]
 	do
 	    started=1
@@ -25,13 +25,13 @@ function rsync_dir() {
 	
 		if [[ $? -ne 0 ]]
 		then
-			echoc "Transfer failed. Retrying in 5 seconds..."
+			echoerr "Transfer failed. Retrying in 5 seconds..."
 			sleep 5s
 			failed=1
 		fi
 	done
 
-	echoc "Done."
+	echosuccess "Done."
 }
 
 # Copy a project to another directory without its dependencies and temporary files

@@ -4,7 +4,7 @@
 
 # Backup current environment
 function zerbackup() {
-	echoc "\z[blue]°Backuping environment...\z[]°"
+	echoinfo "Backuping environment..."
 
 	local old_env_loc=$(dirname "$ADF_SUB_DIR")
 	local old_env_backup_dir="$old_env_loc/_adf-backup/Backup $(date '+%Y.%m.%d - %Hh %Mm %Ss')"
@@ -24,7 +24,7 @@ function zerbackup() {
 
 	# Done!
 	export ADF_LAST_BACKUP_DIR="$old_env_backup_dir"
-	echoc "\z[blue]°Backup completed at \z[magenta]°$old_env_backup_dir\z[]°\z[]°"
+	echoinfo "Backup completed at \z[magenta]°$old_env_backup_dir\z[]°"
 }
 
 # Update to latest version

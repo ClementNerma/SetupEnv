@@ -1,6 +1,6 @@
 if [[ -d ~/.volta ]]; then
 	mvbak ~/.volta
-	echoc "\z[yellow]°\!/ A previous version of \z[green]°Volta\z[]° was detected ==> backed it up to \z[magenta]°$LAST_FILEBAK_PATH\z[]°...\z[]°"
+	echowarn "\z[yellow]°\!/ A previous version of \z[green]°Volta\z[]° was detected ==> backed it up to \z[magenta]°$LAST_FILEBAK_PATH\z[]°...\z[]°"
 fi
 
 _step "Installing Volta..."

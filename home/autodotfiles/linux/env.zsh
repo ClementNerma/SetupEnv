@@ -15,6 +15,6 @@ export LOCBAKDIR="$HOMEDIR/Sauvegardes/ADF"
 
 # Set up opening function
 function open() {
-    echoc "Opening is not currently supported"
+    echoerr "Opening is not currently supported"
     false
 }

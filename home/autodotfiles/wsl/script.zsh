@@ -88,18 +88,18 @@ function mount_wsl_drives() {
         found_c=1
       elif mountpoint -q "/mnt/$letter"; then
         if [[ $1 == "--debug" ]]; then
-          echoc "Already mounted: $letter"
+          echoinfo "Already mounted: $letter"
         fi
       elif [[ $drive_status == "OK" ]]; then
         if [[ $1 == "--debug" ]]; then
-          echoc "Mounting: $letter"
+          echoinfo "Mounting: $letter"
         fi
 
         remount "$letter"
       elif [[ $drive_status != "NOPE" ]]; then
         echoerr "Assertion error: drive status command for \z[magenta]°${letter:u}\z[]°: drive returned an invalid content: \z[magenta]°$drive_status\z[]° (${#drive_status} characters)"
       elif [[ $1 == "--debug" ]]; then
-        echoc "Ignoring: $letter"
+        echoinfo "Ignoring: $letter"
       fi
     fi
   done

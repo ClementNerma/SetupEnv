@@ -65,7 +65,7 @@ function ghdl() {
 		return 1
 	fi
 
-	echoc "\z[blue]°> Fetching default branch...\z[]°"
+	echoinfo "> Fetching default branch..."
 	local branch=$(curl -s "https://api.github.com/repos/$repoauthor/$reponame" | jq -r ".default_branch")
 
 	if [[ $branch == "null" ]]; then
@@ -74,7 +74,7 @@ function ghdl() {
 	fi
 
 	local filename="$reponame-$(date +%s).zip"
-	echoc "\z[blue]°> Fetching archive for branch \z[yellow]°$branch\z[]° to \z[magenta]°$filename\z[]°...\z[]°"
+	echoinfo "> Fetching archive for branch \z[yellow]°$branch\z[]° to \z[magenta]°$filename\z[]°..."
 	
 	local zipurl="https://codeload.github.com/$repoauthor/$reponame/zip/$branch"
 
@@ -83,7 +83,7 @@ function ghdl() {
 		return 1
 	fi
 
-	echoc "\z[blue]°> Extracting archive to directory \z[yellow]°$outdir\z[]°...\z[]°"
+	echoinfo "> Extracting archive to directory \z[yellow]°$outdir\z[]°..."
 	unzip -q "$filename"
 	command rm "$filename"
 	mv "$reponame-$branch" "$outdir"
