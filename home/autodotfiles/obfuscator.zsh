@@ -2,6 +2,9 @@
 
 #
 # This file contains the obfuscator module
+# It is *technically* an encryption module with a couple of keys (alphabets)
+# It is **NOT** recommanded for external usage, this module was mostly made for fun and remains
+# weaker than standard AES (among other algorithms).
 #
 
 # Input alphabet location
