@@ -129,18 +129,19 @@ function adf_obf_transform() {
         local base_alphabet="$2"
         local converted_alphabet="$3"
         local fail_word="encode"
+        local shift_multiplier=1
     else
         local is_encoding=0
         local base_alphabet="$3"
         local converted_alphabet="$2"
         local fail_word="decode"
+        local shift_multiplier=-1
     fi
 
     local input=""
 
     if [[ -z "$1" ]]; then
-        echoinfo "Please input your message:"
-        IFS=$'\n' read input
+        IFS=$'\n' read "input?Please input your message:"
     else
         if (( $is_encoding )) && ! (( $OBF_ARG_SAFE )); then
             echowarn "ENSURE TO NOT PROVIDE ANY SENSITIVE DATA AS AN ARGUMENT!"
@@ -160,6 +161,8 @@ function adf_obf_transform() {
 
     local out=()
 
+    converted_alphabet="$converted_alphabet$converted_alphabet$converted_alphabet"
+
     for i in {1..${#input}}; do
         local char=${input[i]}
         local index=${base_alphabet[(ie)$char]}
@@ -169,7 +172,12 @@ function adf_obf_transform() {
             return 2
         fi
 
-        out+=("${converted_alphabet[$index]}")
+        if (( i % 3 >= ${#input} % 3 )) || (( i % 4 == ${#input} % 4 )); then
+            local shift=$((floor((exp(i) + ${#input}) % 100)))
+            index=$((index + (${shift%.} * shift_multiplier)))
+        fi
+
+        out+=("${converted_alphabet[$index+191]}")
     done
 
     local output=${(j::)out}
@@ -209,8 +217,7 @@ function adf_obf_decode() {
 function adf_obf_test() {
     if ! ADF_SILENT=1 adf_obf_init_alphabets; then return 1; fi
 
-    echoinfo "Please write your test message:"
-    IFS=$'\n' read input
+    IFS=$'\n' read "input?Please write your test message:"
 
     echoinfo "Plain   (inp) = \z[yellow]°%s\z[]°" "$input"
 
