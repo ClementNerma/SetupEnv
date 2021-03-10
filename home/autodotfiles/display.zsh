@@ -98,9 +98,17 @@ function echoc() {
     fi
 
     if (( $ADF_DISPLAY_TO_STDERR )); then
-        >&2 printf "$output\n" "${@:2}"
+        if [[ $# > 1 ]]; then
+            >&2 printf "$output\n" "${@:2}"
+        else
+            >&2 echo "$output"
+        fi
     else
-        printf "$output\n" "${@:2}"
+        if [[ $# > 1 ]]; then
+            printf "$output\n" "${@:2}"
+        else
+            echo "$output"
+        fi
     fi
 }
 
