@@ -103,8 +103,9 @@ if [[ -z $DLDIR ]]; then echoerr "Directory variable \z[green]°\$DLDIR\z[]° is
 if [[ -z $SOFTWAREDIR ]]; then echoerr "Directory variable \z[green]°\$SOFTWAREDIR\z[]° is not defined!"; fi
 if [[ -z $PROJDIR ]]; then echoerr "Directory variable \z[green]°\$PROJDIR\z[]° is not defined!"; fi
 if [[ -z $WORKDIR ]]; then echoerr "Directory variable \z[green]°\$WORKDIR\z[]° is not defined!"; fi
+if [[ -z $LOCBAKDIR ]]; then echoerr "Directory variable \z[green]°\$LOCBAKDIR\z[]° is not defined!"; fi
 
-if [[ -z $HOMEDIR || ! -d $HOMEDIR || -z $DLDIR || -z $PROJDIR || -z $WORKDIR || -z $TEMPDIR || -z $SOFTWAREDIR || -z $TRASHDIR ]]; then
+if [[ -z $HOMEDIR || ! -d $HOMEDIR || -z $DLDIR || -z $PROJDIR || -z $WORKDIR || -z $TEMPDIR || -z $SOFTWAREDIR || -z $TRASHDIR || -z $LOCBAKDIR ]]; then
 	read "?Press <Enter> to exit, or <Ctrl+C> to get a without-AutoDotFiles ZSH prompt ('zerupdate' command will be available) "
 	exit
 fi
@@ -116,6 +117,7 @@ if [[ ! -d $TRASHDIR ]]; then mkdir -p "$TRASHDIR"; fi
 if [[ ! -d $PROJDIR ]]; then mkdir -p "$PROJDIR"; fi
 if [[ ! -d $WORKDIR ]]; then mkdir -p "$WORKDIR"; fi
 if [[ ! -d $SOFTWAREDIR ]]; then mkdir -p "$SOFTWAREDIR"; fi
+if [[ ! -d $LOCBAKDIR ]]; then mkdir -p "$LOCBAKDIR"; fi
 
 # Ensure the 'open' function is defined
 if ! typeset -f open > /dev/null; then echoinfo "WARNING: 'open' command is not defined. 'open'-related functions won't work correctly."; fi

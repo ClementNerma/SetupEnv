@@ -25,6 +25,7 @@ export HOMEDIR="/mnt/c/Users/$WINUSER"
 export TEMPDIR="$HOME/.tempdata"
 export DLDIR="$HOMEDIR/Downloads"
 export SOFTWAREDIR="$HOMEDIR/Logiciels"
+export LOCBAKDIR="$HOMEDIR/Sauvegardes/ADF"
 
 if [[ $ADF_CONF_PROJECT_DIRS_IN_WSL_FS != 1 ]]; then
   export PROJDIR="$HOMEDIR/Projets"

@@ -11,6 +11,7 @@ export DLDIR="$HOMEDIR/Downloads"
 export SOFTWAREDIR="$HOMEDIR/Logiciels"
 export PROJDIR="$HOMEDIR/Projets"
 export WORKDIR="$HOMEDIR/Work"
+export LOCBAKDIR="$HOMEDIR/Sauvegardes/ADF"
 
 # Set up opening function
 function open() {
