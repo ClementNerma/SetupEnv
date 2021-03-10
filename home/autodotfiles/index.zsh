@@ -134,6 +134,9 @@ export ADF_FUNCTIONS_DIR="$ADF_SUB_DIR/functions"
 # Load functions
 source "$ADF_FUNCTIONS_DIR/main.zsh"
 
+# Load the obfuscator
+source "$ADF_SUB_DIR/obfuscator.zsh"
+
 # Dir hashes
 hash -d Home=$HOMEDIR
 hash -d Projects=$PROJDIR
