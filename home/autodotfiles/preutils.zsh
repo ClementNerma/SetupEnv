@@ -95,6 +95,10 @@ function ghdl() {
 	echosuccess "Done!"
 }
 
+function humandate() {
+	date '+%Y_%m_%d-%Hh_%Mm_%Ss'
+}
+
 function _filebak() {
 	local itempath="${1%/}"
 
@@ -103,7 +107,7 @@ function _filebak() {
 		return 1
 	fi
 
-	local renpath="$itempath.bak-$(date '+%Y_%m_%d-%H_%M_%S')"
+	local renpath="$itempath.bak-$(humandate)"
 
 	${*:2} "$itempath" "$renpath"
 	export LAST_FILEBAK_PATH="$renpath"

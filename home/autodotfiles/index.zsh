@@ -65,6 +65,9 @@ if [[ ! -f "$ADF_CONF_RESTORATION_SCRIPT" || $ADF_JUST_INSTALLED = 1 ]]; then
 	zerupdate_restoration_script
 fi
 
+# Load the backuper
+source "$ADF_SUB_DIR/backuper.zsh"
+
 # Set path to the installer
 export ADF_INSTALLER_DIR="$ADF_SUB_DIR/installer"
 
