@@ -40,7 +40,7 @@ function echoc() {
         return
     fi
 
-    local text="$@"
+    local text="$1"
     local output=""
     local colors_history=()
     local i=-1
@@ -98,18 +98,18 @@ function echoc() {
     fi
 
     if (( $ADF_DISPLAY_TO_STDERR )); then
-        >&2 echo "$output"
+        >&2 printf "$output\n" "${@:2}"
     else
-        echo "$output"
+        printf "$output\n" "${@:2}"
     fi
 }
 
 function echoerr() {
-    ADF_DISPLAY_TO_STDERR=1 echoc "\z[red]°ERROR: $@\z[]°"
+    ADF_DISPLAY_TO_STDERR=1 echoc "\z[red]°ERROR: $1\z[]°" "${@:2}"
 }
 
 function echowarn() {
-	ADF_DISPLAY_TO_STDERR=1 echoc "\z[yellow]°$@\z[]°"
+	ADF_DISPLAY_TO_STDERR=1 echoc "\z[yellow]°$1\z[]°" "${@:2}"
 }
 
 function echosuccess() {
@@ -117,7 +117,7 @@ function echosuccess() {
         return
     fi
 
-    echoc "\z[green]°$@\z[]°"
+    echoc "\z[green]°$1\z[]°" "${@:2}"
 }
 
 function echoinfo() {
@@ -125,7 +125,7 @@ function echoinfo() {
         return
     fi
 
-    echoc "\z[blue]°$@\z[]°"
+    echoc "\z[blue]°$1\z[]°" "${@:2}"
 }
 
 function echodata() {
@@ -133,7 +133,7 @@ function echodata() {
         return
     fi
 
-	echoc "\z[cyan]°$@\z[]°"
+	echoc "\z[cyan]°$1\z[]°" "${@:2}"
 }
 
 function echoverb() {
@@ -141,5 +141,5 @@ function echoverb() {
         return
     fi
 
-	echoc "\z[gray]°[Verbose]\z[]° \z[magenta]°$@\z[]°"
+	echoc "\z[gray]°[Verbose]\z[]° \z[magenta]°$1\z[]°" "${@:2}"
 }
