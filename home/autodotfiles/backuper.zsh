@@ -15,9 +15,17 @@ function adf_local_backup() {
         return 1
     fi
     
+    local passphrase="$ADF_LOCBAK_PASSPHRASE"
+    
     if (( $ADF_DEOBFUSCATE_PASSPHRASE )); then
-        ADF_DEOBFUSCATE_PASSPHRASE=$(adf_obf_decode "$ADF_DEOBFUSCATE_PASSPHRASE")
-        if [[ $? != 0 ]]; then return 2; fi
+        if ! passphrase=$(echo "$passphrase" | adf_obf_decode); then
+            return 2
+        fi
+    fi
+
+    if [[ -z $passphrase ]]; then
+        echoerr "The encryption passphrase cannot be empty!"
+        return 1
     fi
 
     echoinfo "(1/3) Building the files list..."
@@ -39,7 +47,7 @@ function adf_local_backup() {
 
     local tmpfile="$TEMPDIR/adf-backup-$(humandate).7z"
     
-    if ! 7z a -t7z -m0=lzma2 -mx=5 -mfb=64 -md=32m -ms=on -mhc=on -mhe=on -spf2 -bso0 -p"$ADF_LOCBAK_PASSPHRASE" "$tmpfile" @"$listfile"; then
+    if ! 7z a -t7z -m0=lzma2 -mx=5 -mfb=64 -md=32m -ms=on -mhc=on -mhe=on -spf2 -bso0 -p"$passphrase" "$tmpfile" @"$listfile"; then
         echoerr "Command \z[yellow]°7z\z[]° failed."
         command rm "$listfile"
         return 4
