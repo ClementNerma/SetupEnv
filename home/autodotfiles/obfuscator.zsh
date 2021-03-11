@@ -14,7 +14,7 @@ export ADF_OBF_OUTPUT_ALPHABET_FILE="$ADF_DATA_DIR/adf-obfuscator-alphabet.outpu
 # Generate a random alphabet
 function adf_obf_gen_alphabet() {
     local str="$(awk 'BEGIN{for(i=32;i<128;i++)printf "%c\n",i; print}')$(awk 'BEGIN{for(i=160;i<255;i++)printf "%c\n",i; print}')"
-    local shuffled=$(echo "$str" | sort -R)
+    local shuffled=$(printf '%s' "$str" | sort -R)
     local alphabet_no_nl=${(j::)${(@f)shuffled}}
 
     local nl_index=$(( (RANDOM % 189) + 1 ))
@@ -27,7 +27,7 @@ function adf_obf_gen_alphabet() {
         return 1
     fi
 
-    printf "%s" "$alphabet"
+    printf '%s' "$(printf '%s' "$alphabet" | base64 -w0)"
 }
 
 # Ensure the random alphabets exist locally
@@ -52,8 +52,8 @@ function adf_obf_init_alphabets() {
 
     echoinfo "Loading alphabets from disk..."
 
-    export __ADF_OBF_INPUT_ALPHABET=$(command cat "$ADF_OBF_INPUT_ALPHABET_FILE")
-    export __ADF_OBF_OUTPUT_ALPHABET=$(command cat "$ADF_OBF_OUTPUT_ALPHABET_FILE")
+    export __ADF_OBF_INPUT_ALPHABET=$(base64 -d -w0 "$ADF_OBF_INPUT_ALPHABET_FILE")
+    export __ADF_OBF_OUTPUT_ALPHABET=$(base64 -d -w0 "$ADF_OBF_OUTPUT_ALPHABET_FILE")
 
     echosuccess "Done."
 }
@@ -62,20 +62,20 @@ function adf_obf_init_alphabets() {
 function adf_obf_current_input_alphabet() {
     if ! ADF_SILENT=1 adf_obf_init_alphabets; then return 1; fi
 
-    printf "%s" "$__ADF_OBF_INPUT_ALPHABET"
+    printf '%s' "$__ADF_OBF_INPUT_ALPHABET"
 }
 
 # Display the current output alphabet
 function adf_obf_current_output_alphabet() {
     if ! ADF_SILENT=1 adf_obf_init_alphabets; then return 1; fi
 
-    printf "%s" "$__ADF_OBF_OUTPUT_ALPHABET"
+    printf '%s' "$__ADF_OBF_OUTPUT_ALPHABET"
 }
 
 # Hash a message to check its integrity during decoding
 # or to check if it has been decoded correctly
 function adf_obf_checksum() {
-    printf "%s" "$1" | cksum | cksum | xargs printf '%0X'
+    printf '%s' "$1" | cksum | cksum | xargs printf '%0X'
 }
 
 # Validate the checksum of a message
@@ -91,7 +91,7 @@ function adf_obf_validate_checksum() {
     fi
 
     local got_checksum="${match[1]}"
-    local message=${match[2]}
+    local message="${match[2]}"
     
     local msg_checksum=$(adf_obf_checksum "$message")
 
@@ -100,7 +100,7 @@ function adf_obf_validate_checksum() {
         return 3
     fi
 
-    echo "$message"
+    printf "%s" "$message"
 }
 
 # Transform (obfuscate / unobfuscate) a string
@@ -148,16 +148,25 @@ function adf_obf_transform() {
         local shift_multiplier=-1
     fi
 
-    local input=()
+    local raw_input=""
 
     if [[ -z "$1" ]]; then
-        input=$(</dev/stdin)
+        raw_input=$(printf "%s" "$(</dev/stdin)")
     else
         if (( $is_encoding )) && ! (( $OBF_ARG_SAFE )); then
             echowarn "ENSURE TO NOT PROVIDE ANY SENSITIVE DATA AS AN ARGUMENT!"
         fi
 
-        input="$1"
+        raw_input="$1"
+    fi
+
+    if [[ $is_encoding = 0 && -z "$OBF_NO_BASE64" ]]; then
+        if ! input="$(printf '%s' "$raw_input" | base64 -d -w0)"; then
+            echoerr "Failed to decode input: invalid base64 provided"
+            return 1
+        fi
+    else
+        input="$raw_input"
     fi
 
     if [[ -z $input && ! -z $OBF_NO_CHECKSUM ]]; then
@@ -171,15 +180,13 @@ function adf_obf_transform() {
 
     local out=()
 
-    if [[ $space_index = 0 ]]; then
-        echoerr "Space character was not found in base alphabet!"
-        return 2
-    fi
-
     converted_alphabet="$converted_alphabet$converted_alphabet$converted_alphabet"
 
     for i in {1..${#input}}; do
         local char=${input[i]}
+
+        >&2 echoverb "Character: \z[cyan]°>$char< \z[green]°(0x$(printf '%x\n' "'$char'"))\z[]°\z[]°"
+
         local index=${base_alphabet[(ie)$char]}
 
         if [[ $index == 0 || $index -gt ${#base_alphabet} ]]; then
@@ -187,16 +194,18 @@ function adf_obf_transform() {
             return 2
         fi
 
-        # >&2 echo ${base_alphabet[(ie) ]}
+        if [[ -z $OBF_NO_SHIFT ]]; then
+            if (( i % 3 >= ${#input} % 3 )) || (( i % 4 == ${#input} % 4 )); then
+                local shift=$((floor((exp(i) + ${#input}) % 100)))
+                index=$((index + (${shift%.} * shift_multiplier)))
+            fi
+        fi
 
-        # if (( i % 3 >= ${#input} % 3 )) || (( i % 4 == ${#input} % 4 )); then
-        #     local shift=$((floor((exp(i) + ${#input}) % 100)))
-        #     index=$((index + (${shift%.} * shift_multiplier)))
-        # fi
+        local outchar="${converted_alphabet[$index+192]}"
 
-        # >&2 echo ">$char< => >${converted_alphabet[$index+192]}<"
+        >&2 echoverb "Converted to: \z[yellow]°>$outchar<\z[]° \z[green]°(0x$(printf '%x\n' "'$outchar'"))\z[]°"
 
-        out+=("${converted_alphabet[$index+192]}")
+        out+=("$outchar")
     done
 
     local output=${(j::)out}
@@ -214,7 +223,11 @@ function adf_obf_transform() {
         fi
     fi
 
-    printf "%s" "$output"
+    if [[ $is_encoding = 1 && -z $OBF_NO_BASE64 ]]; then
+        output="$(printf '%s' "$output" | base64 -w0)"
+    fi
+
+    printf '%s' "$output"
 }
 
 # Obfuscate a string
@@ -239,26 +252,32 @@ function adf_obf_test() {
 
     local input="$(</dev/stdin)"
 
-    echoinfo "Plain   (inp) = \z[yellow]°%s\z[]°" "$input"
+    echoinfo "Plain (input) =\n\n\z[yellow]°%s\z[]°" "$input"
 
     echoverb "Encoding the message..."
-    if ! encoded=$(echo "$input" | adf_obf_encode); then
+    if ! encoded=$(printf '%s' "$input" | adf_obf_encode); then
         return 2
     fi
 
-    echoinfo "Encoded (obf) = \z[yellow]°%s\z[]°" "$encoded"
+    if [[ -z $OBF_NO_INTERMEDIARY_TEST_DATA ]]; then
+        echoinfo "\nEncoded (obfuscated) =\n\n\z[yellow]°%s\z[]°\n" "$encoded"
+
+        if [[ -z "$OBF_NO_BASE64" ]]; then
+            echoinfo "Encoded (base64 decoded) =\n\n\z[yellow]°%s\z[]°\n" "$(printf '%s' "$encoded" | base64 -d -w0)"
+        fi
+    fi
 
     echoverb "Decoding the encoded message..."
-    if ! decoded=$(echo "$encoded" | adf_obf_decode); then
+    if ! decoded=$(printf '%s' "$encoded" | adf_obf_decode); then
         return 3
     fi
 
-    echoinfo "Decoded (out) = \z[yellow]°%s\z[]°" "$decoded"
+    echoinfo "\nDecoded (output) =\n\n\z[yellow]°%s\z[]°\n" "$decoded"
 
-    echoverb "Comparing..."
+    echoverb "Comparing...\n"
 
     if [[ $input != $decoded ]]; then
-        echoerr "Input is not the same as output! Seems like an internal problem."
+        echoerr "Input and output are not the same! Seems like an internal problem."
         return 4
     fi
 
@@ -270,6 +289,13 @@ function adf_obf_test() {
 function adf_obf_test_current_alphabets() {
     if ! ADF_SILENT=1 adf_obf_init_alphabets; then return 1; fi
 
-    adf_obf_current_input_alphabet | adf_obf_test
-    adf_obf_current_output_alphabet | adf_obf_test
+    if ! adf_obf_current_input_alphabet | adf_obf_test; then
+        return 2
+    fi
+
+    echoinfo ""
+
+    if ! adf_obf_current_output_alphabet | adf_obf_test; then
+        return 3
+    fi
 }
