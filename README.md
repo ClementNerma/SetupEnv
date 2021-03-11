@@ -9,7 +9,7 @@ The goal of this project is to install with a simple single command my whole env
 
 It also adapts the environment depending on if the platform is WSL 2 or a real Debian distribution, and also if the computer is my main computer or not, meaning I also use it on my professional computer.
 
-Currently, it contains ~1k of ZSH (not counting blank lines and comments).
+Currently, it contains ~2k of ZSH (not counting blank lines and comments).
 
 ## Features
 
