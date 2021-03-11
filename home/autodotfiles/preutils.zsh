@@ -95,6 +95,19 @@ function ghdl() {
 	echosuccess "Done!"
 }
 
+# Ask for an input with a simple prompt
+function prompt() {
+	local input=""
+	
+	if [[ $1 = "-s" ]]; then
+		read -s "input?$2"
+	else
+		read "input?$1"
+	fi
+
+	echo "$input"
+}
+
 function humandate() {
 	date '+%Y_%m_%d-%Hh_%Mm_%Ss'
 }
