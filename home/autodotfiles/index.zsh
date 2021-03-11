@@ -68,6 +68,9 @@ fi
 # Load the backuper
 source "$ADF_SUB_DIR/backuper.zsh"
 
+# Load the obfuscator
+source "$ADF_SUB_DIR/obfuscator.zsh"
+
 # Set path to the installer
 export ADF_INSTALLER_DIR="$ADF_SUB_DIR/installer"
 
@@ -133,9 +136,6 @@ export ADF_FUNCTIONS_DIR="$ADF_SUB_DIR/functions"
 
 # Load functions
 source "$ADF_FUNCTIONS_DIR/main.zsh"
-
-# Load the obfuscator
-source "$ADF_SUB_DIR/obfuscator.zsh"
 
 # Dir hashes
 hash -d Home=$HOMEDIR

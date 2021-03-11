@@ -14,17 +14,20 @@ export ADF_OBF_OUTPUT_ALPHABET_FILE="$ADF_DATA_DIR/adf-obfuscator-alphabet.outpu
 # Generate a random alphabet
 function adf_obf_gen_alphabet() {
     local str="$(awk 'BEGIN{for(i=32;i<128;i++)printf "%c\n",i; print}')$(awk 'BEGIN{for(i=160;i<255;i++)printf "%c\n",i; print}')"
-    local shuffled=$(echo "$str" | sort -R | tr "\n" "\n")
-    local chars=${(@f)shuffled}
-    local alphabet=${(j::)${(@f)shuffled}}
+    local shuffled=$(echo "$str" | sort -R)
+    local alphabet_no_nl=${(j::)${(@f)shuffled}}
 
-    if [[ ${#alphabet} != 191 ]]; then
-        echoerr "Internal error: invalid alphabet length (${#alphabet})"
+    local nl_index=$(( (RANDOM % 189) + 1 ))
+    local nl=$'\n'
+    local alphabet="${alphabet_no_nl:0:$nl_index}$nl${alphabet_no_nl:$nl_index}"
+
+    if [[ ${#alphabet} != 192 ]]; then
+        echoerr "Internal: invalid alphabet length (${#alphabet})"
         echodata "$alphabet"
         return 1
     fi
 
-    echo "$alphabet"
+    printf "%s" "$alphabet"
 }
 
 # Ensure the random alphabets exist locally
@@ -57,18 +60,22 @@ function adf_obf_init_alphabets() {
 
 # Display the current input alphabet
 function adf_obf_current_input_alphabet() {
-    echo "$__ADF_OBF_INPUT_ALPHABET"
+    if ! ADF_SILENT=1 adf_obf_init_alphabets; then return 1; fi
+
+    printf "%s" "$__ADF_OBF_INPUT_ALPHABET"
 }
 
 # Display the current output alphabet
 function adf_obf_current_output_alphabet() {
-    echo "$__ADF_OBF_OUTPUT_ALPHABET"
+    if ! ADF_SILENT=1 adf_obf_init_alphabets; then return 1; fi
+
+    printf "%s" "$__ADF_OBF_OUTPUT_ALPHABET"
 }
 
 # Hash a message to check its integrity during decoding
 # or to check if it has been decoded correctly
 function adf_obf_checksum() {
-    echo -n "$1" | cksum | cut -d\  -f 1 | xargs printf '%0X'
+    printf "%s" "$1" | cksum | cksum | xargs printf '%0X'
 }
 
 # Validate the checksum of a message
@@ -117,13 +124,13 @@ function adf_obf_transform() {
         return 1
     fi
 
-    if [[ ${#2} != 191 ]]; then
-        echoerr "Input alphabet is not 191 characters long."
+    if [[ ${#2} != 192 ]]; then
+        echoerr "Input alphabet is not 192 characters long."
         return 2
     fi
 
-    if [[ ${#3} != 191 ]]; then
-        echoerr "Output alphabet is not 191 characters long."
+    if [[ ${#3} != 192 ]]; then
+        echoerr "Output alphabet is not 192 characters long."
         return 2
     fi
 
@@ -141,10 +148,10 @@ function adf_obf_transform() {
         local shift_multiplier=-1
     fi
 
-    local input=""
+    local input=()
 
     if [[ -z "$1" ]]; then
-        IFS=$'\n' read "input?Please input your message:"
+        input=$(</dev/stdin)
     else
         if (( $is_encoding )) && ! (( $OBF_ARG_SAFE )); then
             echowarn "ENSURE TO NOT PROVIDE ANY SENSITIVE DATA AS AN ARGUMENT!"
@@ -164,29 +171,39 @@ function adf_obf_transform() {
 
     local out=()
 
+    if [[ $space_index = 0 ]]; then
+        echoerr "Space character was not found in base alphabet!"
+        return 2
+    fi
+
     converted_alphabet="$converted_alphabet$converted_alphabet$converted_alphabet"
 
     for i in {1..${#input}}; do
         local char=${input[i]}
         local index=${base_alphabet[(ie)$char]}
 
-        if [[ $index == 0 ]]; then
-            echoerr "Failed to $fail_word character \z[yellow]°$char\z[]°: unknown character"
+        if [[ $index == 0 || $index -gt ${#base_alphabet} ]]; then
+            echoerr "Failed to $fail_word character >\z[yellow]°$char\z[]°<: unknown character"
             return 2
         fi
 
-        if (( i % 3 >= ${#input} % 3 )) || (( i % 4 == ${#input} % 4 )); then
-            local shift=$((floor((exp(i) + ${#input}) % 100)))
-            index=$((index + (${shift%.} * shift_multiplier)))
-        fi
+        # >&2 echo ${base_alphabet[(ie) ]}
 
-        out+=("${converted_alphabet[$index+191]}")
+        # if (( i % 3 >= ${#input} % 3 )) || (( i % 4 == ${#input} % 4 )); then
+        #     local shift=$((floor((exp(i) + ${#input}) % 100)))
+        #     index=$((index + (${shift%.} * shift_multiplier)))
+        # fi
+
+        # >&2 echo ">$char< => >${converted_alphabet[$index+192]}<"
+
+        out+=("${converted_alphabet[$index+192]}")
     done
 
     local output=${(j::)out}
 
     if [[ ${#input} != ${#output} ]]; then
         echoerr "Internal: output (\z[yellow]°${#output}\z[]° characters) has not the same length than input (\z[yellow]°${#input}\z[]°)"
+        return 3
     fi
 
     if [[ $is_encoding = 0 && -z $OBF_NO_CHECKSUM ]]; then
@@ -197,7 +214,7 @@ function adf_obf_transform() {
         fi
     fi
 
-    printf "%s\n" "$output"
+    printf "%s" "$output"
 }
 
 # Obfuscate a string
@@ -220,26 +237,29 @@ function adf_obf_decode() {
 function adf_obf_test() {
     if ! ADF_SILENT=1 adf_obf_init_alphabets; then return 1; fi
 
-    IFS=$'\n' read "input?Please write your test message:"
+    local input="$(</dev/stdin)"
 
     echoinfo "Plain   (inp) = \z[yellow]°%s\z[]°" "$input"
 
     echoverb "Encoding the message..."
-    local encoded=$(OBF_ARG_SAFE=1 adf_obf_encode "$input")
-    if [[ $? != 0 ]]; then return $?; fi
+    if ! encoded=$(echo "$input" | adf_obf_encode); then
+        return 2
+    fi
 
     echoinfo "Encoded (obf) = \z[yellow]°%s\z[]°" "$encoded"
 
     echoverb "Decoding the encoded message..."
-    local decoded=$(adf_obf_decode "$encoded")
-    if [[ $? != 0 ]]; then return $?; fi
+    if ! decoded=$(echo "$encoded" | adf_obf_decode); then
+        return 3
+    fi
 
     echoinfo "Decoded (out) = \z[yellow]°%s\z[]°" "$decoded"
 
     echoverb "Comparing..."
+
     if [[ $input != $decoded ]]; then
         echoerr "Input is not the same as output! Seems like an internal problem."
-        return 10
+        return 4
     fi
 
     echosuccess "Message was successfully encoded and decoded."
