@@ -8,8 +8,9 @@
 # Requires to set the "ADF_LOCBAK_PASSPHRASE" variable
 # Arguments are paths to back up
 # Set "ADF_ADD_ADF_FILES_TO_BACKUP" to perform a backup of the current environment
+#  To search for specific patterns inside the directory, suffix it by `::<glob pattern>`
 # You may also set "ADF_DEOBFUSCATE_PASSPHRASE"
-# As wella s "ADF_MIRROR_BACKUP" to duplicate it to another location
+# As well as "ADF_MIRROR_BACKUP" to duplicate it to another location
 function adf_local_backup() {
     if [[ -z $ADF_LOCBAK_PASSPHRASE ]]; then
         echoerr "Please provide a \z[yellow]°\$ADF_LOCBAK_PASSPHRASE\z[]° variable."
@@ -38,13 +39,13 @@ function adf_local_backup() {
     local listfile="/tmp/rebackup-list-$(date +%s).txt"
     touch "$listfile"
 
+    if ! _adf_add_dir_to_list "$listfile" "$@"; then return 3; fi
+    if ! _adf_add_dir_to_list "$listfile" $ADF_ALWAYS_BACKUP; then return 3; fi
+
     if (( $ADF_ADD_ADF_FILES_TO_BACKUP )); then
         ADF_SILENT=1 zerupdate
         _adf_add_dir_to_list "$listfile" "$ADF_LAST_BACKUP_DIR"
     fi
-
-    if ! _adf_add_dir_to_list "$listfile" "$@"; then return 3; fi
-    if ! _adf_add_dir_to_list "$listfile" $ADF_ALWAYS_BACKUP; then return 3; fi
 
     echoinfo ""
     echoinfo "(2/3) Compressing \z[yellow]°$(wc -l < "$listfile")\z[]° elements..."
@@ -99,7 +100,20 @@ function _adf_add_dir_to_list() {
     shift
 
     for item in "$@"; do
-        echoinfo "> Treating: \z[yellow]°$item\z[]°"
+        local pattern=""
+
+        local glob_sep_index=${item[(ie)::(GLOB)::]}
+        local regex_sep_index=${item[(ie)::(REGEX)::]}
+
+        if (( $glob_sep_index > 0 )) && (( $glob_sep_index <= ${#item} )); then
+            pattern="--glob=${item:$((glob_sep_index + 9))}"
+            item=${item:0:$((glob_sep_index - 1))}
+        elif (( $regex_sep_index > 0 )) && (( $regex_sep_index <= ${#item} )); then
+            pattern=${item:$((regex_sep_index + 10))}
+            item=${item:0:$((regex_sep_index - 1))}
+        fi
+
+        echoinfo "> Treating: \z[yellow]°$item\z[]° \z[cyan]°$pattern\z[]°"
 
         if [[ -f $item ]]; then
             echo "$item" >> "$listfile"
@@ -109,7 +123,7 @@ function _adf_add_dir_to_list() {
             return 2
         fi
 
-        if ! fd --hidden --one-file-system --type 'file' --absolute-path --search-path "$item" >> "$listfile"; then
+        if ! fd --hidden --one-file-system --type 'file' --absolute-path --search-path "$item" "$pattern" >> "$listfile"; then
             echoerr "Command \z[yellow]°fd\z[]° failed."
             return 2
         fi
