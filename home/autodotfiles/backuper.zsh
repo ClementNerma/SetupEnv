@@ -113,7 +113,7 @@ function _adf_add_dir_to_list() {
             item=${item:0:$((regex_sep_index - 1))}
         fi
 
-        echoinfo "> Treating: \z[yellow]°$item\z[]° \z[cyan]°$pattern\z[]°"
+        echoinfo "> Treating: \z[magenta]°$item\z[]° \z[cyan]°$pattern\z[]°"
 
         if [[ -f $item ]]; then
             echo "$item" >> "$listfile"
@@ -123,9 +123,19 @@ function _adf_add_dir_to_list() {
             return 2
         fi
 
-        if ! fd --hidden --one-file-system --type 'file' --absolute-path --search-path "$item" "$pattern" >> "$listfile"; then
+        local files=""
+
+        if ! files=$(fd --hidden --one-file-system --type 'file' --absolute-path --search-path "$item" "$pattern"); then
             echoerr "Command \z[yellow]°fd\z[]° failed."
             return 2
+        fi
+
+        files=$(printf "%s" "$files" | grep "\S")
+
+        if [[ -z "$files" ]]; then
+            echowarn ">  WARNING: No matching found for this item!"
+        else
+            printf "%s\n" "$files" >> "$listfile"
         fi
     done
 }
