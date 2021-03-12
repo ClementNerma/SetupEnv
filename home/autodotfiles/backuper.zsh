@@ -135,7 +135,7 @@ function _adf_add_dir_to_list() {
         if [[ -z "$files" ]]; then
             echowarn ">  WARNING: No matching found for this item!"
         else
-            printf "%s\n" "$files" >> "$listfile"
+            printf "%s\n" "$files" | sort >> "$listfile"
         fi
     done
 }
