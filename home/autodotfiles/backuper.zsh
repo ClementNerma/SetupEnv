@@ -51,7 +51,7 @@ function adf_local_backup() {
     echoinfo "(2/3) Compressing \z[yellow]°$(wc -l < "$listfile")\z[]° elements..."
     echoinfo ""
 
-    local tmpfile="$TEMPDIR/adf-backup-$(humandate).7z"
+    local tmpfile="$TEMPDIR/adf-backup-$(humandate).tmp.7z"
     
     if ! 7z a -t7z -m0=lzma2 -mx=5 -mfb=64 -md=32m -ms=on -mhc=on -mhe=on -spf2 -bso0 -p"$passphrase" "$tmpfile" @"$listfile"; then
         echoerr "Command \z[yellow]°7z\z[]° failed."
@@ -61,7 +61,7 @@ function adf_local_backup() {
 
     command rm "$listfile"
 
-    local outfile="$LOCBAKDIR/$(humandate).7z"
+    local outfile="$LOCBAKDIR/adf-$(humandate).7z"
 
     echoinfo " "
     echoinfo "(3/3) Moving the final archive..."
