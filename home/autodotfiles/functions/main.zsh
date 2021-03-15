@@ -60,6 +60,14 @@ function bakproj() {
 	_filebak "$1" cp_proj_nodeps "${@:2}"
 }
 
+# Backup the current project
+function bakthis() {
+	local item=$(pwd)
+	cd ..
+	_filebak "$item" cp_proj_nodeps "${@:2}"
+	cd "$item"
+}
+
 # Run a Cargo project located in the projects directory
 function cargext() {
 	cargo run "--manifest-path=$PROJDIR/$1/Cargo.toml" -- ${@:2}
