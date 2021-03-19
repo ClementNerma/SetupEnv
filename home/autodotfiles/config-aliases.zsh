@@ -25,11 +25,25 @@ alias gd="git diff"
 alias gs="git status"
 alias gr="git reset"
 alias gl="git log"
-alias gm="git commit -m"
 alias gc="git checkout"
 alias gp="git push"
 alias gpb="git push --set-upstream origin \$(git rev-parse --abbrev-ref HEAD)"
 alias gop="git reflog expire --expire=now --all && git gc --prune=now && git repack -a -d --depth=250 --window=250"
+
+function gitcommit() {
+    if [[ ${#1} > 72 ]]; then
+        echowarn "Maximum recommanded message length is \z[cyan]°72\z[]° characters but provided one is \z[cyan]°${#1}\z[]° long."
+
+        if [[ $1 != *"\n"* ]]; then
+            echoerr "Rejecting the commit message, you can use a newline symbol to skip this limitation."
+            return 1
+        fi
+    fi
+
+    git commit -m "$1" "${@:2}"
+}
+
+alias gm="gitcommit"
 
 # Set the default editor
 export EDITOR="nano"
