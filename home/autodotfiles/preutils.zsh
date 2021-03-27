@@ -2,17 +2,17 @@
 # Arguments: "<url>" "<download location>"
 function dl() {
     if [[ ! -z "$2" ]]; then
-        curl --silent --progress-bar -o "$2" "$1" "${@:3}"
+        curl -L --silent --progress-bar -o "$2" "$1" "${@:3}"
     else
-        curl --silent --progress-bar "$@"
+        curl -L --silent --progress-bar "$@"
     fi
 }
 
 function sudodl() {
     if [[ ! -z "$2" ]]; then
-        sudo curl --silent --progress-bar -o "$2" "$1" "${@:3}"
+        sudo curl -L --silent --progress-bar -o "$2" "$1" "${@:3}"
     else
-        sudo curl --silent --progress-bar "$@"
+        sudo curl -L --silent --progress-bar "$@"
     fi
 }
 
