@@ -31,7 +31,7 @@ alias gpb="git push --set-upstream origin \$(git rev-parse --abbrev-ref HEAD)"
 alias gop="git reflog expire --expire=now --all && git gc --prune=now && git repack -a -d --depth=250 --window=250"
 
 function gitcommit() {
-    if [[ ${#1} > 72 ]]; then
+    if (( ${#1} > 72 )); then
         echowarn "Maximum recommanded message length is \z[cyan]°72\z[]° characters but provided one is \z[cyan]°${#1}\z[]° long."
 
         if [[ $1 != *"\n"* ]]; then
