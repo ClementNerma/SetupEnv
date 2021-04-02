@@ -145,6 +145,21 @@ function clipstr() {
   echo "$*" | clip.exe
 }
 
+# Get the list of all open windows for a given process name
+function process_windows() {
+  if [[ -z "$1" ]]; then
+    echoerr "Please provide a process name to check."
+    return 1
+  fi
+
+  win '(Get-Process '\
+       '| Where-Object {$_.MainWindowTitle -ne "" -and $_.ProcessName -eq "'$1'"}'\
+       '| Select-Object MainWindowTitle'\
+       '| Format-Table -HideTableHeaders'\
+       '| Out-String'\
+       ').Trim()'
+}
+
 # Run Git commands from Windows if the project directories are not stored inside WSL's own filesystem
 if [[ $ADF_CONF_PROJECT_DIRS_IN_WSL_FS = 0 ]]; then
   alias git="git.exe" 
