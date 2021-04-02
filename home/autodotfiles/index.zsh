@@ -39,7 +39,7 @@ export ADF_DATA_DIR="$ADF_LOCAL_DIR/data"
 export ADF_THISCOMP_DIR="$ADF_DIR-thiscomp"
 
 # Set path to binaries directory
-export ADF_BIN_DIR="$ADF_THISCOMP_DIR/binaries"
+export ADF_BIN_DIR="$ADF_THISCOMP_DIR/bin"
 
 # Register the local binaries directory in PATH
 export PATH="$ADF_BIN_DIR:$PATH"
