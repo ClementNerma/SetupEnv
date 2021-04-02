@@ -5,6 +5,9 @@
 #  reloading the whole configuration each time ; as well as to keep the ~/.zshrc file as clean and simple as possible.
 #
 
+# Load required ZSH modules
+zmodload zsh/mathfunc
+
 # Determine if current environment is WSL
 if grep -q microsoft /proc/version; then
 	command rm -rf "$ADF_DIR/linux"
