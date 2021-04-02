@@ -99,15 +99,15 @@ function echoc() {
 
     if (( $ADF_DISPLAY_TO_STDERR )); then
         if [[ $# > 1 ]]; then
-            >&2 printf "$output\n" "${@:2}"
+            >&2 printf "$ADF_DISPLAY_PREFIXMSG$output\n" "${@:2}"
         else
-            >&2 echo "$output"
+            >&2 echo "$ADF_DISPLAY_PREFIXMSG$output"
         fi
     else
         if [[ $# > 1 ]]; then
-            printf "$output\n" "${@:2}"
+            printf "$ADF_DISPLAY_PREFIXMSG$output\n" "${@:2}"
         else
-            echo "$output"
+            echo "$ADF_DISPLAY_PREFIXMSG$output"
         fi
     fi
 }
