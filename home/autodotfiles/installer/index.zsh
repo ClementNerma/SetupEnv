@@ -145,15 +145,15 @@ function zercomponent_mark_installed() { zercomponent_mark_custom "$@" "1" }
 function zercomponent_mark_not_installed() { zercomponent_mark_custom "$@" "0" }
 
 function zercomponent_update() {
-    if [[ ! -f "$ADF_INSTALLER_SCRIPTS_DIR/$1.zsh" ]]; then
-        echoerr "Provided component \z[cyan]°$1\z[]° was not found."
-        return 1
-    fi
-
     ADF_TO_INSTALL=()
 
     for component in "$@"
     do
+        if [[ ! -f "$ADF_INSTALLER_SCRIPTS_DIR/$component.zsh" ]]; then
+            echoerr "Provided component \z[cyan]°$component\z[]° was not found."
+            return 1
+        fi
+
         ADF_TO_INSTALL+=("$component")
     done
 
