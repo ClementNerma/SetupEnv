@@ -93,7 +93,7 @@ function echoc() {
     done
 
     if [[ ${#colors_history[@]} != 0 ]]; then
-        _report_echoc_error "Unterminated color groups: $colors_history" "$text" ${#text} 1
+        _report_echoc_error "Unterminated color groups: $colors_history" "$text" $((${#text}+1)) 1
         return 1
     fi
 
