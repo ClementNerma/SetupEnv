@@ -23,8 +23,11 @@ else
 	export ADF_JUST_INSTALLED=0
 fi
 
+# Set path to the main script of AutoDotFiles
+export ADF_ENTRYPOINT="${(%):-%x}"
+
 # Set path to AutoDotFiles files
-export ADF_DIR=$(dirname "${(%):-%x}")
+export ADF_DIR=$(dirname "$ADF_ENTRYPOINT")
 
 # Set path to local directory
 export ADF_LOCAL_DIR="$ADF_DIR-local"
