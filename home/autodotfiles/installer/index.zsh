@@ -68,10 +68,11 @@ function zercomponent_install_from_list() {
     do
         ADF_INSTALL_STEP=$((ADF_INSTALL_STEP + 1))
 
+        local pretty_component_display="\z[cyan]°$(basename "$component")\z[]° \z[green]°($(dirname "$component"))\z[]°"
+
         echosuccess ""
         echosuccess ">"
-        echosuccess "> Installing component \z[blue]°$ADF_INSTALL_STEP\z[]° /" \
-                "\z[red]°${#ADF_TO_INSTALL[@]}\z[]°: \z[cyan]°$(basename "$component")\z[]° \z[green]°($(dirname "$component"))\z[]°"
+        echosuccess "> Installing component \z[blue]°$ADF_INSTALL_STEP\z[]° / \z[red]°${#ADF_TO_INSTALL}\z[]°: $pretty_component_display"
         echosuccess ">"
         echosuccess ""
 
