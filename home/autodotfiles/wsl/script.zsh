@@ -17,7 +17,7 @@ function wincmd() {
 # Run a Windows command through PowerShell and use its content in WSL
 # This uses "tr" because Window's newline symbols are different than Linux's ones, thus resulting in weird string behaviours
 function win2text() {
-  win "$@" | tr -d "\r"
+  powershell.exe "$@" | tr -d "\r"
 }
 
 # Run a Windows command through CMD.EXE and use its content in WSL
@@ -82,29 +82,13 @@ function mount_wsl_drives() {
     local chrlen=${#letter}
 
     if [[ $chrlen == 1 ]]; then
-      local drive_status="$(wincmd2text "vol ${letter}: >nul 2>nul & if errorlevel 1 (echo|set /p=NOPE) else (echo|set /p=OK)")"
-
-      if [[ $letter == "c" ]]; then
-        found_c=1
-      elif mountpoint -q "/mnt/$letter"; then
-        if [[ $1 == "--debug" ]]; then
-          echoinfo "Already mounted: $letter"
-        fi
-      elif [[ $drive_status == "OK" ]]; then
-        if [[ $1 == "--debug" ]]; then
-          echoinfo "Mounting: $letter"
-        fi
-
+      if [[ $letter != "c" ]] && mountpoint -q "/mnt/$letter"; then
         remount "$letter"
-      elif [[ $drive_status != "NOPE" ]]; then
-        echoerr "Assertion error: drive status command for \z[magenta]°${letter:u}\z[]°: drive returned an invalid content: \z[magenta]°$drive_status\z[]° (${#drive_status} characters)"
-      elif [[ $1 == "--debug" ]]; then
-        echoinfo "Ignoring: $letter"
       fi
     fi
   done
 
-  if [[ $c == 0 ]]; then
+  if [[ ! -d /mnt/c ]]; then
     echoerr "Assertion error: \z[magenta]°C:\z[]° drive was not found while mounting WSL drives!"
   fi
 
