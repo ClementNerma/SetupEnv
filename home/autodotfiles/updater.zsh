@@ -126,13 +126,23 @@ function zerupdate_restoration_script() {
 function zeruninstall() {
 	zerbackup
 	echo "$ADF_LAST_BACKUP_DIR" > "$HOME/.uninstalled-autodotfiles.txt"
+
+	while read item
+	do
+		# Security (should never happen, this check is here just in case)
+		if [[ -z "$item" ]]; then
+			continue
+		fi
+
+		command rm -rf "$HOME/$item"
+	done < "$ADF_FILES_LIST"
+
 	echosuccess "AutoDotFiles was successfully installed!"
 	echosuccess "To restore it, just type '\z[yellow]°zerrestore\z[]°'."
+	echosuccess ""
+	echosuccess "Press any key to continue..."
 
-	command rm -rf "$ADF_DIR"
-	command rm ~/.bashrc
-	command rm ~/.zshrc
-	command rm ~/.p10k.zsh
+	read '?'
 
 	exit
 }
