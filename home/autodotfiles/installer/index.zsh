@@ -149,9 +149,21 @@ function zercomponent_update() {
 
     for component in "$@"
     do
+        local found=""
+
         if [[ ! -f "$ADF_INSTALLER_SCRIPTS_DIR/$component.zsh" ]]; then
-            echoerr "Provided component \z[cyan]°$component\z[]° was not found."
-            return 1
+            if found=$(find "$ADF_INSTALLER_SCRIPTS_DIR" -type f -name "$component.zsh") && [[ ! -z "$found" ]]; then
+                if [[ $(echo $found | wc -l) -gt 1 ]]; then
+                    echoerr "Multiple candidates were found for component: \z[cyan]°$component\z[]°."
+                    return 2
+                fi
+
+                component="$(realpath --relative-to="$ADF_INSTALLER_SCRIPTS_DIR" "$found")"
+                component="${component/\.zsh/}"
+            else
+                echoerr "Provided component \z[cyan]°$component\z[]° was not found."
+                return 1
+            fi
         fi
 
         ADF_TO_INSTALL+=("$component")
