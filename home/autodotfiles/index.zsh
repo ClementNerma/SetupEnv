@@ -7,11 +7,11 @@
 
 # Determine if current environment is WSL
 if grep -q microsoft /proc/version; then
-	command rm -rf "$ADF_SUB_DIR/linux"
+	command rm -rf "$ADF_DIR/linux"
 	export IS_WSL_ENV=1
 	export ENV_NAME_STR="wsl"
 else
-	command rm -rf "$ADF_SUB_DIR/wsl"
+	command rm -rf "$ADF_DIR/wsl"
 	export IS_WSL_ENV=0
 	export ENV_NAME_STR="linux"
 fi
@@ -24,10 +24,10 @@ else
 fi
 
 # Set path to AutoDotFiles files
-export ADF_SUB_DIR=$(dirname "${(%):-%x}")
+export ADF_DIR=$(dirname "${(%):-%x}")
 
 # Set path to local directory
-export ADF_LOCAL_DIR="$ADF_SUB_DIR-local"
+export ADF_LOCAL_DIR="$ADF_DIR-local"
 
 # Set path to data directory
 export ADF_DATA_DIR="$ADF_LOCAL_DIR/data"
@@ -46,19 +46,19 @@ export ADF_FILES_LIST="$HOME/.autodotfiles-files-list.txt"
 mkdir -p "$ADF_DATA_DIR"
 
 # Load the default configuration file
-source "$ADF_SUB_DIR/config.zsh"
+source "$ADF_DIR/config.zsh"
 
 # Load the local configuration file
 source "$ADF_LOCAL_DIR/config.zsh"
 
 # Load display functions
-source "$ADF_SUB_DIR/display.zsh"
+source "$ADF_DIR/display.zsh"
 
 # Load common utilities usable by the installer
-source "$ADF_SUB_DIR/preutils.zsh"
+source "$ADF_DIR/preutils.zsh"
 
 # Load the updater
-source "$ADF_SUB_DIR/updater.zsh"
+source "$ADF_DIR/updater.zsh"
 
 # Ensure the restoration script is in place
 if [[ ! -f "$ADF_CONF_RESTORATION_SCRIPT" || $ADF_JUST_INSTALLED = 1 ]]; then
@@ -66,13 +66,13 @@ if [[ ! -f "$ADF_CONF_RESTORATION_SCRIPT" || $ADF_JUST_INSTALLED = 1 ]]; then
 fi
 
 # Load the backuper
-source "$ADF_SUB_DIR/backuper.zsh"
+source "$ADF_DIR/backuper.zsh"
 
 # Load the obfuscator
-source "$ADF_SUB_DIR/obfuscator.zsh"
+source "$ADF_DIR/obfuscator.zsh"
 
 # Set path to the installer
-export ADF_INSTALLER_DIR="$ADF_SUB_DIR/installer"
+export ADF_INSTALLER_DIR="$ADF_DIR/installer"
 
 # Run the installer
 export ADF_INSTALLER_ABORTED=0
@@ -87,7 +87,7 @@ fi
 export PATH="$ADF_BIN_DIR:$PATH"
 
 # Load platform-specific configuration
-source "$ADF_SUB_DIR/$ENV_NAME_STR/env.zsh"
+source "$ADF_DIR/$ENV_NAME_STR/env.zsh"
 
 # Load the local configuration
 source "$ADF_LOCAL_DIR/env.zsh"
@@ -97,7 +97,7 @@ alias reload="source ${(%):-%x}"
 
 # Load the script for the main computer (if applies)
 if [ $ADF_CONF_MAIN_PERSONAL_COMPUTER = 1 ]; then
-	source "$ADF_SUB_DIR/main-pc.zsh"
+	source "$ADF_DIR/main-pc.zsh"
 fi
 
 # Ensure main directories are defined
@@ -129,10 +129,10 @@ if [[ ! -d $LOCBAKDIR ]]; then mkdir -p "$LOCBAKDIR"; fi
 if ! typeset -f open > /dev/null; then echoinfo "WARNING: 'open' command is not defined. 'open'-related functions won't work correctly."; fi
 
 # Load software configuration and aliases
-source "$ADF_SUB_DIR/config-aliases.zsh"
+source "$ADF_DIR/config-aliases.zsh"
 
 # Set path to the functions directory
-export ADF_FUNCTIONS_DIR="$ADF_SUB_DIR/functions"
+export ADF_FUNCTIONS_DIR="$ADF_DIR/functions"
 
 # Load functions
 source "$ADF_FUNCTIONS_DIR/main.zsh"
@@ -157,7 +157,7 @@ if [[ $ADF_CONF_DISABLE_DIR_HOME_SWITCHING != 1 ]]; then
 fi
 
 # Load platform-specific scripts
-source "$ADF_SUB_DIR/$ENV_NAME_STR/script.zsh"
+source "$ADF_DIR/$ENV_NAME_STR/script.zsh"
 
 # Filter the commands to put in the history
 function zshaddhistory() {

@@ -6,7 +6,7 @@
 function zerbackup() {
 	echoinfo "Backuping environment..."
 
-	local old_env_loc=$(dirname "$ADF_SUB_DIR")
+	local old_env_loc=$(dirname "$ADF_DIR")
 	local old_env_backup_dir="$old_env_loc/_adf-backup/Backup $(date '+%Y.%m.%d - %Hh %Mm %Ss')"
 	mkdir -p "$old_env_backup_dir"
 
@@ -85,7 +85,7 @@ function zerupdate() {
 
 	# Load new environment
 	echosuccess "Loading environment..."
-	source "$ADF_SUB_DIR/index.zsh"
+	source "$ADF_DIR/index.zsh"
 
 	# Done!
 	echosuccess "Environment successfully updated!"
@@ -113,7 +113,7 @@ function zerupdate_online() {
 
 # Update the restoration script
 function zerupdate_restoration_script() {
-	sudo cp "$ADF_SUB_DIR/restore.zsh" "$ADF_CONF_RESTORATION_SCRIPT"
+	sudo cp "$ADF_DIR/restore.zsh" "$ADF_CONF_RESTORATION_SCRIPT"
 	sudo chmod +x "$ADF_CONF_RESTORATION_SCRIPT"
 }
 
@@ -124,7 +124,7 @@ function zeruninstall() {
 	echosuccess "AutoDotFiles was successfully installed!"
 	echosuccess "To restore it, just type '\z[yellow]°zerrestore\z[]°'."
 
-	command rm -rf "$ADF_SUB_DIR"
+	command rm -rf "$ADF_DIR"
 	command rm ~/.bashrc
 	command rm ~/.zshrc
 	command rm ~/.p10k.zsh
