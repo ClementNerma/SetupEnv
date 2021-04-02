@@ -41,6 +41,9 @@ export ADF_THISCOMP_DIR="$ADF_DIR-thiscomp"
 # Set path to binaries directory
 export ADF_BIN_DIR="$ADF_THISCOMP_DIR/binaries"
 
+# Register the local binaries directory in PATH
+export PATH="$ADF_BIN_DIR:$PATH"
+
 # Create base directories
 if [[ ! -d "$ADF_DATA_DIR" ]]; then mkdir "$ADF_DATA_DIR"; fi
 if [[ ! -d "$ADF_THISCOMP_DIR" ]]; then mkdir "$ADF_THISCOMP_DIR"; fi
@@ -86,9 +89,6 @@ source "$ADF_INSTALLER_DIR/index.zsh"
 if [[ $ADF_INSTALLER_ABORTED = 1 ]]; then
 	return
 fi
-
-# Register the local binaries directory in PATH
-export PATH="$ADF_BIN_DIR:$PATH"
 
 # Load platform-specific configuration
 source "$ADF_DIR/$ENV_NAME_STR/env.zsh"
