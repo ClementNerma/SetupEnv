@@ -4,7 +4,7 @@
 
 if [[ -z "$ADF_INSTALLER_DIR" ]]; then
     echoerr "Environment variable \z[yellow]°\$ADF_INSTALLER_DIR\z[]° is not defined."
-    echoerr "       Please make sure the current script is run from Setup Env."
+    echoerr "       Please make sure the current script is run from AutoDotFiles."
     return 1
 fi
 
