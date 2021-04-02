@@ -98,7 +98,7 @@ function zerupdate_testing() {
 
 # Download latest version and update
 function zerupdate_online() {
-	local tmpdir="/tmp/autodtofiles-update-$(date +%s)"
+	local tmpdir="/tmp/autodotfiles-update-$(date +%s)"
 
 	# Download the update from GitHub
 	if ! ghdl "ClementNerma/AutoDotFiles" "$tmpdir"; then
@@ -140,8 +140,8 @@ function zeruninstall() {
 	echosuccess "AutoDotFiles was successfully installed!"
 	echosuccess "To restore it, just type '\z[yellow]°zerrestore\z[]°'."
 	echosuccess ""
-	echosuccess "Press any key to continue..."
-
+	
+	echoinfo "Press any key to continue..."
 	read '?'
 
 	exit

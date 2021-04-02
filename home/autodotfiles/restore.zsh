@@ -8,7 +8,7 @@ last_backup="$1"
 if [[ ! -z "$last_backup" ]]; then
     echo "INFO: Restoring from provided backup path: $last_backup"
 else
-    last_backup_filepath="$HOME/.uninstalled-autodtofiles.txt"
+    last_backup_filepath="$HOME/.uninstalled-autodotfiles.txt"
 
     if [[ ! -f "$last_backup_filepath" ]]; then
         echo "ERROR: backup file path not found at: $last_backup_filepath"
@@ -59,5 +59,7 @@ echo " "
 echo "INFO: Successfully restored AutoDotFiles!"
 echo "INFO: Please log in again."
 echo " "
+echo "Press any key to continue..."
 
+read '?pause'
 exit
