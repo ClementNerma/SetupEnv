@@ -54,10 +54,10 @@ function zerupdate() {
 	fi
 
 	# Backup current environment
-	zerbackup
+	ADF_SILENT=1 zerbackup
 	
 	# Remove old files
-	echosuccess "Removing old environment..."
+	echoinfo "Removing old environment..."
 
 	while read item
 	do
@@ -70,7 +70,7 @@ function zerupdate() {
 	done < "$ADF_FILES_LIST"
 
 	# Copy updated files
-	echosuccess "Updating environment..."
+	echoinfo "Updating environment..."
 	cp -R "$update_path/home/." ~/
 
 	# Save the new files list
@@ -80,11 +80,11 @@ function zerupdate() {
 	cp -R "$ADF_LAST_BACKUP_DIR/autodotfiles-local" ~/
 
 	# Update the restoration script
-	echosuccess "Updating the restoration script..."
+	echoverb "Updating the restoration script..."
 	zerupdate_restoration_script
 
 	# Load new environment
-	echosuccess "Loading environment..."
+	echoinfo "Loading environment..."
 	source "$ADF_DIR/index.zsh"
 
 	# Done!
