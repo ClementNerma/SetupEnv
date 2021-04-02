@@ -54,7 +54,9 @@ function zerupdate() {
 	fi
 
 	# Backup current environment
-	zerbackup
+	if ! (( $ADF_NO_ENV_BACKUP )); then
+		zerbackup
+	fi
 
 	# Remove old files
 	echosuccess "Removing old environment..."
@@ -89,6 +91,11 @@ function zerupdate() {
 
 	# Done!
 	echosuccess "Environment successfully updated!"
+}
+
+# Update to test local changes
+function zerupdate_testing() {
+	ADF_SILENT=1 ADF_NO_ENV_BACKUP=1 zerupdate
 }
 
 # Download latest version and update
