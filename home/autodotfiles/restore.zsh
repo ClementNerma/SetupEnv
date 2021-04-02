@@ -6,7 +6,7 @@
 last_backup="$1"
 
 if [[ ! -z "$last_backup" ]]; then
-    echo "INFO: Restoring from provided backup path: $last_backup"
+    echo "Restoring from provided backup path: $last_backup"
 else
     last_backup_filepath="$HOME/.uninstalled-autodotfiles.txt"
 
@@ -17,7 +17,7 @@ else
 
     last_backup="$(command cat "$last_backup_filepath")"
 
-    echo "INFO: Restoring from memorized backup path: $last_backup"
+    echo "Restoring from memorized backup path: $last_backup"
 fi
 
 if [[ ! -d "$last_backup" ]]; then
@@ -35,16 +35,16 @@ fi
 
 export ADF_RESTORATION_OVERWRITTEN_FILES="$HOME/.autodotfiles-restoring-$(date +%s)"
 
-echo "INFO: Moving all overwritten files to: $ADF_RESTORATION_OVERWRITTEN_FILES"
+echo "Moving all overwritten files to: $ADF_RESTORATION_OVERWRITTEN_FILES"
 mkdir "$ADF_RESTORATION_OVERWRITTEN_FILES"
 
 for item in "$last_backup/"*; do
-    echo "INFO: > Restoring: $(basename "$item")"
+    echo "> Restoring: $(basename "$item")"
 
     orig_item="$HOME/$(basename "$item")"
 
     if [[ -f "$orig_item" || -d "$orig_item" ]]; then
-        echo "INFO: >> Backing up: $orig_item"
+        echo ">> Backing up: $orig_item"
         command mv "$orig_item" "$ADF_RESTORATION_OVERWRITTEN_FILES/"
     fi
 
@@ -56,10 +56,10 @@ if [[ $glob_dots_was_enabled = 0 ]]; then
 fi
 
 echo " "
-echo "INFO: Successfully restored AutoDotFiles!"
-echo "INFO: Please log in again."
+echo "Successfully restored AutoDotFiles!"
+echo "Please log in again."
 echo " "
 echo "Press any key to continue..."
 
-read '?pause'
+read '?'
 exit
