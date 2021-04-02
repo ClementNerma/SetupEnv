@@ -166,6 +166,11 @@ function cksumdir() {
 	echo "$checksums" | cksum | cut -d ' ' -f 1
 }
 
+# Check if a command exists
+function commandexists() {
+	command -v "$1" > /dev/null 2>&1
+}
+
 # Inversed 'mv' (can be useful in situations where the source's name is automatically added to the command)
 export invmv="/usr/local/bin/invmv"
 

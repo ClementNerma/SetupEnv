@@ -3,27 +3,37 @@
 # Its role is to setup aliases and make the environment ready to go
 #
 
+# Determine path to PowerShell
+export WIN_POWERSHELL_PATH=${$(command -v "powershell.exe"):-"/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe"}
+
+# Determine path to CMD
+export WIN_CMD_PATH=${$(command -v "cmd.exe"):-"/mnt/c/Windows/system32/cmd.exe"}
+
+# Ensure these two exists
+if [[ ! -f "$WIN_POWERSHELL_PATH" ]]; then echoerr "PowerShell executable was not found at path \z[yellow]°$WIN_POWERSHELL_PATH\z[]°!"; fi
+if [[ ! -f "$WIN_CMD_PATH" ]]; then echoerr "CMD executable was not found at path \z[yellow]°$WIN_CMD_PATH\z[]°!"; fi
+
 # Run a Windows command through PowerShell
 # e.g. "win echo Hello!" will display "Hello!" by running PowerShell transparently
 function win() {
-  powershell.exe -command "$@"
+  "$WIN_POWERSHELL_PATH" -command "$@"
 }
 
 # Run a Windows command through CMD.EXE
 function wincmd() {
-  cmd.exe /C "$@"
+  "$WIN_CMD_PATH" /C "$@"
 }
 
 # Run a Windows command through PowerShell and use its content in WSL
 # This uses "tr" because Window's newline symbols are different than Linux's ones, thus resulting in weird string behaviours
 function win2text() {
-  powershell.exe "$@" | tr -d "\r"
+  "$WIN_POWERSHELL_PATH" "$@" | tr -d "\r"
 }
 
 # Run a Windows command through CMD.EXE and use its content in WSL
 # This uses "tr" because Window's newline symbols are different than Linux's ones, thus resulting in weird string behaviours
 function wincmd2text() {
-  cmd.exe /C "$@" | tr -d "\r"
+  "$WIN_CMD_PATH" /C "$@" | tr -d "\r"
 }
 
 # Make an alias to a Windows command
