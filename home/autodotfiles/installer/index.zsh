@@ -8,7 +8,7 @@ if [[ -z "$ADF_INSTALLER_DIR" ]]; then
     return 1
 fi
 
-export ADF_INSTALLED_DIR=$(realpath "$ADF_DATA_DIR/.installer.auto")
+export ADF_INSTALLED_DIR=$(realpath "$ADF_THISCOMP_DIR/.installer.auto")
 mkdir -p "$ADF_INSTALLED_DIR"
 
 function zercomponent_install_from_list() {

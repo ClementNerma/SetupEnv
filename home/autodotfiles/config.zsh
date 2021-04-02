@@ -18,7 +18,7 @@ export ADF_CONF_DISABLE_DIR_HOME_SWITCHING=0
 export ADF_CONF_PROJECT_DIRS_IN_WSL_FS=0
 
 # Youtube-DL commands history with temporary directory
-export ADF_CONF_YTDL_HISTORY_FILE="$ADF_DATA_DIR/youtube-dl.history"
+export ADF_CONF_YTDL_HISTORY_FILE="$ADF_THISCOMP_DIR/youtube-dl.history"
 
 # Minimum parallel downloads that have to occur in parallel to enable the temporary path feature
 export ADF_CONF_YTDL_TEMP_DL_DIR_THRESOLD=0

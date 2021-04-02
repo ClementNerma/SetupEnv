@@ -32,21 +32,22 @@ export ADF_DIR=$(dirname "$ADF_ENTRYPOINT")
 # Set path to local directory
 export ADF_LOCAL_DIR="$ADF_DIR-local"
 
-# Set path to data directory
+# Set path to cache directory
 export ADF_DATA_DIR="$ADF_LOCAL_DIR/data"
 
+# Set path to data directory
+export ADF_THISCOMP_DIR="$ADF_DIR-thiscomp"
+
 # Set path to binaries directory
-export ADF_BIN_DIR="$ADF_DATA_DIR/binaries"
+export ADF_BIN_DIR="$ADF_THISCOMP_DIR/binaries"
 
 # Create base directories
 if [[ ! -d "$ADF_DATA_DIR" ]]; then mkdir "$ADF_DATA_DIR"; fi
+if [[ ! -d "$ADF_THISCOMP_DIR" ]]; then mkdir "$ADF_THISCOMP_DIR"; fi
 if [[ ! -d "$ADF_BIN_DIR" ]]; then mkdir "$ADF_BIN_DIR"; fi
 
 # Set path to the files list
 export ADF_FILES_LIST="$HOME/.autodotfiles-files-list.txt"
-
-# Ensure this directory exists
-mkdir -p "$ADF_DATA_DIR"
 
 # Load the default configuration file
 source "$ADF_DIR/config.zsh"
