@@ -1,7 +1,7 @@
 if [[ $(dpkg --print-architecture) = "arm64" ]]; then
 	ghdl "ClementNerma/Trasher" "$INSTALLER_TMPDIR/trasher"
 	cargo build --release --manifest-path="$INSTALLER_TMPDIR/trasher/Cargo.toml"
-	sudo mv "$INSTALLER_TMPDIR/trasher/target/release/trasher" /usr/local/bin/trasher
+	mv "$INSTALLER_TMPDIR/trasher/target/release/trasher" "$ADF_BIN_DIR/trasher"
 	command rm -rf "$INSTALLER_TMPDIR/trasher"
 	return
 fi

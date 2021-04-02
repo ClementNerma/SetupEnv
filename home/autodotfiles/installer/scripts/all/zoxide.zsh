@@ -4,8 +4,6 @@ else
 	_ZOXIDE_GREPPER="zoxide-x86_64-unknown-linux-gnu"
 fi
 
-dlghrelease "ajeetdsouza/zoxide" "$_ZOXIDE_GREPPER" "$INSTALLER_TMPDIR/zoxide"
+dlghrelease "ajeetdsouza/zoxide" "$_ZOXIDE_GREPPER" "$ADF_BIN_DIR/zoxide"
 
-sudo mv "$INSTALLER_TMPDIR/zoxide" /usr/local/bin/zoxide
-
-sudo chmod +x /usr/local/bin/zoxide
+chmod +x "$ADF_BIN_DIR/zoxide"

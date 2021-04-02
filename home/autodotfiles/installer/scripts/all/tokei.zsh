@@ -5,8 +5,6 @@ else
 fi
 
 dlghrelease "XAMPPRocky/tokei" "$_TOKEI_GREPPER" "$INSTALLER_TMPDIR/tokei.tar.gz"
-tar zxf "$INSTALLER_TMPDIR/tokei.tar.gz"
-
-sudo mv tokei /usr/local/bin
+tar zxf "$INSTALLER_TMPDIR/tokei.tar.gz" -C "$ADF_BIN_DIR"
 
 unset _TOKEI_GREPPER
