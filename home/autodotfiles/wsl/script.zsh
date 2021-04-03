@@ -146,12 +146,11 @@ function process_windows() {
     return 1
   fi
 
-  win '(Get-Process '\
+  win 'Get-Process'\
        '| Where-Object {$_.MainWindowTitle -ne "" -and $_.ProcessName -eq "'$1'"}'\
        '| Select-Object MainWindowTitle'\
-       '| Format-Table -HideTableHeaders'\
-       '| Out-String'\
-       ').Trim()'
+       '| Format-Table -AutoSize -Wrap -HideTableHeaders'\
+       '| Out-String -Stream -Width 1000000000'
 }
 
 # Run Git commands from Windows if the project directories are not stored inside WSL's own filesystem
