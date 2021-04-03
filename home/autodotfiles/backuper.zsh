@@ -43,7 +43,7 @@ function adf_local_backup() {
     if ! _adf_add_dir_to_list "$listfile" $ADF_ALWAYS_BACKUP; then return 3; fi
 
     if (( $ADF_ADD_ADF_FILES_TO_BACKUP )); then
-        ADF_SILENT=1 zerupdate
+        ADF_SILENT=1 zerbackup
         _adf_add_dir_to_list "$listfile" "$ADF_LAST_BACKUP_DIR"
     fi
 
