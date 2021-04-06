@@ -73,7 +73,7 @@ function ghdl() {
 		return 1
 	fi
 
-	local filename="$reponame-$(date +%s).zip"
+	local filename="$reponame-$(date +%s%N).zip"
 	echoinfo "> Fetching archive for branch \z[yellow]°$branch\z[]° to \z[magenta]°$filename\z[]°..."
 	
 	local zipurl="https://codeload.github.com/$repoauthor/$reponame/zip/$branch"

@@ -36,7 +36,7 @@ function adf_local_backup() {
 
     echoinfo "(1/3) Building the files list..."
 
-    local listfile="/tmp/rebackup-list-$(date +%s).txt"
+    local listfile="/tmp/rebackup-list-$(date +%s%N).txt"
     touch "$listfile"
 
     if ! _adf_add_dir_to_list "$listfile" "$@"; then return 3; fi

@@ -179,7 +179,7 @@ function debi() {
 
 # Install a Debian package from the web
 function debir() {
-	local debpath="/tmp/$(date +%s).deb"
+	local debpath="/tmp/$(date +%s%N).deb"
 	dl "$1" "$debpath"
 	debi "$debpath"
 	command rm "$debpath"

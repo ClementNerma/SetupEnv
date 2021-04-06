@@ -33,7 +33,7 @@ else
     setopt GLOB_DOTS
 fi
 
-export ADF_RESTORATION_OVERWRITTEN_FILES="$HOME/.autodotfiles-restoring-$(date +%s)"
+export ADF_RESTORATION_OVERWRITTEN_FILES="$HOME/.autodotfiles-restoring-$(date +%s%N)"
 
 echo "Moving all overwritten files to: $ADF_RESTORATION_OVERWRITTEN_FILES"
 mkdir "$ADF_RESTORATION_OVERWRITTEN_FILES"
