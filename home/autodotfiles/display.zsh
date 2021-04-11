@@ -116,6 +116,11 @@ function echoerr() {
     ADF_DISPLAY_TO_STDERR=1 echoc "\z[red]°ERROR: $1\z[]°" "${@:2}"
 }
 
+# Equivalent to 'echoerr', but without prefix ('np' = no prefix)
+function echoerrnp() {
+    ADF_DISPLAY_TO_STDERR=1 echoc "\z[red]°$1\z[]°" "${@:2}"
+}
+
 function echowarn() {
 	ADF_DISPLAY_TO_STDERR=1 echoc "\z[yellow]°$1\z[]°" "${@:2}"
 }
