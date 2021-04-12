@@ -62,7 +62,10 @@ function zercomponent_install_from_list() {
     echosuccess ">"
     echosuccess ""
 
-    sudo apt update
+    if ! sudo apt update; then
+        echoerr "Failed to update environment!"
+        return 2
+    fi
 
     for component in $ADF_TO_INSTALL
     do
