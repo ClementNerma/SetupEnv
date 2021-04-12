@@ -54,18 +54,20 @@ function zercomponent_install_from_list() {
         return 1
     fi
 
-    ADF_INSTALL_STEP=0
+    if [[ -z $ADF_SKIP_APT_UPDATE ]]; then
+        echosuccess ""
+        echosuccess ">"
+        echosuccess "> Preparing the environment for update..."
+        echosuccess ">"
+        echosuccess ""
 
-    echosuccess ""
-    echosuccess ">"
-    echosuccess "> Preparing the environment for update..."
-    echosuccess ">"
-    echosuccess ""
-
-    if ! sudo apt update; then
-        echoerr "Failed to update environment!"
-        return 2
+        if ! sudo apt update; then
+            echoerr "Failed to update environment!"
+            return 2
+        fi
     fi
+
+    ADF_INSTALL_STEP=0
 
     for component in $ADF_TO_INSTALL
     do
