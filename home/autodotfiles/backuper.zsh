@@ -34,7 +34,24 @@ function adf_local_backup() {
         return 1
     fi
 
-    echoinfo "(1/3) Building the files list..."
+    if [[ ! -z $ADF_BACKUP_PREPARATION_SCRIPT ]]; then
+        echoinfo " "
+        echoinfo "(1/5) Running the preparation script..."
+        echoinfo " "
+
+        if ! $ADF_BACKUP_PREPARATION_SCRIPT; then
+            echoerr "Local backup preparation script exited with a non-zero code."
+            return 99
+        fi
+    else
+        echowarn " "
+        echowarn "(1/5) No preparation script to run, skipping this step."
+        echowarn " "
+    fi
+
+    echoinfo " "
+    echoinfo "(2/5) Building the files list..."
+    echoinfo " "
 
     local listfile="/tmp/rebackup-list-$(date +%s%N).txt"
     touch "$listfile"
@@ -54,7 +71,7 @@ function adf_local_backup() {
     fi
 
     echoinfo ""
-    echoinfo "(2/3) Compressing \z[yellow]°$(wc -l < "$listfile")\z[]° elements..."
+    echoinfo "(3/5) Compressing \z[yellow]°$(wc -l < "$listfile")\z[]° elements..."
     echoinfo ""
 
     local tmpfile="$TEMPDIR/adf-backup-$(humandate).tmp.7z"
@@ -70,7 +87,7 @@ function adf_local_backup() {
     local outfile="$LOCBAKDIR/adf-$(humandate).7z"
 
     echoinfo " "
-    echoinfo "(3/3) Moving the final archive..."
+    echoinfo "(4/5) Moving the final archive..."
     echoinfo " "
 
     if ! mv "$tmpfile" "$outfile"; then
@@ -80,13 +97,17 @@ function adf_local_backup() {
 
     if [[ ! -z $ADF_MIRROR_BACKUP ]]; then
         echoinfo " "
-        echoinfo "(---) Mirroring the backup..."
+        echoinfo "(5/5) Mirroring the backup..."
         echoinfo " "
 
         if ! cp "$outfile" "$ADF_MIRROR_BACKUP/$(basename "$outfile")"; then
             echoerr "Command \z[yellow]°cp\z[]° failed."
             return 6
         fi
+    else
+        echowarn " "
+        echowarn "(5/5) WARNING: No mirroring to perform, skipping this type."
+        echowarn " "
     fi
 
     echoverb "Synchronizing storage..."
