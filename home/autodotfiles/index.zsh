@@ -52,6 +52,9 @@ if [[ ! -d "$ADF_DATA_DIR" ]]; then mkdir "$ADF_DATA_DIR"; fi
 if [[ ! -d "$ADF_THISCOMP_DIR" ]]; then mkdir "$ADF_THISCOMP_DIR"; fi
 if [[ ! -d "$ADF_BIN_DIR" ]]; then mkdir "$ADF_BIN_DIR"; fi
 
+# Set path to the external scripts directory
+export ADF_EXTERNAL_DIR="$ADF_DIR/external"
+
 # Set path to the files list
 export ADF_FILES_LIST="$HOME/.autodotfiles-files-list.txt"
 
@@ -142,7 +145,9 @@ source "$ADF_DIR/config-aliases.zsh"
 export ADF_FUNCTIONS_DIR="$ADF_DIR/functions"
 
 # Load functions
-source "$ADF_FUNCTIONS_DIR/main.zsh"
+for function_file in "$ADF_FUNCTIONS_DIR/"*; do
+	source "$function_file"
+done
 
 # Dir hashes
 hash -d Home=$HOMEDIR

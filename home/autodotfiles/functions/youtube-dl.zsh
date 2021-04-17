@@ -216,4 +216,4 @@ function ytdlsubs() {
 }
 
 # Load the cookies function
-source "$ADF_FUNCTIONS_DIR/youtube-dl.cookies.zsh"
+source "$ADF_FUNCTIONS_DIR/youtube-dl-cookies.zsh"

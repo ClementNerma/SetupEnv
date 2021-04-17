@@ -211,7 +211,7 @@ function ytdlalbum() {
     YTDL_AUDIO_ONLY=1 YTDL_OUTPUT_DIR="$YTDL_ALBUM_OUTPUT_DIR" YTDL_ITEM_CMD=("$thumbnail_cmd" "${YTDL_ALBUM_ITEM_CMD[@]}") \
     ytdlcookies use "$YTDL_ALBUM_PRESET" "$@" \
         -o "$dir_format/%(playlist_index)s.%(release_year)s.%(id)s. %(track)s.%(ext)s" \
-        --exec "zsh $ADF_FUNCTIONS_DIR/youtube-dl.tag.zsh$thumbnail_args"
+        --exec "zsh $ADF_EXTERNAL_DIR/ytdl-ytmusic-tagger.zsh$thumbnail_args"
 }
 
 # Download a playlist from Youtube Music
