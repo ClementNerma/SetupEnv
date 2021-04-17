@@ -25,10 +25,10 @@ export ADF_CONF_YTDL_TEMP_DL_DIR_THRESOLD=0
 
 # Temporary path (must be on a VERY FAST storage) where Youtube-DL downloaded files are put
 # They are moved after the download has been finished, to avoid problems with parallel downloads
-export ADF_YTDL_TEMP_DL_DIR_PATH="/tmp/ytdl-videos"
+export ADF_CONF_YTDL_TEMP_DL_DIR_PATH="/tmp/ytdl-videos"
 
 # Backup path for sessions (WSL-only)
-export ADF_WSL_BACKUP_SESSION_DIR="/mnt/c/Temp/SessionBackup"
+export ADF_CONF_WSL_BACKUP_SESSION_DIR="/mnt/c/Temp/SessionBackup"
 
 # Backup path for sessions' compilation (WSL-only) - must end with `.7z` extension
-export ADF_WSL_BACKUP_SESSION_COMPILATION="$ADF_WSL_BACKUP_SESSION_DIR/session-backups.7z"
+export ADF_CONF_WSL_BACKUP_SESSION_COMPILATION="$ADF_CONF_WSL_BACKUP_SESSION_DIR/session-backups.7z"

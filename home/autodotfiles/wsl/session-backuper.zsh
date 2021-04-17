@@ -2,7 +2,7 @@
 # Backup the session
 # Works by enumerating the windows of the said softwares' processes, and filtering them through PowerShell and ZSH
 function adf_backup_session() {
-    local outdir="$ADF_WSL_BACKUP_SESSION_DIR/$(humandate)"
+    local outdir="$ADF_CONF_WSL_BACKUP_SESSION_DIR/$(humandate)"
     mkdir -p "$outdir"
 
     # Iterate over all software profiles
@@ -63,14 +63,14 @@ function adf_backup_software_session() {
 # Compile the backup data in a compressed archive to take less space
 # This is the only file that will be taken during backups
 function adf_backup_session_compile() {
-    if [[ -f "$ADF_WSL_BACKUP_SESSION_COMPILATION" ]]; then
+    if [[ -f "$ADF_CONF_WSL_BACKUP_SESSION_COMPILATION" ]]; then
         echowarn "Removing previous compilation archive..."
-        rm "$ADF_WSL_BACKUP_SESSION_COMPILATION"
+        rm "$ADF_CONF_WSL_BACKUP_SESSION_COMPILATION"
     fi
 
     echoinfo "Compiling session backups..."
 
-    if ! 7z a -t7z -m0=lzma2 -mx=5 -mfb=64 -md=32m -ms=on -mhc=on -mhe=on -spf2 -bso0 "$ADF_WSL_BACKUP_SESSION_COMPILATION" "$ADF_WSL_BACKUP_SESSION_DIR" "-x!$(basename "$file")"; then
+    if ! 7z a -t7z -m0=lzma2 -mx=5 -mfb=64 -md=32m -ms=on -mhc=on -mhe=on -spf2 -bso0 "$ADF_CONF_WSL_BACKUP_SESSION_COMPILATION" "$ADF_CONF_WSL_BACKUP_SESSION_DIR" "-x!$(basename "$file")"; then
         echoerr "7-Zip failed (see error above)"
         return 1
     fi
@@ -91,7 +91,7 @@ function adf_restore_session() {
     # Get the last backup's directory name, taking into account the provided filter (if any)
     local last_backup=$(
         # List all items in the session backup directory
-        command ls -1A "$ADF_WSL_BACKUP_SESSION_DIR" |
+        command ls -1A "$ADF_CONF_WSL_BACKUP_SESSION_DIR" |
 
         # Apply the provided filter (will have no effect if the filter is empty)
         grep "$filter" |
@@ -114,7 +114,7 @@ function adf_restore_session() {
     local failed=0
 
     # Iterate over the list of software to restore
-    for list_file in "$ADF_WSL_BACKUP_SESSION_DIR/$last_backup/"*; do
+    for list_file in "$ADF_CONF_WSL_BACKUP_SESSION_DIR/$last_backup/"*; do
         # Only restore the provided software, if any
 		if [[ ! -z "$1" && "$(basename "$list_file")" != "$1.txt" ]]; then
 		    echowarn "> Skipping software file \z[magenta]°$(basename "$list_file")\z[]° as asked."
