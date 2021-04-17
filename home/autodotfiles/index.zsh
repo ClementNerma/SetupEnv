@@ -96,8 +96,11 @@ if [[ $ADF_INSTALLER_ABORTED = 1 ]]; then
 	return
 fi
 
+# Set path to platform-specific scripts
+export ADF_ENV_DIR="$ADF_DIR/$ENV_NAME_STR"
+
 # Load platform-specific configuration
-source "$ADF_DIR/$ENV_NAME_STR/env.zsh"
+source "$ADF_ENV_DIR/env.zsh"
 
 # Load the local configuration
 source "$ADF_LOCAL_DIR/env.zsh"
@@ -169,7 +172,7 @@ if [[ $ADF_CONF_DISABLE_DIR_HOME_SWITCHING != 1 ]]; then
 fi
 
 # Load platform-specific scripts
-source "$ADF_DIR/$ENV_NAME_STR/script.zsh"
+source "$ADF_ENV_DIR/script.zsh"
 
 # Filter the commands to put in the history
 function zshaddhistory() {
