@@ -153,6 +153,11 @@ function process_windows() {
        '| Out-String -Stream -Width 1000000000'
 }
 
+# Load the session backup on main PC
+if (( $ADF_CONF_MAIN_PERSONAL_COMPUTER )); then
+  source "$ADF_ENV_DIR/session-backuper.zsh"
+fi
+
 # Run Git commands from Windows if the project directories are not stored inside WSL's own filesystem
 if [[ $ADF_CONF_PROJECT_DIRS_IN_WSL_FS = 0 ]]; then
   alias git="git.exe" 
