@@ -173,7 +173,7 @@ function ytdl() {
 				item="$item/"
 			fi
 
-			if ! mv "$item" "$download_to"
+			if ! sudo mv "$item" "$download_to"
 			then
 				echoerr "Failed to move Youtube-DL videos! Temporary download path is:"
 				echodata "$tempdir"
