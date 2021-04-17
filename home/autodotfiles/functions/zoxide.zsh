@@ -58,3 +58,22 @@ function opene() { open "$@" && exit }
 function openze() { openz "$@" && exit }
 function openfde() { openfd "$@" && exit }
 function openfze() { openfz "$@" && exit }
+
+# Add a list of directories to Zoxide's index
+# All directories one level under the provided list will be indexed as well
+function zoxide_populate_with() {
+    for dir in "$@"; do
+    	echoverb "> Populating Zoxide index with: \z[yellow]°$dir\z[]°"
+
+        if [[ ! -d $dir ]]; then
+            echoerr "Directory not found: \z[yellow]°$dir\z[]°"
+            continue
+        fi
+
+        zoxide add "$dir"
+
+        for item in "$dir"; do
+            [[ -d $item ]] && zoxide add "$item"
+        done
+    done
+}
