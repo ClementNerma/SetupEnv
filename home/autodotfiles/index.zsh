@@ -160,19 +160,11 @@ hash -d Downloads=$DLDIR
 hash -d Temp=$TEMPDIR
 hash -d Software=$SOFTWAREDIR
 
-# Go to the a specific folder on startup, except if the shell has been started in a custom directory
-if [[ $ADF_CONF_DISABLE_DIR_HOME_SWITCHING != 1 ]]; then
-	if [[ "$(pwd)" = "$HOME" || "$(pwd)" = "$HOMEDIR" ]]; then
-		if [ $ADF_CONF_MAIN_PERSONAL_COMPUTER = 1 ]; then
-			goproj
-		else
-			godl
-		fi
-	fi
-fi
-
 # Load platform-specific scripts
 source "$ADF_ENV_DIR/script.zsh"
+
+# Load the local script
+source "$ADF_LOCAL_DIR/script.zsh"
 
 # Filter the commands to put in the history
 function zshaddhistory() {
@@ -185,5 +177,13 @@ function zshaddhistory() {
   fi
 }
 
-# Load the local script
-source "$ADF_LOCAL_DIR/script.zsh"
+# Go to the a specific folder on startup, except if the shell has been started in a custom directory
+if [[ $ADF_CONF_DISABLE_DIR_HOME_SWITCHING != 1 ]]; then
+	if [[ "$(pwd)" = "$HOME" || "$(pwd)" = "$HOMEDIR" ]]; then
+		if [ $ADF_CONF_MAIN_PERSONAL_COMPUTER = 1 ]; then
+			goproj
+		else
+			godl
+		fi
+	fi
+fi
