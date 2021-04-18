@@ -32,3 +32,6 @@ export ADF_CONF_WSL_BACKUP_SESSION_DIR="/mnt/c/Temp/SessionBackup"
 
 # Backup path for sessions' compilation (WSL-only) - must end with `.7z` extension
 export ADF_CONF_WSL_BACKUP_SESSION_COMPILATION="$ADF_CONF_WSL_BACKUP_SESSION_DIR/session-backups.7z"
+
+# CRON tasks' logs directory
+export ADF_CONF_CRON_LOGS_DIR="$ADF_THISCOMP_DIR/cron-logs"
