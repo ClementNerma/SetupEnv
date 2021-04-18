@@ -52,7 +52,7 @@ function adf_backup_software_session() {
         # Ensure the window's format match the provided one
         # Note that accents may cause regex even like (.*) to fail
         if [[ ! $window =~ $4 ]]; then
-            echowarn "WARNING: Invalid window format: \z[yellow]°$window\z[]°"
+            echowarn "WARNING: Invalid window format for software \z[cyan]°$3\z[]°: \z[magenta]°$window\z[]°"
             echo "##INVALID##:$window" >> "$1/$2.txt"
         else
 	        echo "${match[1]}" >> "$1/$2.txt"
