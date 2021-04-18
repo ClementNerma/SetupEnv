@@ -187,3 +187,12 @@ if [[ $ADF_CONF_DISABLE_DIR_HOME_SWITCHING != 1 ]]; then
 		fi
 	fi
 fi
+
+# Run a command and exit if required
+if [[ $1 == "--just-run" && ! -z $2 ]]; then
+	${@:2}
+	ADF_JUST_RUN_RET=$? 
+	if (( $ADF_JUST_RUN_RET )); then
+		return $ADF_JUST_RUN_RET
+	fi
+fi
