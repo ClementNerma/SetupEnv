@@ -78,6 +78,11 @@ if [[ $ADF_CONF_PROJECT_DIRS_IN_WSL_FS = 0 ]]; then
   }
 fi
 
+# Synchronize WSL's time with Windows' one
+function wslclocksync() {
+  sudo ntpdate time.windows.com
+}
+
 # Mount drives in WSL, including removable ones
 function mount_wsl_drives() {
   local found_c=0
