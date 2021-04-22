@@ -119,8 +119,15 @@ function zerupdate_online() {
 	echosuccess "Done!"	
 }
 
+# Path to the uninstalled file
+export UNINSTALLED_FILE="$HOME/.uninstalled-autodotfiles.txt"
+
 # Update the restoration script
 function zerupdate_restoration_script() {
+	if [[ -f $UNINSTALLED_FILE ]]; then
+		command rm "$UNINSTALLED_FILE"
+	fi
+
 	sudo cp "$ADF_DIR/restore.zsh" "$ADF_CONF_RESTORATION_SCRIPT"
 	sudo chmod +x "$ADF_CONF_RESTORATION_SCRIPT"
 }
@@ -128,7 +135,7 @@ function zerupdate_restoration_script() {
 # Uninstall AutoDotFiles
 function zeruninstall() {
 	zerbackup
-	echo "$ADF_LAST_BACKUP_DIR" > "$HOME/.uninstalled-autodotfiles.txt"
+	echo "$ADF_LAST_BACKUP_DIR" > "$UNINSTALLED_FILE"
 
 	while read item
 	do
