@@ -210,6 +210,10 @@ function ytdlhistory() {
 	command cat "$ADF_CONF_YTDL_HISTORY_FILE"
 }
 
+function ytdlaria() {
+	ytdl --external-downloader aria2c --external-downloader-args "-c -x 10 --summary-interval=0" "$@"
+}
+
 # Download a YouTube video with separate french and english subtitle files (if available)
 function ytdlsubs() {
 	ytdl "$@" --write-sub --sub-lang "fr,en"
