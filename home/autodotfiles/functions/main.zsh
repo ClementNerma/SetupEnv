@@ -97,6 +97,40 @@ function rmprogress() {
 	rm -rv "$1" | pv -l -s $( du -a "$1" | wc -l ) > /dev/null
 }
 
+# Move a folder's content with progress
+function mvprogress() {
+	if [[ ! -d $1 ]]; then
+		echoerr "Please provide a source directory."
+		return 1
+	fi
+	
+	if [[ ! -d $2 ]]; then
+		echoerr "Please provide a target directory."
+		return 2
+	fi
+
+	local files_count="$(command ls "$1" -1A | wc -l)"
+	local counter=0
+
+	for item in "$1"/*(N)
+	do
+		counter=$((counter+1))
+		echoinfo "> Moving item $counter / $files_count: \z[magenta]°$(basename "${item%/}")\z[]°..."
+
+		local tomove="${item%/}"
+
+		if [[ -d "$item" ]]; then
+			item="$item/"
+		fi
+
+		if ! sudo mv "$item" "$2"
+		then
+			echoerr "Failed to move a file!"
+			return 1
+		fi
+	done
+}
+
 # Archive a directory into a .tar file
 function tarprogress() {
 	tar cf - "$1" -P | pv -s $(du -sb "$1" | awk '{print $1}') > "$1.tar"
