@@ -147,10 +147,14 @@ function zercomponent_mark_custom() {
     fi
 }
 
-function zercomponent_mark_installed() { zercomponent_mark_custom "$@" "1" }
-function zercomponent_mark_not_installed() { zercomponent_mark_custom "$@" "0" }
+# Z Component Mark Installed
+function zcmi() { zercomponent_mark_custom "$@" "1" }
 
-function zercomponent_update() {
+# Z Component Mark Not Installed
+function zcmni() { zercomponent_mark_custom "$@" "0" }
+
+# Z Component Update
+function zcu() {
     ADF_TO_INSTALL=()
 
     for component in "$@"
