@@ -91,7 +91,7 @@ function zercomponent_install_from_list() {
         export ZER_UPDATING=$5
 
         if source "$script_path"; then
-            zercomponent_mark_installed "$component"
+            zcmi "$component"
         fi
     done
 
