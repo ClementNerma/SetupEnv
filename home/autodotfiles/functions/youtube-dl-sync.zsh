@@ -11,6 +11,7 @@ function ytsync() {
         local url=$(command cat "$ADF_YS_URL")
     else
         local url="$1"
+        shift
         
         echowarn "Writing provided URL to local directory file."
         if [[ -f $ADF_YS_URL ]]; then rm "$ADF_YS_URL"; fi
@@ -110,8 +111,8 @@ function ytsync() {
 
     for i in {1..${#download_list}}; do
         echoinfo "| Downloading video \z[yellow]°${i} / ${#download_list}\z[]°..."
-
-        if ! ytdl ${download_list[$i]}; then
+    
+        if ! ytdl "${download_list[$i]}" "$YS_ARGS"; then
             errors=$((errors+1))
         fi
     done
