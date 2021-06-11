@@ -15,7 +15,7 @@ function ytdlsync() {
 
     echoinfo "Downloading videos list from playlist URL \z[magenta]°$url\z[]°..."
 
-    if (( $YTDL_SYNC_CACHE )) && [[ -f $YTDL_SYNC_CACHE_FILENAME ]]; then
+    if [[ -f $YTDL_SYNC_CACHE_FILENAME ]]; then
         echoinfo "Retrieving videos list from cache file."
         local json=$(command cat "$YTDL_SYNC_CACHE_FILENAME")
     else
@@ -26,10 +26,8 @@ function ytdlsync() {
 
     local count=$(echo -E "$json" | jq '.entries | length')
 
-    if (( $YTDL_SYNC_CACHE )); then
-        echo -E "$json" > $YTDL_SYNC_CACHE_FILENAME
-        echoinfo "Written JSON output to the cache file."
-    fi
+    echo -E "$json" > $YTDL_SYNC_CACHE_FILENAME
+    echoinfo "Written JSON output to the cache file."
 
     echoinfo "${count} videos were found.\n"
 
@@ -52,6 +50,11 @@ function ytdlsync() {
     done
 
     echoinfo "\nGoing to download \z[yellow]°${#download_list}\z[]° videos."
+
+    if [[ -f $YTDL_SYNC_CACHE_FILENAME ]]; then
+        echowarn "Video list was retrieved from a cache file."
+    fi
+
     echoinfo "Do you want to continue (Y/n)?"
 
     read 'answer?'
@@ -72,10 +75,7 @@ function ytdlsync() {
 
     if [[ $errors -eq 0 ]]; then
         echosuccess "Done!"
-        
-        if [[ -f $YTDL_SYNC_CACHE_FILENAME ]]; then
-            command rm "$YTDL_SYNC_CACHE_FILENAME"
-        fi
+        command rm "$YTDL_SYNC_CACHE_FILENAME"
     else
         echoerr "Failed to download \z[yellow]°$errors\z[]° video(s)."
         return 5
