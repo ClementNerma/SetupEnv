@@ -13,6 +13,7 @@ function ytsync() {
         local url="$1"
         
         echowarn "Writing provided URL to local directory file."
+        if [[ -f $ADF_YS_URL ]]; then rm "$ADF_YS_URL"; fi
         echo "$url" > "$ADF_YS_URL"
     fi
 
@@ -87,7 +88,7 @@ function ytsync() {
 
     if [[ $errors -eq 0 ]]; then
         echosuccess "Done!"
-        command rm "$ADF_YS_CACHE"
+        rm "$ADF_YS_CACHE"
     else
         echoerr "Failed to download \z[yellow]°$errors\z[]° video(s)."
         return 5
