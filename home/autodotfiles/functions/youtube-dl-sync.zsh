@@ -55,6 +55,11 @@ function ytdlsync() {
         echowarn "Video list was retrieved from a cache file."
     fi
 
+    if ! (( ${#download_list} )); then
+        echosuccess "No video to download!"
+        return
+    fi
+
     echoinfo "Do you want to continue (Y/n)?"
 
     read 'answer?'
