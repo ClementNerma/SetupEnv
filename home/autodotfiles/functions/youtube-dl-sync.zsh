@@ -11,6 +11,9 @@ function ytsync() {
         local url=$(command cat "$ADF_YS_URL")
     else
         local url="$1"
+        
+        echowarn "Writing provided URL to local directory file."
+        echo "$url" > "$ADF_YS_URL"
     fi
 
     echoinfo "Downloading videos list from playlist URL \z[magenta]°$url\z[]°..."
