@@ -16,10 +16,14 @@ function ytdlsync() {
     echoinfo "Downloading videos list from playlist URL \z[magenta]°$url\z[]°..."
 
     if [[ -f $YTDL_SYNC_CACHE_FILENAME ]]; then
+        local read_from_cache=1
         echoinfo "Retrieving videos list from cache file."
         local json=$(command cat "$YTDL_SYNC_CACHE_FILENAME")
     else
+        local read_from_cache=0
+        local started=$(timer_start)
         local json=$(youtube-dl -J -i "$url" "${@:2}" 2>/dev/null)
+        echoinfo "Videos list was retrieved in \z[yellow]°$(timer_end $started)\z[]°."
     fi
 
     echoinfo "Checking JSON output..."
@@ -51,7 +55,7 @@ function ytdlsync() {
 
     echoinfo "\nGoing to download \z[yellow]°${#download_list}\z[]° videos."
 
-    if [[ -f $YTDL_SYNC_CACHE_FILENAME ]]; then
+    if (( $read_from_cache )); then
         echowarn "Video list was retrieved from a cache file."
     fi
 
