@@ -17,33 +17,40 @@ function ytsync() {
         echo "$url" > "$ADF_YS_URL"
     fi
 
-    echoinfo "Counting videos from playlist URL \z[magenta]°$url\z[]°..."
-
-    local count=$(
-        youtube-dl "$url" --flat-playlist |
-        grep "Downloading video" |
-        tail -n1 |
-        sed -E "s/\[download\] Downloading video ([0-9]+) of ([0-9]+)/\2/"
-    )
-
-    echoinfo "Total count of videos is estimated at \z[yellow]°$count\z[]°."
-
-    echoinfo "Downloading videos list from playlist URL \z[magenta]°$url\z[]°..."
-
     if [[ -f $ADF_YS_CACHE ]]; then
         local read_from_cache=1
         echoinfo "Retrieving videos list from cache file."
         local json=$(command cat "$ADF_YS_CACHE")
     else
         local read_from_cache=0
+        
+        echoinfo "Counting videos from playlist URL \z[magenta]°$url\z[]°..."
+
+        local count=$(
+            youtube-dl "$url" --flat-playlist |
+            grep "Downloading video" |
+            tail -n1 |
+            sed -E "s/\[download\] Downloading video ([0-9]+) of ([0-9]+)/\2/"
+        )
+
+        echoinfo "Total count of videos is estimated at \z[yellow]°$count\z[]°."
+        echoinfo "Downloading videos list from playlist URL \z[magenta]°$url\z[]°..."
+
         local started=$(timer_start)
         local json=$(youtube-dl -J --get-filename -i "$url" "${@:2}" 2>/dev/null | pv -l -W -s "$((count+1))" | tail -n1)
+        
         echoinfo "Videos list was retrieved in \z[yellow]°$(timer_end $started)\z[]°."
+
+        echoinfo "Checking and mapping JSON..."
+
+        local json=$(echo -E "$json" | jq -c '[.entries[] | {id, title, upload_date, webpage_url}]')
+
+        echoinfo "JSON is ready."
     fi
 
-    echoinfo "Checking JSON output..."
+    echoinfo "Checking JSON data..."
 
-    local count=$(echo -E "$json" | jq '.entries | length')
+    local count=$(echo -E "$json" | jq 'length')
 
     echo -E "$json" > $ADF_YS_CACHE
     echoinfo "Written JSON output to the cache file."
@@ -54,17 +61,17 @@ function ytsync() {
 
     for i in {1..$count}; do
         local index=$((i-1))
-        local videoid=$(echo -E "$json" | jq ".entries[$index].id" -r)
+        local videoid=$(echo -E "$json" | jq ".[$index].id" -r)
 
         if [[ $videoid = "null" ]]; then
             continue
         fi
 
         if [[ -z $(find . -name "*-$videoid.*") ]]; then
-            local title=$(echo -E "$json" | jq ".entries[$index].title" -r)
-            local uploaded=$(echo -E "$json" | jq ".entries[$index].upload_date" -r | sed -E "s/([0-9][0-9][0-9][0-9])([0-9][0-9])([0-9][0-9])/\3\/\2\/\1/")
+            local title=$(echo -E "$json" | jq ".[$index].title" -r)
+            local uploaded=$(echo -E "$json" | jq ".[$index].upload_date" -r | sed -E "s/([0-9][0-9][0-9][0-9])([0-9][0-9])([0-9][0-9])/\3\/\2\/\1/")
             echoinfo "\z[magenta]°[$videoid]\z[]° \z[cyan]°$uploaded\z[]° \z[yellow]°${title}\z[]°"
-            download_list+=($(echo -E "$json" | jq ".entries[$index].webpage_url" -r))
+            download_list+=($(echo -E "$json" | jq ".[$index].webpage_url" -r))
         fi
     done
 
