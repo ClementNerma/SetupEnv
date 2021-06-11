@@ -98,7 +98,7 @@ function ytdl() {
 
 	# Perform the download
 	if [[ "$YTDL_DRY_RUN" != 1 ]] && [[ -z "$YTDL_JUST_ITEM_CMD" ]]; then
-		if ! youtube-dl $bestquality_params $metadata_params $thumbnail_params "$@" $YTDL_APPEND
+		if ! youtube-dl $bestquality_params $metadata_params $thumbnail_params --abort-on-unavailable-fragment "$@" $YTDL_APPEND
 		then
 			if ! (( $YTDL_IGNORE_ERR )); then
 				if [[ $decrease_counter = 1 ]]; then
