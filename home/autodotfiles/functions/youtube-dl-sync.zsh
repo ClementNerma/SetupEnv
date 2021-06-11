@@ -1,7 +1,7 @@
 export ADF_YS_URL=".ytdlsync-url"
 export ADF_YS_CACHE=".ytdlsync-cache"
 
-function ytdlsync() {
+function ytsync() {
     if [[ -z $1 ]]; then
         if [[ ! -f $ADF_YS_URL ]]; then
             echoerr "Missing URL container file \z[yellow]°$ADF_YS_URL\z[]°"
