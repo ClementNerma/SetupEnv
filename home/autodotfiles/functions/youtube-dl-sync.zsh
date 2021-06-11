@@ -58,6 +58,8 @@ function ytsync() {
     echoinfo "${count} videos were found.\n"
 
     local download_list=()
+    
+    local max_spaces=$(echo -n "$count" | wc -c)
 
     for i in {1..$count}; do
         local index=$((i-1))
@@ -67,10 +69,12 @@ function ytsync() {
             continue
         fi
 
+        local current=$(printf "%${max_spaces}s" $i)
+
         if [[ -z $(find . -name "*-$videoid.*") ]]; then
             local title=$(echo -E "$json" | jq ".[$index].title" -r)
             local uploaded=$(echo -E "$json" | jq ".[$index].upload_date" -r | sed -E "s/([0-9][0-9][0-9][0-9])([0-9][0-9])([0-9][0-9])/\3\/\2\/\1/")
-            echoinfo "\z[magenta]°[$videoid]\z[]° \z[cyan]°$uploaded\z[]° \z[yellow]°${title}\z[]°"
+            echoinfo "\z[gray]°$current / $count\z[]° \z[magenta]°[$videoid]\z[]° \z[cyan]°$uploaded\z[]° \z[yellow]°${title}\z[]°"
             download_list+=($(echo -E "$json" | jq ".[$index].webpage_url" -r))
         fi
     done
