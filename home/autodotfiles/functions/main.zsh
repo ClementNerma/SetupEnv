@@ -218,3 +218,50 @@ function debir() {
 	debi "$debpath"
 	command rm "$debpath"
 }
+
+# Start a timer
+typeset -A ADF_TIMERS
+
+function timer_start() {
+	if [[ -z "$1" ]]; then
+		echoerr "Please provide a timer name."
+		return 1
+	fi
+
+	if [[ ! -z "${ADF_TIMERS[$1]}" ]]; then
+		echoerr "Timer \z[yellow]°$1\z[]° is already in use."
+		return 2
+	fi
+
+	ADF_TIMERS[$1]=$(($(date +%s%N)))
+}
+
+function timer_end() {
+	if [[ -z "$1" ]]; then
+		echoerr "Please provide a timer name."
+		return 1
+	fi
+
+	if [[ -z "${ADF_TIMERS[$1]}" ]]; then
+		echoerr "Timer \z[yellow]°$1\z[]° does not exist."
+		return 2
+	fi
+
+	local started=${ADF_TIMERS[$1]}
+	local finished=$(($(date +%s%N)))
+	local elapsed=$(((finished - started) / 1000000))
+
+	local elapsed_s=$((elapsed / 1000))
+	local D=$((elapsed_s/60/60/24))
+	local H=$((elapsed_s/60/60%24))
+	local M=$((elapsed_s/60%60))
+	local S=$((elapsed_s%60))
+	if [ $D != 0 ]; then printf "${D}d "; fi
+	if [ $H != 0 ]; then printf "${H}h "; fi
+	if [ $M != 0 ]; then printf "${M}m "; fi
+	
+	local elapsed_ms=$((elapsed % 1000))
+	printf "${S}.%03ds" $elapsed_ms
+
+	unset "ADF_TIMERS[$1]"
+}
