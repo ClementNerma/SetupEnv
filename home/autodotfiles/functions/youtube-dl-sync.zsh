@@ -112,7 +112,7 @@ function ytsync() {
     for i in {1..${#download_list}}; do
         echoinfo "| Downloading video \z[yellow]°${i} / ${#download_list}\z[]°..."
     
-        if ! ytdl "${download_list[$i]}" "$YS_ARGS"; then
+        if ! YTDL_ALWAYS_THUMB=1 ytdl "${download_list[$i]}"; then
             errors=$((errors+1))
             echowarn "Waiting 5 seconds before next video..."
             sleep 5

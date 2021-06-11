@@ -16,6 +16,7 @@ export YTDL_PARALLEL_DOWNLOADS=0
 # * YTDL_JUST_ITEM_CMD=1  => just run the provided commands on each item (don't run 'youtube-dl')
 # * YTDL_ITEM_CMD=...     => run a command for each root item when download is finished
 # * YTDL_IGNORE_ERR=1     => consider download a success even if a non-zero exit code was returned
+# * YTDL_ALWAYS_THUMB=1   => if thumbnail cannot be embedded, write it alongside the output file
 function ytdl() {
 	export YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS+1))
 	local decrease_counter=1
@@ -64,7 +65,11 @@ function ytdl() {
 	local thumbnail_params="--embed-thumbnail"
 
 	if [[ $1 == "https://www.youtube.com/"* || $1 == "https://music.youtube.com/"* ]]; then
-		thumbnail_params=""
+		if (( $YTDL_ALWAYS_THUMB )); then
+			thumbnail_params="--write-thumbnail"
+		else
+			thumbnail_params=""
+		fi
 	fi
 
 	if (( $YTDL_CUSTOM_QUALITY )) || (( $YTDL_BARE )); then
