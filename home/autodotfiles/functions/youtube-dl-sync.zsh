@@ -110,7 +110,7 @@ function ytsync() {
     local errors=0
 
     for i in {1..${#download_list}}; do
-        echoinfo "| Downloading video \z[yellow]°${i} / ${#download_list}\z[]°..."
+        echoinfo "| Downloading video \z[yellow]°${i} / ${#download_list}\z[]°: \z[magenta]°${download_list[$i]}\z[]°..."
     
         if ! YTDL_ALWAYS_THUMB=1 ytdl "${download_list[$i]}"; then
             errors=$((errors+1))
