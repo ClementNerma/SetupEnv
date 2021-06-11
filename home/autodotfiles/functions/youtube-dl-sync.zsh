@@ -17,6 +17,17 @@ function ytsync() {
         echo "$url" > "$ADF_YS_URL"
     fi
 
+    echoinfo "Counting videos from playlist URL \z[magenta]°$url\z[]°..."
+
+    local count=$(
+        youtube-dl "$url" --flat-playlist |
+        grep "Downloading video" |
+        tail -n1 |
+        sed -E "s/\[download\] Downloading video ([0-9]+) of ([0-9]+)/\2/"
+    )
+
+    echoinfo "Total count of videos is estimated at \z[yellow]°$count\z[]°."
+
     echoinfo "Downloading videos list from playlist URL \z[magenta]°$url\z[]°..."
 
     if [[ -f $ADF_YS_CACHE ]]; then
@@ -26,7 +37,7 @@ function ytsync() {
     else
         local read_from_cache=0
         local started=$(timer_start)
-        local json=$(youtube-dl -J -i "$url" "${@:2}" 2>/dev/null)
+        local json=$(youtube-dl -J --get-filename -i "$url" "${@:2}" 2>/dev/null | pv -l -W -s "$((count+1))" | tail -n1)
         echoinfo "Videos list was retrieved in \z[yellow]°$(timer_end $started)\z[]°."
     fi
 
