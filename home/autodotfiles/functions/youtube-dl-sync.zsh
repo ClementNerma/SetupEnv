@@ -114,6 +114,8 @@ function ytsync() {
     
         if ! ytdl "${download_list[$i]}" "$YS_ARGS"; then
             errors=$((errors+1))
+            echowarn "Waiting 5 seconds before next video..."
+            sleep 5
         fi
     done
 
