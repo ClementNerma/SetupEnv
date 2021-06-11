@@ -1,24 +1,24 @@
-export YTDL_SYNC_URL_CONTAINER_FILENAME=".ytdlsync-url"
-export YTDL_SYNC_CACHE_FILENAME=".ytdlsync-cache"
+export ADF_YS_URL=".ytdlsync-url"
+export ADF_YS_CACHE=".ytdlsync-cache"
 
 function ytdlsync() {
     if [[ -z $1 ]]; then
-        if [[ ! -f $YTDL_SYNC_URL_CONTAINER_FILENAME ]]; then
-            echoerr "Missing URL container file \z[yellow]°$YTDL_SYNC_URL_CONTAINER_FILENAME\z[]°"
+        if [[ ! -f $ADF_YS_URL ]]; then
+            echoerr "Missing URL container file \z[yellow]°$ADF_YS_URL\z[]°"
             return 1
         fi
 
-        local url=$(command cat "$YTDL_SYNC_URL_CONTAINER_FILENAME")
+        local url=$(command cat "$ADF_YS_URL")
     else
         local url="$1"
     fi
 
     echoinfo "Downloading videos list from playlist URL \z[magenta]°$url\z[]°..."
 
-    if [[ -f $YTDL_SYNC_CACHE_FILENAME ]]; then
+    if [[ -f $ADF_YS_CACHE ]]; then
         local read_from_cache=1
         echoinfo "Retrieving videos list from cache file."
-        local json=$(command cat "$YTDL_SYNC_CACHE_FILENAME")
+        local json=$(command cat "$ADF_YS_CACHE")
     else
         local read_from_cache=0
         local started=$(timer_start)
@@ -30,7 +30,7 @@ function ytdlsync() {
 
     local count=$(echo -E "$json" | jq '.entries | length')
 
-    echo -E "$json" > $YTDL_SYNC_CACHE_FILENAME
+    echo -E "$json" > $ADF_YS_CACHE
     echoinfo "Written JSON output to the cache file."
 
     echoinfo "${count} videos were found.\n"
@@ -84,7 +84,7 @@ function ytdlsync() {
 
     if [[ $errors -eq 0 ]]; then
         echosuccess "Done!"
-        command rm "$YTDL_SYNC_CACHE_FILENAME"
+        command rm "$ADF_YS_CACHE"
     else
         echoerr "Failed to download \z[yellow]°$errors\z[]° video(s)."
         return 5
