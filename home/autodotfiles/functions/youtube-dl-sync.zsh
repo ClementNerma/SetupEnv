@@ -1,4 +1,5 @@
 export YTDL_SYNC_URL_CONTAINER_FILENAME=".ytdlsync-url"
+export YTDL_SYNC_CACHE_FILENAME=".ytdlsync-cache"
 
 function ytdlsync() {
     if [[ -z $1 ]]; then
@@ -14,12 +15,21 @@ function ytdlsync() {
 
     echoinfo "Downloading videos list from playlist URL \z[magenta]°$url\z[]°..."
 
-    local json=$(youtube-dl -J -i "$url" "${@:2}" 2>/dev/null)
+    if (( $YTDL_SYNC_CACHE )) && [[ -f $YTDL_SYNC_CACHE_FILENAME ]]; then
+        echoinfo "Retrieving videos list from cache file."
+        local json=$(command cat "$YTDL_SYNC_CACHE_FILENAME")
+    else
+        local json=$(youtube-dl -J -i "$url" "${@:2}" 2>/dev/null)
+    fi
 
-    echo -E "$json" | clip.exe
     echoinfo "Checking JSON output..."
 
     local count=$(echo -E "$json" | jq '.entries | length')
+
+    if (( $YTDL_SYNC_CACHE )); then
+        echo -E "$json" > $YTDL_SYNC_CACHE_FILENAME
+        echoinfo "Written JSON output to the cache file."
+    fi
 
     echoinfo "${count} videos were found.\n"
 
@@ -62,6 +72,10 @@ function ytdlsync() {
 
     if [[ $errors -eq 0 ]]; then
         echosuccess "Done!"
+        
+        if [[ -f $YTDL_SYNC_CACHE_FILENAME ]]; then
+            command rm "$YTDL_SYNC_CACHE_FILENAME"
+        fi
     else
         echoerr "Failed to download \z[yellow]°$errors\z[]° video(s)."
         return 5
