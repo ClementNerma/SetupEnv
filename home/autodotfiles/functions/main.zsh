@@ -220,34 +220,17 @@ function debir() {
 }
 
 # Start a timer
-typeset -A ADF_TIMERS
-
 function timer_start() {
-	if [[ -z "$1" ]]; then
-		echoerr "Please provide a timer name."
-		return 1
-	fi
-
-	if [[ ! -z "${ADF_TIMERS[$1]}" ]]; then
-		echoerr "Timer \z[yellow]°$1\z[]° is already in use."
-		return 2
-	fi
-
-	ADF_TIMERS[$1]=$(($(date +%s%N)))
+	date +%s%N
 }
 
 function timer_end() {
 	if [[ -z "$1" ]]; then
-		echoerr "Please provide a timer name."
+		echoerr "Please provide a timer value."
 		return 1
 	fi
 
-	if [[ -z "${ADF_TIMERS[$1]}" ]]; then
-		echoerr "Timer \z[yellow]°$1\z[]° does not exist."
-		return 2
-	fi
-
-	local started=${ADF_TIMERS[$1]}
+	local started=$(($1))
 	local finished=$(($(date +%s%N)))
 	local elapsed=$(((finished - started) / 1000000))
 
