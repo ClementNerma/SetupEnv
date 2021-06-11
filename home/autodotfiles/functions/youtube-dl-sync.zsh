@@ -57,13 +57,21 @@ function ytsync() {
 
     echoinfo "${count} videos were found.\n"
 
+    local empty_dir=0
+
+    if [[ -z $(find . -not -name '.*') ]]; then
+        empty_dir=1
+    fi
+
     local download_list=()
     
     local max_spaces=$(echo -n "$count" | wc -c)
 
     for i in {1..$count}; do
         local index=$((i-1))
-        local videoid=$(echo -E "$json" | jq ".[$index].id" -r)
+        local videojson=$(echo -E "$json" | jq ".[$index]")
+
+        local videoid=$(echo -E "$videojson" | jq ".id" -r)
 
         if [[ $videoid = "null" ]]; then
             continue
@@ -71,11 +79,11 @@ function ytsync() {
 
         local current=$(printf "%${max_spaces}s" $i)
 
-        if [[ -z $(find . -name "*-$videoid.*") ]]; then
-            local title=$(echo -E "$json" | jq ".[$index].title" -r)
-            local uploaded=$(echo -E "$json" | jq ".[$index].upload_date" -r | sed -E "s/([0-9][0-9][0-9][0-9])([0-9][0-9])([0-9][0-9])/\3\/\2\/\1/")
+        if (( $empty_dir )) || [[ -z $(find . -name "*-$videoid.*") ]]; then
+            local title=$(echo -E "$videojson" | jq ".title" -r)
+            local uploaded=$(echo -E "$videojson" | jq ".upload_date" -r | sed -E "s/([0-9][0-9][0-9][0-9])([0-9][0-9])([0-9][0-9])/\3\/\2\/\1/")
             echoinfo "\z[gray]°$current / $count\z[]° \z[magenta]°[$videoid]\z[]° \z[cyan]°$uploaded\z[]° \z[yellow]°${title}\z[]°"
-            download_list+=($(echo -E "$json" | jq ".[$index].webpage_url" -r))
+            download_list+=($(echo -E "$videojson" | jq ".webpage_url" -r))
         fi
     done
 
