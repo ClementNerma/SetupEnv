@@ -96,6 +96,7 @@ function ytsync() {
 
     if ! (( ${#download_list} )); then
         echosuccess "No video to download!"
+        rm "$ADF_YS_CACHE"
         return
     fi
 
