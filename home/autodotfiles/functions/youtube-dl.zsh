@@ -60,9 +60,9 @@ function ytdl() {
 	fi
 
 	# Store the command in an history
-	local bestquality_params="-f bestvideo+bestaudio/best"
 	local metadata_params="--add-metadata"
 	local thumbnail_params="--embed-thumbnail"
+	local quality_format="bestvideo[height>2160]+bestaudio/best[height>2160]/bestvideo[height=2160]+bestaudio/best[height=2160]/bestvideo[height>1440]+bestaudio/best[height>1440]/bestvideo[height=1440]+bestaudio/best[height=1440]/bestvideo[height>1080]+bestaudio/best[height>1080]/bestvideo[height=1080]+bestaudio/best[height=1080]/bestvideo[height>720]+bestaudio/best[height>720]/bestvideo[height=720]+bestaudio/best[height=720]/bestvideo[height>480]+bestaudio/best[height>480]/bestvideo[height=480]+bestaudio/best[height=480]/bestvideo[height>320]+bestaudio/best[height>320]/bestvideo[height=320]+bestaudio/best[height=320]/bestvideo[height>240]+bestaudio/best[height>240]/bestvideo[height=240]+bestaudio/best[height=240]/bestvideo[height>144]+bestaudio/best[height>144]/bestvideo[height=144]+bestaudio/best[height=144]/bestvideo+bestaudio/best"
 
 	if [[ $1 == "https://www.youtube.com/"* || $1 == "https://music.youtube.com/"* ]]; then
 		if (( $YTDL_ALWAYS_THUMB )); then
@@ -72,12 +72,8 @@ function ytdl() {
 		fi
 	fi
 
-	if (( $YTDL_CUSTOM_QUALITY )) || (( $YTDL_BARE )); then
-		bestquality_params=""
-	fi
-
 	if (( $YTDL_AUDIO_ONLY )); then
-		bestquality_params="-f bestaudio"
+		quality_format="bestaudio"
 	fi
 
 	if (( $YTDL_NO_METADATA )) || (( $YTDL_BARE )); then
@@ -98,7 +94,7 @@ function ytdl() {
 
 	# Perform the download
 	if [[ "$YTDL_DRY_RUN" != 1 ]] && [[ -z "$YTDL_JUST_ITEM_CMD" ]]; then
-		if ! youtube-dl $bestquality_params $metadata_params $thumbnail_params --abort-on-unavailable-fragment "$@" $YTDL_APPEND
+		if ! youtube-dl -f "$quality_format" "$metadata_params" "$thumbnail_params" --abort-on-unavailable-fragment "$@" $YTDL_APPEND
 		then
 			if ! (( $YTDL_IGNORE_ERR )); then
 				if [[ $decrease_counter = 1 ]]; then
