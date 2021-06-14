@@ -103,7 +103,7 @@ function ytdl() {
 
 				echoerr "Failed to download videos with Youtube-DL!"
 				echoerr "You can resume the download with:"
-				echoinfo "ytdlresume '$tempdir' $*"
+				echoinfo "ytdlresume '$tempdir' '$1' ${@:2}"
 				cd "$prev_cwd"
 				return 1
 			fi
@@ -146,7 +146,7 @@ function ytdl() {
 					if ! "$cmd" "$item"; then
 						echoerr "Custom command failed"
 						echoerr "You can resume the download with:"
-						echoinfo "ytdlresume '$tempdir' $*"
+						echoinfo "ytdlresume '$tempdir' '$1' ${*:2}"
 						cd "$prev_cwd"
 						return 1
 					fi
@@ -171,7 +171,7 @@ function ytdl() {
 			local tomove="${item%/}"
 
 			if [[ -d "$item" ]]; then
-				item="$item/"
+				local item="$item/"
 			fi
 
 			if ! sudo mv "$item" "$download_to"

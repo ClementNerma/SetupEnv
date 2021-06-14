@@ -248,3 +248,12 @@ function timer_end() {
 
 	unset "ADF_TIMERS[$1]"
 }
+
+function filesize() {
+	if [[ ! -f "$1" ]]; then
+		echoerr "Path \z[magenta]°$1\z[]° is not a file!"
+		return 1
+	fi
+
+	numfmt --to=iec-i --suffix=B --format="%.3f" $(stat -c %s "$1")
+}
