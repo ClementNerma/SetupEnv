@@ -17,6 +17,7 @@ export YTDL_PARALLEL_DOWNLOADS=0
 # * YTDL_ITEM_CMD=...     => run a command for each root item when download is finished
 # * YTDL_IGNORE_ERR=1     => consider download a success even if a non-zero exit code was returned
 # * YTDL_ALWAYS_THUMB=1   => if thumbnail cannot be embedded, write it alongside the output file
+# * YTDL_LIMIT_BANDWIDTH  => limit download bandwidth
 function ytdl() {
 	export YTDL_PARALLEL_DOWNLOADS=$((YTDL_PARALLEL_DOWNLOADS+1))
 	local decrease_counter=1
@@ -27,6 +28,11 @@ function ytdl() {
 	local is_tempdir_cwd=0
 	
 	local download_to=$(pwd)
+
+	if [[ ! -z "$YTDL_LIMIT_BANDWIDTH" && ! $YTDL_LIMIT_BANDWIDTH = *"K" && ! $YTDL_LIMIT_BANDWIDTH = *"M" ]]; then
+		echoerr "Invalid bandwidth limit provided."
+		return 1
+	fi
 
 	if [[ ! -z "$YTDL_OUTPUT_DIR" ]]; then
 		download_to="${YTDL_OUTPUT_DIR%/}"
@@ -62,6 +68,7 @@ function ytdl() {
 	# Store the command in an history
 	local metadata_params="--add-metadata"
 	local thumbnail_params="--embed-thumbnail"
+	local bandwidth_limit="1G"
 	local quality_format="bestvideo[height>2160]+bestaudio/best[height>2160]/bestvideo[height=2160]+bestaudio/best[height=2160]/bestvideo[height>1440]+bestaudio/best[height>1440]/bestvideo[height=1440]+bestaudio/best[height=1440]/bestvideo[height>1080]+bestaudio/best[height>1080]/bestvideo[height=1080]+bestaudio/best[height=1080]/bestvideo[height>720]+bestaudio/best[height>720]/bestvideo[height=720]+bestaudio/best[height=720]/bestvideo[height>480]+bestaudio/best[height>480]/bestvideo[height=480]+bestaudio/best[height=480]/bestvideo[height>320]+bestaudio/best[height>320]/bestvideo[height=320]+bestaudio/best[height=320]/bestvideo[height>240]+bestaudio/best[height>240]/bestvideo[height=240]+bestaudio/best[height=240]/bestvideo[height>144]+bestaudio/best[height>144]/bestvideo[height=144]+bestaudio/best[height=144]/bestvideo+bestaudio/best"
 
 	if [[ $1 == "https://www.youtube.com/"* || $1 == "https://music.youtube.com/"* ]]; then
@@ -76,6 +83,14 @@ function ytdl() {
 		quality_format="bestaudio"
 	fi
 
+	if [[ ! -z $YTDL_LIMIT_BANDWIDTH ]]; then
+		bandwidth_limit="$YTDL_LIMIT_BANDWIDTH"
+	fi
+
+	if [[ ! -z $YTDL_CUSTOM_QUALITY ]]; then
+		quality_format="$YTDL_CUSTOM_QUALITY"
+	fi
+
 	if (( $YTDL_NO_METADATA )) || (( $YTDL_BARE )); then
 		metadata_params=""
 	fi
@@ -84,17 +99,15 @@ function ytdl() {
 		thumbnail_params=""
 	fi
 
-	local ytdl_debug_cmd="$bestquality_params $metadata_params $thumbnail_params "$@" $YTDL_APPEND"
+	local ytdl_debug_cmd="$bestquality_params $metadata_params $thumbnail_params -r $bandwidth_limit "$@" $YTDL_APPEND"
 
 	if (( $YTDL_PRINT_CMD )) || (( $YTDL_DRY_RUN )); then
 		echoinfo "Command >> youtube-dl $ytdl_debug_cmd"
 	fi
 
-	echo "YTDL_TEMP_DIR='$tempdir' ytdl $ytdl_debug_cmd" >> "$ADF_CONF_YTDL_HISTORY_FILE"
-
 	# Perform the download
 	if [[ "$YTDL_DRY_RUN" != 1 ]] && [[ -z "$YTDL_JUST_ITEM_CMD" ]]; then
-		if ! youtube-dl -f "$quality_format" "$metadata_params" "$thumbnail_params" --abort-on-unavailable-fragment "$@" $YTDL_APPEND
+		if ! youtube-dl -f "$quality_format" $metadata_params $thumbnail_params -r $bandwidth_limit --abort-on-unavailable-fragment "$@" $YTDL_APPEND
 		then
 			if ! (( $YTDL_IGNORE_ERR )); then
 				if [[ $decrease_counter = 1 ]]; then

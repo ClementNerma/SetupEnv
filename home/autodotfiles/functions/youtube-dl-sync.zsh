@@ -159,7 +159,7 @@ function ytrepairres() {
     cd "$loc"
     
     for entry in *; do
-        echoverb "Analyzing: \z[magenta]°$entry\z[]°..."
+        echoverb "Analyzing: $entry..."
 
         if [[ -d "$entry" ]]; then
             YTDL_REPAIR_SUBROUTINE=1 ytrepairres "$1" "$entry"
@@ -168,13 +168,19 @@ function ytrepairres() {
 
         total=$((total+1))
 
-        local width=$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=s=x:p=0 "$entry")
+        local width=""
+        
+        if ! width=$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=s=x:p=0 "$entry"); then
+            echoerr "Failed to get resolution for invalid video file \z[magenta]°$(basename "$entry")\z[]°."
+            errors=$((errors+1))
+            continue
+        fi
 
         if (( $width < 1920 )); then
             if [[ $entry =~ ^[^\/]+\-([a-zA-Z0-9_\-]+)\.([^\.]+)$ ]]; then
                 local url="$1${match[1]}"
 
-                echoverb "Checking formats for \z[magenta]°$url\z[]°..."
+                echoverb "Checking formats for $url..."
 
                 if ! (youtube-dl -F "$url" | grep "1920x1080" > /dev/null); then
                     continue
