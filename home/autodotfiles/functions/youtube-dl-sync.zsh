@@ -113,7 +113,7 @@ function ytsync() {
     for i in {1..${#download_list}}; do
         echoinfo "| Downloading video \z[yellow]°${i}\z[]° / \z[yellow]°${#download_list}\z[]°: \z[magenta]°${download_list[$i]}\z[]°..."
     
-        if ! YTDL_ALWAYS_THUMB=1 ytdl "${download_list[$i]}"; then
+        if ! YTDL_ALWAYS_THUMB=1 YTDL_LIMIT_BANDWIDTH="$ADF_YTDL_SYNC_LIMIT_BANDWIDTH" ytdl "${download_list[$i]}"; then
             errors=$((errors+1))
             echowarn "Waiting 5 seconds before next video..."
             sleep 5
@@ -189,7 +189,7 @@ function ytrepairres() {
                 echoinfo "Previous file size: \z[yellow]°$(filesize "$entry")\z[]° for \z[magenta]°$(basename "$entry")\z[]°."
                 echoinfo "URL: \z[gray]°$url\z[]°"
 
-                if ! (( $YTDL_REPAIR_SIMULATE )) && ! ytdl "$url"; then
+                if ! (( $YTDL_REPAIR_SIMULATE )) && ! YTDL_LIMIT_BANDWIDTH="$ADF_YTDL_SYNC_LIMIT_BANDWIDTH" ytdl "$url"; then
                     errors=$((errors+1))
                     echoerr "Failed to download video. Waiting 3 seconds now."
                     sleep 3

@@ -35,3 +35,7 @@ export ADF_CONF_WSL_BACKUP_SESSION_COMPILATION="$ADF_CONF_WSL_BACKUP_SESSION_DIR
 
 # CRON tasks' logs directory
 export ADF_CONF_CRON_LOGS_DIR="$ADF_THISCOMP_DIR/cron-logs"
+
+# Bandwidth limit to use when synchronizing a Youtube-DL playlist with the "ytsync" or "ytrepairres" commands
+# This is required in order to avoid temporary IP bans on most websites
+export ADF_YTDL_SYNC_LIMIT_BANDWIDTH="6M"
