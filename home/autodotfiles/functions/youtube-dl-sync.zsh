@@ -9,6 +9,9 @@ function ytsync() {
         fi
 
         local url=$(command cat "$ADF_YS_URL")
+    elif [[ -f $ADF_YS_URL ]]; then
+        echoerr "An URL was provided but an URL file already exists."
+        return 1
     else
         local url="$1"
         shift
