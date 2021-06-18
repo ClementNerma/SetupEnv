@@ -119,7 +119,7 @@ function ytsync() {
     local errors=0
     local bandwidth_limit="$ADF_YTDL_SYNC_LIMIT_BANDWIDTH"
 
-    if (( $SLOWSYNC )); then
+    if [[ ! -z $SLOWSYNC ]]; then
         if [[ $SLOWSYNC = "1" ]]; then
             bandwidth_limit="2M"
         else
@@ -130,7 +130,7 @@ function ytsync() {
     for i in {1..${#download_list}}; do
         echoinfo "| Downloading video \z[yellow]°${i}\z[]° / \z[yellow]°${#download_list}\z[]°: \z[magenta]°${download_list[$i]}\z[]°..."
     
-        if ! YTDL_ALWAYS_THUMB=1 YTDL_LIMIT_BANDWIDTH="$ADF_YTDL_SYNC_LIMIT_BANDWIDTH" ytdl "${download_list[$i]}"; then
+        if ! YTDL_ALWAYS_THUMB=1 YTDL_LIMIT_BANDWIDTH="$bandwidth_limit" ytdl "${download_list[$i]}"; then
             errors=$((errors+1))
             echowarn "Waiting 5 seconds before next video..."
             sleep 5
