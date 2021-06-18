@@ -120,7 +120,11 @@ function ytsync() {
     local bandwidth_limit="$ADF_YTDL_SYNC_LIMIT_BANDWIDTH"
 
     if (( $SLOWSYNC )); then
-        bandwidth_limit="2M"
+        if [[ $SLOWSYNC = "1" ]]; then
+            bandwidth_limit="2M"
+        else
+            bandwidth_limit="$SLOWSYNC"
+        fi
     fi
 
     for i in {1..${#download_list}}; do
