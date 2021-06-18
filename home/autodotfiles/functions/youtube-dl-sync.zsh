@@ -117,6 +117,11 @@ function ytsync() {
     fi
 
     local errors=0
+    local bandwidth_limit="$ADF_YTDL_SYNC_LIMIT_BANDWIDTH"
+
+    if (( $SLOWSYNC )); then
+        bandwidth_limit="2M"
+    fi
 
     for i in {1..${#download_list}}; do
         echoinfo "| Downloading video \z[yellow]°${i}\z[]° / \z[yellow]°${#download_list}\z[]°: \z[magenta]°${download_list[$i]}\z[]°..."
