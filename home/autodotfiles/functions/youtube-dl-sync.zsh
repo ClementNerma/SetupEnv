@@ -37,6 +37,11 @@ function ytsync() {
             sed -E "s/\[download\] Downloading video ([0-9]+) of ([0-9]+)/\2/"
         )
 
+        if [[ -z "$count" ]]; then
+            echoerr "Got empty count (did the retrieval failed?)"
+            return 2
+        fi
+
         echoinfo "Total count of videos is estimated at \z[yellow]°$count\z[]°."
         echoinfo "Downloading videos list from playlist URL \z[magenta]°$url\z[]°..."
 
