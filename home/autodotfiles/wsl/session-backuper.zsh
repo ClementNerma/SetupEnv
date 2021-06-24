@@ -70,7 +70,14 @@ function adf_backup_session_compile() {
 
     echoinfo "Compiling session backups..."
 
-    if ! 7z a -t7z -m0=lzma2 -mx=5 -mfb=64 -md=32m -ms=on -mhc=on -mhe=on -spf2 -bso0 "$ADF_CONF_WSL_BACKUP_SESSION_COMPILATION" "$ADF_CONF_WSL_BACKUP_SESSION_DIR" "-x!$(basename "$file")"; then
+    if (( $ADF_BACKUP_NO_COMPRESS )); then
+        echowarn "Creating a NON-COMPRESSED archive."
+        7z a -t7z -m0=Copy -mmt=1 -spf2 -bso0 "$ADF_CONF_WSL_BACKUP_SESSION_COMPILATION" "$ADF_CONF_WSL_BACKUP_SESSION_DIR" "-x!$(basename "$file")"
+    else
+        7z a -t7z -m0=lzma2 -mx=5 -mfb=64 -md=32m -ms=on -mhc=on -mhe=on -spf2 -bso0 "$ADF_CONF_WSL_BACKUP_SESSION_COMPILATION" "$ADF_CONF_WSL_BACKUP_SESSION_DIR" "-x!$(basename "$file")"
+    fi
+
+    if (( $? )); then
         echoerr "7-Zip failed (see error above)"
         return 1
     fi

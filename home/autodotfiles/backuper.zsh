@@ -11,7 +11,14 @@
 #  To search for specific patterns inside the directory, suffix it by `::<glob pattern>`
 # You may also set "ADF_DEOBFUSCATE_PASSPHRASE"
 # As well as "ADF_MIRROR_BACKUP" to duplicate it to another location
+#
+# To create a non-compressed archive, set the "ADF_BACKUP_NO_COMPRESS" variable to 1 or provide a "--no-compress" argument.
 function adf_local_backup() {
+    if [[ ! -z "$1" && $1 != "--no-compress" ]]; then
+        echoerr "Invalid argument provided (must be \z[yellow]°--no-compress\[]° or nothing)"
+        return 9
+    fi
+
     if [[ -z $ADF_LOCBAK_PASSPHRASE ]]; then
         echoerr "Please provide a \z[yellow]°\$ADF_LOCBAK_PASSPHRASE\z[]° variable."
         return 1
@@ -76,7 +83,14 @@ function adf_local_backup() {
 
     local tmpfile="$TEMPDIR/adf-backup-$(humandate).tmp.7z"
     
-    if ! 7z a -t7z -m0=lzma2 -mx=5 -mfb=64 -md=32m -ms=on -mhc=on -mhe=on -spf2 -bso0 -p"$passphrase" "$tmpfile" @"$listfile"; then
+    if (( $ADF_BACKUP_NO_COMPRESS )); then
+        echowarn "Creating a NON-COMPRESSED archive."
+        7z a -t7z -m0=Copy -mmt=1 -spf2 -bso0 -p"$passphrase" "$tmpfile" @"$listfile"
+    else
+        7z a -t7z -m0=lzma2 -mx=$compression -mfb=64 -md=32m -ms=on -mhc=on -mhe=on -spf2 -bso0 -p"$passphrase" "$tmpfile" @"$listfile"
+    fi
+        
+    if (( $? )); then
         echoerr "Command \z[yellow]°7z\z[]° failed."
         command rm "$listfile"
         return 4
@@ -155,7 +169,7 @@ function _adf_add_dir_to_list() {
 
         local files=""
 
-        if ! files=$(fd --hidden --one-file-system --type 'file' --absolute-path --search-path "$item" "$pattern"); then
+        if ! files=$(fd --threads=1 --hidden --one-file-system --type 'file' --absolute-path --search-path "$item" "$pattern"); then
             echoerr "Command \z[yellow]°fd\z[]° failed."
             return 2
         fi
