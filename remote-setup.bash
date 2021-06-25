@@ -68,11 +68,11 @@ ssh $user_name@$computer_ip echo Connected successfully.
 _step Step 2/3: Copying files...
 ssh $user_name@$computer_ip rm -rf .___remote_setup
 ssh $user_name@$computer_ip mkdir .___remote_setup
-scp -r "$SCRIPT_DIR" $user_name@$computer_ip:./.___remote_setup
-ssh $user_name@$computer_ip mv ".___remote_setup/*" ".___remote_setup/files"
+scp -r "$SCRIPT_DIR/home" $user_name@$computer_ip:./.___remote_setup
+scp "$SCRIPT_DIR/auto-install.bash" $user_name@$computer_ip:./.___remote_setup
 
 _step Step 3/3: Running installer...
-ssh $user_name@$computer_ip bash .___remote_setup/files/auto-install.bash
+ssh $user_name@$computer_ip bash .___remote_setup/auto-install.bash
 
 _step Done\!
 
