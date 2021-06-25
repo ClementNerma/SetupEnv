@@ -37,7 +37,7 @@ function zerupdate() {
 		local update_path="$1"
 	else
 		if [[ $ADF_CONF_MAIN_PERSONAL_COMPUTER = 1 ]]; then
-			local update_path="$PROJDIR/_Done/AutoDotFiles"
+			local update_path="$PROJDIR/AutoDotFiles"
 		else
 			echoerr "Please provide a path to update ZSH (default path is only available for main computer)"
 			return 1
