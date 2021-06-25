@@ -88,6 +88,7 @@ function zerupdate() {
 
 	# Load new environment
 	echoinfo "Loading environment..."
+	export ADF_JUST_UPDATED=1
 	source "$ADF_DIR/index.zsh"
 
 	# Done!
