@@ -114,7 +114,7 @@ function mount_wsl_drives() {
 function edit() {
   local currdir=$(pwd)
   cd "$(dirname "$1")"
-  /mnt/c/Program\ Files/Sublime\ Text\ 3/sublime_text.exe "$(basename "$1")"
+  /mnt/c/Program\ Files/Sublime\ Text/sublime_text.exe "$(basename "$1")"
   cd "$currdir"
 }
 
