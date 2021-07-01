@@ -38,7 +38,7 @@ export ADF_CONF_CRON_LOGS_DIR="$ADF_THISCOMP_DIR/cron-logs"
 
 # Default bandwidth limit for the 'ytdl' functino
 # Can be overriden with the YTDL_LIMIT_BANDWIDTH variable
-export ADF_YTDL_DEFAUT_LIMIT_BANDWIDTH="5M"
+export ADF_YTDL_DEFAUT_LIMIT_BANDWIDTH="999M"
 
 # Bandwidth limit to use when synchronizing a Youtube-DL playlist with the "ytsync" or "ytrepairres" commands
 # This is required in order to avoid temporary IP bans on most websites
