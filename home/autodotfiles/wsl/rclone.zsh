@@ -57,6 +57,7 @@ function __rclone_sync_full() {
         --stats-file-name-length 0 \
         --check-first \
         --order-by "name,mixed,75" \
+        --transfers 8 \
         --filter "- System Volume Information/**" \
         --filter "- \$RECYCLE.BIN/**" \
         "${@:3}"
