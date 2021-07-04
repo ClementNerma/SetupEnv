@@ -24,6 +24,18 @@ function sudodli() { sudo wget -qi - --show-progress -O "$1" }
 # Download a file from the latest of a GitHub repository
 # Arguments: "<repo author>/<reponame>" "<file grep pattern>" "<download location>"
 function dlghrelease() {
+	local release_url=$(
+		curl -s "https://api.github.com/repos/$1/releases/latest" \
+        | grep "browser_download_url.*$2" \
+        | cut -d : -f 2,3 \
+        | tr -d \"
+	)
+
+	if [[ -z $release_url ]]; then
+		echoerr "Failed to find an URL matching in repository \z[yellow]°$1\z[]° (pattern \z[cyan]°$2\z[]°)"
+		return 1
+	fi
+
     curl -s "https://api.github.com/repos/$1/releases/latest" \
         | grep "browser_download_url.*$2" \
         | cut -d : -f 2,3 \
