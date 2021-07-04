@@ -158,9 +158,10 @@ function process_windows() {
        '| Out-String -Stream -Width 1000000000'
 }
 
-# Load the session backup on main PC
+# Load main PC exclusive modules
 if (( $ADF_CONF_MAIN_PERSONAL_COMPUTER )); then
   source "$ADF_ENV_DIR/session-backuper.zsh"
+  source "$ADF_ENV_DIR/rclone.zsh"
 fi
 
 # Run Git commands from Windows if the project directories are not stored inside WSL's own filesystem
