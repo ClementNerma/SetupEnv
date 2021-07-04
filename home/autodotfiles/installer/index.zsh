@@ -199,7 +199,7 @@ function _checkdir() {
 
     for file in "$1/_"*.zsh(N)
     do
-        if [[ "$(basename "$file")" = "_init.zsh" ]]; then
+        if [[ "$(basename "$file")" = "_init.zsh" || $file = *".old.zsh" ]]; then
             continue
         fi
 
@@ -208,7 +208,7 @@ function _checkdir() {
 
     for file in "$1/"*.zsh(N)
     do
-        if [[ "$(basename "$file")" = "_"* ]]; then
+        if [[ "$(basename "$file")" = "_"* || $file = *".old.zsh" ]]; then
             continue
         fi
 

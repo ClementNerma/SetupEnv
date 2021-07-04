@@ -55,6 +55,8 @@ function __rclone_sync_full() {
         --create-empty-src-dirs \
         --track-renames --track-renames-strategy "leaf,size" \
         --stats-file-name-length 0 \
+        --check-first \
+        --order-by "name,mixed,75" \
         --filter "- System Volume Information/**" \
         --filter "- \$RECYCLE.BIN/**" \
         "${@:3}"
