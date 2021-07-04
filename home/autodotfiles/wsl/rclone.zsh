@@ -50,6 +50,7 @@ function __rclone_sync_full() {
 
     rclone.exe sync "$1" "$2" \
         --progress \
+        --progress-terminal-title \
         --max-backlog "10000000" \
         --create-empty-src-dirs \
         --track-renames --track-renames-strategy "leaf,size" \
