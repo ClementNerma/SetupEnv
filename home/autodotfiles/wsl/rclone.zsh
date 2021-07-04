@@ -3,7 +3,7 @@
 #
 
 function rclone_mirror() {
-    if ! __rclone_sync_full "$1" "$2" --dry-run; then
+    if ! __rclone_sync_full "$1" "$2" "${@:3}" --dry-run; then
         return 1
     fi
 
@@ -20,7 +20,7 @@ function rclone_mirror() {
     echoinfo "Sleeping 2 seconds before starting..."
     sleep 2
 
-    if ! __rclone_sync_full "$1" "$2"; then
+    if ! __rclone_sync_full "$1" "$2" "${@:3}"; then
         return 10
     fi
 
@@ -56,7 +56,5 @@ function __rclone_sync_full() {
         --track-renames --track-renames-strategy "leaf,size" \
         --filter "- System Volume Information/**" \
         --filter "- \$RECYCLE.BIN/**" \
-        --filter "- .yacreaderlibrary/**" \
-        --filter "- ROMS/WIIU/**" \
         "${@:3}"
 }
