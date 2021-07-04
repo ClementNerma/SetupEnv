@@ -54,6 +54,7 @@ function __rclone_sync_full() {
         --max-backlog "10000000" \
         --create-empty-src-dirs \
         --track-renames --track-renames-strategy "leaf,size" \
+        --stats-file-name-length 0 \
         --filter "- System Volume Information/**" \
         --filter "- \$RECYCLE.BIN/**" \
         "${@:3}"
