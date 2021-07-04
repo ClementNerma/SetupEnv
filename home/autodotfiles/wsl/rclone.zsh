@@ -51,14 +51,14 @@ function __rclone_sync_full() {
     rclone.exe sync "$1" "$2" \
         --progress \
         --progress-terminal-title \
-        --max-backlog "10000000" \
-        --create-empty-src-dirs \
-        --track-renames --track-renames-strategy "leaf,size" \
         --stats-file-name-length 0 \
+        --max-backlog "10000000" \
         --check-first \
         --order-by "name,mixed,75" \
         --transfers 8 \
         --filter "- System Volume Information/**" \
         --filter "- \$RECYCLE.BIN/**" \
+        --create-empty-src-dirs \
+        --track-renames --track-renames-strategy "leaf,size" \
         "${@:3}"
 }
