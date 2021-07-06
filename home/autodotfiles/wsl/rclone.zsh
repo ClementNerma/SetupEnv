@@ -24,7 +24,7 @@ function rclone_mirror() {
         return 10
     fi
 
-    echosuccess "Successfully synchronized \z[magenta]°$1\z[]° to \z[magenta]°$2\[]°."
+    echosuccess "Successfully synchronized \z[magenta]°$1\z[]° to \z[magenta]°$2\z[]°."
 }
 
 function __rclone_sync_full() {

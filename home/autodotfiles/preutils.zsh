@@ -2,17 +2,17 @@
 # Arguments: "<url>" "<download location>"
 function dl() {
     if [[ ! -z "$2" ]]; then
-        curl -L --silent --progress-bar -o "$2" "$1" "${@:3}"
+        wget -q --show-progress -O "$2" "$1" "${@:3}"
     else
-        curl -L --silent --progress-bar "$@"
+        wget -q --show-progress "$@"
     fi
 }
 
 function sudodl() {
     if [[ ! -z "$2" ]]; then
-        sudo curl -L --silent --progress-bar -o "$2" "$1" "${@:3}"
+        sudo wget -q --show-progress -O "$2" "$1" "${@:3}"
     else
-        sudo curl -L --silent --progress-bar "$@"
+        sudo wget -q --show-progress "$@"
     fi
 }
 
@@ -85,7 +85,7 @@ function ghdl() {
 		return 1
 	fi
 
-	local filename="$reponame-$(date +%s%N).zip"
+	local filename="$reponame-$(humandate).zip"
 	echoinfo "> Fetching archive for branch \z[yellow]°$branch\z[]° to \z[magenta]°$filename\z[]°..."
 	
 	local zipurl="https://codeload.github.com/$repoauthor/$reponame/zip/$branch"
