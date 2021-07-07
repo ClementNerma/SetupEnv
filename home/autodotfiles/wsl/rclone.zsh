@@ -77,13 +77,17 @@ function rclone_mirror() {
         return 9
     fi
 
-    while IFS= read -r item; do
-        echoinfo "> Going to transfer: \z[magenta]°$item\z[]°"
-    done <<< $(printf '%s\n' "${items[@]}" | sort -n)
+    if (( ${#items} )); then
+        while IFS= read -r item; do
+            echoinfo "> Going to transfer: \z[magenta]°$item\z[]°"
+        done <<< $(printf '%s\n' "${items[@]}" | sort -n)
+    fi
 
-    while IFS= read -r item; do
-        echowarn "> Going to delete: \z[magenta]°$item\z[]°"
-    done <<< $(printf '%s\n' "${todelete[@]}" | sort -n)
+    if (( ${#todelete} )); then
+        while IFS= read -r item; do
+            echowarn "> Going to delete: \z[magenta]°$item\z[]°"
+        done <<< $(printf '%s\n' "${todelete[@]}" | sort -n)
+    fi
 
     echoinfo "Found \z[yellow]°${#items}\z[]° items to transfer and \z[yellow]°${#delete}\z[]° to delete for a total of \z[yellow]°$size\z[]°."
 
