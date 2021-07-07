@@ -26,7 +26,7 @@ function rclone_mirror() {
     local todelete=()
     local total=""
     local size=""
-    local nothing=0
+    local noitem=0
 
     while IFS= read -r line; do
         if [[ $line =~ ^[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9]?[0-9][[:space:]][0-9]?[0-9]:[0-9][0-9]:[0-9][0-9][[:space:]]NOTICE:[[:space:]]([^:]+):[[:space:]]Skipped[[:space:]](copy|delete)[[:space:]]as[[:space:]]--dry-run[[:space:]]is[[:space:]]set[[:space:]]\\(size[[:space:]][0-9\\.kMGT]+\\)$ ]]; then
@@ -39,7 +39,7 @@ function rclone_mirror() {
                 return 5
             fi
         elif [[ $line =~ ^Transferred:[[:space:]]+0[[:space:]]/[[:space:]]0[[:space:]]Bytes,[[:space:]]-,[[:space:]]0[[:space:]]Bytes/s,[[:space:]]ETA[[:space:]]-$ ]]; then
-            nothing=1
+            noitem=1
         elif [[ $line =~ ^[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9]?[0-9][[:space:]][0-9]?[0-9]:[0-9][0-9]:[0-9][0-9][[:space:]]NOTICE:[[:space:]]+(.+)$ ]]; then
             echoerr "Failed to parse line: \z[white]°$line\z[]°"
             return 5
@@ -55,29 +55,26 @@ function rclone_mirror() {
         fi
     done <<< "$rclone_list"
 
-    if (( $nothing )); then
-        echosuccess "Nothing to do."
-        return
-    fi
+    if [[ $noitem -ne 0 ]]; then
+        if [[ -z $size ]] && [[ -z $total ]]; then
+            echoerr "Failed to get both the total transfer size and the number of items to transfer."
+            return 6
+        fi
 
-    if [[ -z $size ]] && [[ -z $total ]]; then
-        echoerr "Failed to get both the total transfer size and the number of items to transfer."
-        return 6
-    fi
+        if [[ -z $size ]]; then
+            echoerr "Failed to get the total transfer size."
+            return 7
+        fi
+        
+        if [[ -z $total ]]; then
+            echoerr "Failed to get the total number of items to transfer."
+            return 8
+        fi
 
-    if [[ -z $size ]]; then
-        echoerr "Failed to get the total transfer size."
-        return 7
-    fi
-    
-    if [[ -z $total ]]; then
-        echoerr "Failed to get the total number of items to transfer."
-        return 8
-    fi
-
-    if [[ ${#items} -ne $total ]]; then
-        echoerr "Found \z[yellow]°${#items}\z[]°, but expected a total of \z[yellow]°$total\z[]° items to transfer!"
-        return 9
+        if [[ ${#items} -ne $total ]]; then
+            echoerr "Found \z[yellow]°${#items}\z[]°, but expected a total of \z[yellow]°$total\z[]° items to transfer!"
+            return 9
+        fi
     fi
 
     if (( ${#items} )); then
