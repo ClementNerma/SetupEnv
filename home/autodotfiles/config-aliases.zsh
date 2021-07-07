@@ -12,7 +12,7 @@ alias gosoft="cd $SOFTWAREDIR"
 alias bash="BASH_NO_ZSH=true bash"
 
 # Software: Exa
-alias ls="exa --all --long --group-directories-first --color-scale"
+alias ls="exa --all --long --group-directories-first --color-scale --binary"
 alias tree="ls --tree"
 
 # Software: Bat
