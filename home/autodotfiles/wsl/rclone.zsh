@@ -3,31 +3,6 @@
 #
 
 function rclone_mirror() {
-    if ! __rclone_sync_full "$1" "$2" "${@:3}" --dry-run; then
-        return 1
-    fi
-
-    echo ""
-    echo ""
-    echoinfo "Confirm the synchronization (Y/n)?"
-
-    read "answer?"
-
-    if [[ ! -z $answer && $answer != "y" && $answer != "Y" ]]; then
-        return 2
-    fi
-    
-    echoinfo "Sleeping 2 seconds before starting..."
-    sleep 2
-
-    if ! __rclone_sync_full "$1" "$2" "${@:3}"; then
-        return 10
-    fi
-
-    echosuccess "Successfully synchronized \z[magenta]°$1\z[]° to \z[magenta]°$2\z[]°."
-}
-
-function __rclone_sync_full() {
     if [[ -z "$1" ]]; then
         echoerr "Please provide a source."
         return 1
@@ -43,17 +18,108 @@ function __rclone_sync_full() {
         return 3
     fi
 
-    if ! rclone.exe lsf "$2" > /dev/null; then
-        echoerr "Destination does not exist or is not available."
+    if ! rclone_list=$(__rclone_sync_nocheck "$1" "$2" --dry-run "${@:3}" 2>&1 > /dev/null); then
         return 4
     fi
 
+    local items=()
+    local todelete=()
+    local total=""
+    local size=""
+    local nothing=0
+
+    while IFS= read -r line; do
+        if [[ $line =~ ^[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9]?[0-9][[:space:]][0-9]?[0-9]:[0-9][0-9]:[0-9][0-9][[:space:]]NOTICE:[[:space:]]([^:]+):[[:space:]]Skipped[[:space:]](copy|delete)[[:space:]]as[[:space:]]--dry-run[[:space:]]is[[:space:]]set[[:space:]]\\(size[[:space:]][0-9\\.kMGT]+\\)$ ]]; then
+            if [[ ${match[2]} = "copy" ]]; then
+                items+=("${match[1]}")
+            elif [[ ${match[2]} = "delete" ]]; then
+                todelete+=("${match[1]}")
+            else
+                echoerr "Unreachable: expected 'copy' or 'delete' in regex result, got '${match[2]}'"
+                return 5
+            fi
+        elif [[ $line =~ ^Transferred:[[:space:]]+0[[:space:]]/[[:space:]]0[[:space:]]Bytes,[[:space:]]-,[[:space:]]0[[:space:]]Bytes/s,[[:space:]]ETA[[:space:]]-$ ]]; then
+            nothing=1
+        elif [[ $line =~ ^[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9]?[0-9][[:space:]][0-9]?[0-9]:[0-9][0-9]:[0-9][0-9][[:space:]]NOTICE:[[:space:]]+(.+)$ ]]; then
+            echoerr "Failed to parse line: \z[white]°$line\z[]°"
+            return 5
+        elif [[ $line =~ ^Transferred:[^/]+/[[:space:]]([0-9\\.]+[[:space:]][KMGTBytes]+),[[:space:]]100%, ]]; then
+            size="${match[1]}"
+        elif [[ $line =~ ^Transferred:[^/]+/[[:space:]]([0-9]+),[[:space:]]100%$ ]]; then
+            total="${match[1]}"
+        else
+            printf '%s\n' "$line"
+        fi
+    done <<< "$rclone_list"
+
+    if (( $nothing )); then
+        echosuccess "Nothing to do."
+        return
+    fi
+
+    if [[ -z $size ]] && [[ -z $total ]]; then
+        echoerr "Failed to get both the total transfer size and the number of items to transfer."
+        return 6
+    fi
+
+    if [[ -z $size ]]; then
+        echoerr "Failed to get the total transfer size."
+        return 7
+    fi
+    
+    if [[ -z $total ]]; then
+        echoerr "Failed to get the total number of items to transfer."
+        return 8
+    fi
+
+    if [[ ${#items} -ne $total ]]; then
+        echoerr "Found \z[yellow]°${#items}\z[]°, but expected a total of \z[yellow]°$total\z[]° items to transfer!"
+        return 9
+    fi
+
+    while IFS= read -r item; do
+        echoinfo "> Going to transfer: \z[magenta]°$item\z[]°"
+    done <<< $(printf '%s\n' "${items[@]}" | sort -n)
+
+    while IFS= read -r item; do
+        echowarn "> Going to delete: \z[magenta]°$item\z[]°"
+    done <<< $(printf '%s\n' "${todelete[@]}" | sort -n)
+
+    echoinfo "Found \z[yellow]°${#items}\z[]° items to transfer and \z[yellow]°${#delete}\z[]° to delete for a total of \z[yellow]°$size\z[]°."
+
+    if [[ ${#items} -eq 0 && ${#todelete} -eq 0 ]]; then
+        echosuccess "Nothing to do."
+        return
+    fi
+
+    if (( $DRY_RUN )); then
+        return
+    fi
+
+    echo ""
+    echo ""
+    echowarn "Confirm the synchronization (Y/n)?"
+
+    read "answer?"
+
+    if [[ ! -z $answer && $answer != "y" && $answer != "Y" ]]; then
+        return 2
+    fi
+    
+    echoinfo "Sleeping 2 seconds before starting..."
+    sleep 2
+
+    if ! __rclone_sync_nocheck --check-first --progress "$@"; then
+        return 10
+    fi
+
+    echosuccess "Successfully synchronized \z[magenta]°$1\z[]° to \z[magenta]°$2\z[]°."
+}
+
+function __rclone_sync_nocheck() {
     rclone.exe sync "$1" "$2" \
-        --progress \
         --progress-terminal-title \
         --stats-file-name-length 0 \
-        --max-backlog "10000000" \
-        --check-first \
         --order-by "name,mixed,75" \
         --transfers 8 \
         --filter "- System Volume Information/**" \
