@@ -24,18 +24,21 @@ function rclone_mirror() {
 
     local items=()
     local todelete=()
+    local tomove=()
     local total=""
     local size=""
     local noitem=0
 
     while IFS= read -r line; do
-        if [[ $line =~ ^[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9]?[0-9][[:space:]][0-9]?[0-9]:[0-9][0-9]:[0-9][0-9][[:space:]]NOTICE:[[:space:]]([^:]+):[[:space:]]Skipped[[:space:]](copy|delete)[[:space:]]as[[:space:]]--dry-run[[:space:]]is[[:space:]]set[[:space:]]\\(size[[:space:]][0-9\\.kMGT]+\\)$ ]]; then
+        if [[ $line =~ ^[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9]?[0-9][[:space:]][0-9]?[0-9]:[0-9][0-9]:[0-9][0-9][[:space:]]NOTICE:[[:space:]]([^:]+):[[:space:]]Skipped[[:space:]](copy|delete|move)[[:space:]]as[[:space:]]--dry-run[[:space:]]is[[:space:]]set[[:space:]]\\(size[[:space:]][0-9\\.kMGT]+\\)$ ]]; then
             if [[ ${match[2]} = "copy" ]]; then
                 items+=("${match[1]}")
             elif [[ ${match[2]} = "delete" ]]; then
                 todelete+=("${match[1]}")
+            elif [[ ${match[2]} = "move" ]]; then
+                tomove+=("${match[1]}")
             else
-                echoerr "Unreachable: expected 'copy' or 'delete' in regex result, got '${match[2]}'"
+                echoerr "Unreachable: expected 'copy', 'delete' or 'move' in regex result, got '${match[2]}'"
                 return 5
             fi
         elif [[ $line =~ ^Transferred:[[:space:]]+0[[:space:]]/[[:space:]]0[[:space:]]Bytes,[[:space:]]-,[[:space:]]0[[:space:]]Bytes/s,[[:space:]]ETA[[:space:]]-$ ]]; then
@@ -83,15 +86,21 @@ function rclone_mirror() {
         done <<< $(printf '%s\n' "${items[@]}" | sort -n)
     fi
 
+    if (( ${#tomove} )); then
+        while IFS= read -r item; do
+            echoinfo "> Going to move from: \z[magenta]°$item\z[]°"
+        done <<< $(printf '%s\n' "${tomove[@]}" | sort -n)
+    fi
+
     if (( ${#todelete} )); then
         while IFS= read -r item; do
             echowarn "> Going to delete: \z[magenta]°$item\z[]°"
         done <<< $(printf '%s\n' "${todelete[@]}" | sort -n)
     fi
 
-    echoinfo "Found \z[yellow]°${#items}\z[]° item(s) to transfer and \z[yellow]°${#delete}\z[]° to delete for a total of \z[yellow]°$size\z[]°."
+    echoinfo "Found \z[yellow]°${#items}\z[]° item(s) to transfer, \z[yellow]°${#tomove}\z[]° to move and \z[yellow]°${#delete}\z[]° to delete for a total of \z[yellow]°$size\z[]°."
 
-    if [[ ${#items} -eq 0 && ${#todelete} -eq 0 ]]; then
+    if [[ ${#items} -eq 0 && ${#todelete} -eq 0 && ${#tomove} -eq 0 ]]; then
         echosuccess "Nothing to do."
         return
     fi
