@@ -92,7 +92,7 @@ function rclone_mirror() {
         done <<< $(printf '%s\n' "${todelete[@]}" | sort -n)
     fi
 
-    echoinfo "Found \z[yellow]°${#items}\z[]° items to transfer and \z[yellow]°${#delete}\z[]° to delete for a total of \z[yellow]°$size\z[]°."
+    echoinfo "Found \z[yellow]°${#items}\z[]° item(s) to transfer and \z[yellow]°${#delete}\z[]° to delete for a total of \z[yellow]°$size\z[]°."
 
     if [[ ${#items} -eq 0 && ${#todelete} -eq 0 ]]; then
         echosuccess "Nothing to do."
