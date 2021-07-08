@@ -58,7 +58,7 @@ function rclone_mirror() {
         fi
     done <<< "$rclone_list"
 
-    if [[ $noitem -ne 0 ]]; then
+    if [[ $noitem -eq 0 ]]; then
         if [[ -z $size ]] && [[ -z $total ]]; then
             echoerr "Failed to get both the total transfer size and the number of items to transfer."
             return 6
