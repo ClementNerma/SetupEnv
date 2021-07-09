@@ -46,7 +46,7 @@ function rclone_mirror() {
         elif [[ $line =~ ^[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9]?[0-9][[:space:]][0-9]?[0-9]:[0-9][0-9]:[0-9][0-9][[:space:]]NOTICE:[[:space:]]+(.+)$ ]]; then
             echoerr "Failed to parse line: \z[white]°$line\z[]°"
             return 5
-        elif [[ $line =~ ^Transferred:[^/]+/[[:space:]]([0-9\\.]+[[:space:]][KMGTBytes]+),[[:space:]]100%, ]]; then
+        elif [[ $line =~ ^Transferred:[^/]+/[[:space:]]([0-9\\.]+[[:space:]][kMGTBytes]+),[[:space:]]100%, ]]; then
             size="${match[1]}"
         elif [[ $line =~ ^Transferred:[^/]+/[[:space:]]([0-9]+),[[:space:]]100%$ ]]; then
             total="${match[1]}"
