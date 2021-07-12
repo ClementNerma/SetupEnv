@@ -1,5 +1,5 @@
 
-if cat /etc/issue | grep "Ubuntu"; then
+if cat /etc/issue | grep "Ubuntu" > /dev/null; then
     sudo apt install python3-pip
     return
 fi
