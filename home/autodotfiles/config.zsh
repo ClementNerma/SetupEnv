@@ -15,7 +15,7 @@ export ADF_CONF_DISABLE_DIR_HOME_SWITCHING=0
 
 # Should the project directories be put in WSL's filesystem?
 # Set to '1' if yes
-export ADF_CONF_PROJECT_DIRS_IN_WSL_FS=0
+export ADF_CONF_PROJECT_DIRS_IN_WSL_FS=1
 
 # Youtube-DL commands history with temporary directory
 export ADF_CONF_YTDL_HISTORY_FILE="$ADF_THISCOMP_DIR/youtube-dl.history"
