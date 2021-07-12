@@ -1,4 +1,7 @@
 
+# Checksum of the last session backup folder
+export ADF_LAST_SESSION_BACKUP_CKSUM_FILE="$ADF_CONF_WSL_BACKUP_SESSION_DIR/last-session-backup-cksum.txt"
+
 # Backup the session
 # Works by enumerating the windows of the said softwares' processes, and filtering them through PowerShell and ZSH
 function adf_backup_session() {
@@ -13,17 +16,25 @@ function adf_backup_session() {
     # Ignore empty values
     if [[ -z "$(command ls -A "$outdir")" ]]; then
       echosuccess "Nothing to backup!"
-      command rmdir "$outdir"
+      mv "$outdir" "$finaldir.empty"
       return
     fi
 
     # Prepare the final directory
     # In case of fail above, the final directoy will simply not have a checksum, but will remain on the disk
-    local finaldir="$outdir-$(cksumdir "$outdir")"
-    mv "$outdir" "$finaldir"
+    local cksum=$(cksumdir "$outdir")
+    local finaldir="$outdir-$cksum"
 
-    # Output the backup directory
-    echo -n "$finaldir"
+    if [[ -f $ADF_LAST_SESSION_BACKUP_CKSUM_FILE ]] && [[ $cksum -eq $(cat $ADF_LAST_SESSION_BACKUP_CKSUM_FILE) ]]; then
+        local finaldir="$finaldir.nochange"
+        echowarn "Nothing changed since previous backup."
+        mv "$outdir" "$finaldir"
+        command rm "$finaldir/"*.txt
+    else
+        mv "$outdir" "$finaldir"
+        echo -n "$cksum" > "$ADF_LAST_SESSION_BACKUP_CKSUM_FILE"
+        echo -n "$finaldir"
+    fi
 }
 
 # Backup a software's session
