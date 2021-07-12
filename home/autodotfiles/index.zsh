@@ -179,14 +179,20 @@ function zshaddhistory() {
 }
 
 # Go to the a specific folder on startup, except if the shell has been started in a custom directory
-if [[ $ADF_CONF_DISABLE_DIR_HOME_SWITCHING != 1 ]]; then
-	if [[ "$(pwd)" = "$HOME" || "$(pwd)" = "$HOMEDIR" ]]; then
+function gostartupdir() {
+	local cwd=$(pwd)
+
+	if [[ "$cwd" = "$HOME" || "$cwd" = "$HOMEDIR" ]] || [[ ! -f "$ALTERNATE_HOMEDIR" && "$cwd" = "$ALTERNATE_HOMEDIR" ]]; then
 		if [ $ADF_CONF_MAIN_PERSONAL_COMPUTER = 1 ]; then
 			goproj
 		else
 			godl
 		fi
 	fi
+}
+
+if [[ $ADF_CONF_DISABLE_DIR_HOME_SWITCHING != 1 ]]; then
+	gostartupdir
 fi
 
 # Run a command and exit if required
