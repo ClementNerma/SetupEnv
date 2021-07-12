@@ -18,9 +18,16 @@ function rclone_mirror() {
         return 3
     fi
 
-    if ! rclone_list=$(__rclone_sync_nocheck "$1" "$2" --dry-run "${@:3}" 2>&1 > /dev/null); then
+    local rclone_output_file="$TEMPDIR/rclone-output-$(humandate).txt"
+
+    if ! __rclone_sync_nocheck "$1" "$2" --dry-run "${@:3}" > "$rclone_output_file" 2>&1; then
+        echoerr "RClone failed: \z[yellow]°$(command cat "$rclone_output_file")\z[]°"
+        rm "$rclone_output_file"
         return 4
     fi
+
+    local rclone_list=$(cat "$rclone_output_file")
+    rm "$rclone_output_file"
 
     local items=()
     local todelete=()
