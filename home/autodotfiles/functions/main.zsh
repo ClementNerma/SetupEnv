@@ -57,15 +57,51 @@ function cp_proj_nodeps() {
 
 # Backup a project
 function bakproj() {
-	_filebak "$1" cp_proj_nodeps "${@:2}"
+	if [[ ! -d "$1" ]]; then
+		echoerr "Source does not exist!"
+		return 1
+	fi
+
+	if [[ -f "$2" || -d "$2" ]]; then
+		echoerr "Target already exists!"
+		return 1
+	fi
+
+	local files=""
+	
+	local cwd=$(pwd)
+
+	if ! files=$(fd --threads=1 --hidden --one-file-system --type 'file' --search-path "$1" --absolute-path); then
+		cd "$cwd"
+		echoerr "Command \z[yellow]°fd\z[]° failed."
+		return 2
+	fi
+
+	local files=$(printf "%s" "$files" | grep "\S")
+	
+	if [[ -z "$files" ]]; then
+		echoerr "Directory is empty."
+		return 3
+	fi
+
+	mkdir "$2"
+
+	while IFS= read -r file; do
+		local relative="$(realpath --relative-to="$1" "$file")"
+		local target="$2/$relative"
+
+		echoinfo "Copying: \z[magenta]°$relative\z[]°..."
+		
+		mkdir -p "$(dirname "$target")"
+		cp "$file" "$target"
+	done <<< $(printf "%s\n" "$files" | sort)
+
+	echosuccess "Done!"
 }
 
 # Backup the current project
 function bakthis() {
-	local item=$(pwd)
-	cd ..
-	_filebak "$item" cp_proj_nodeps "${@:2}"
-	cd "$item"
+	bakproj "$(pwd)" "$(dirname "$(pwd)")/$(basename "$(pwd)")-$(humandate)"
 }
 
 # Run a Cargo project located in the projects directory
